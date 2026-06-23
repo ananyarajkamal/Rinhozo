@@ -3,7 +3,6 @@ import { motion, useInView, AnimatePresence } from 'framer-motion';
 import {
   ArrowRight, Play, Menu, X,
   Brain, Eye, Puzzle, BarChart3, GraduationCap, TrendingUp,
-  Globe, WifiOff, Sparkles,
 } from 'lucide-react';
 import type { UIStrings } from '../locales/strings';
 
@@ -21,7 +20,7 @@ const fadeUp = (delay = 0) => ({
   },
 });
 
-function Section({ id, style, children }: { id?: string; style?: React.CSSProperties; children: React.ReactNode }) {
+function Section({ id, className, style, children }: { id?: string; className?: string; style?: React.CSSProperties; children: React.ReactNode }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
   return (
@@ -30,6 +29,7 @@ function Section({ id, style, children }: { id?: string; style?: React.CSSProper
       ref={ref}
       initial="hidden"
       animate={inView ? 'visible' : 'hidden'}
+      className={className}
       style={style}
     >
       {children}

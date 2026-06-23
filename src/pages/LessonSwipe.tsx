@@ -186,25 +186,25 @@ export const LessonSwipe: React.FC<LessonSwipeProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-[#faf6f0] text-[#1e293b] flex flex-col items-center p-4 md:p-6 overflow-hidden relative lesson-container">
+    <div className="min-h-screen bg-[#FAF6F0] text-[#16233A] flex flex-col items-center p-4 md:p-6 overflow-hidden relative lesson-container">
       
       {/* HEADER BAR */}
       <div className="w-full max-w-lg flex items-center justify-between mb-4 z-20 flex-shrink-0 lesson-header">
         <button 
           onClick={onBackToMap}
-          className="p-2.5 rounded-full hover:bg-[#f0ebe3] text-[#78716c] hover:text-[#1e293b] transition-all cursor-pointer"
+          className="p-2.5 rounded-full hover:bg-[#16233A]/5 text-[#6B6560] hover:text-[#16233A] transition-all cursor-pointer"
         >
           <ArrowLeft size={20} />
         </button>
 
         {/* Mid-lesson Language Switcher */}
-        <div className="flex bg-[#f0ebe3] border border-[#e5dec9]/30 rounded-full p-1 text-xs overflow-x-auto no-scrollbar max-w-full">
+        <div className="flex bg-[#16233A]/4 border border-[#16233A]/8 rounded-full p-1 text-xs overflow-x-auto no-scrollbar max-w-full">
           {(['hinglish', 'english', 'hindi', 'tamil'] as SupportedLang[]).map((l) => (
             <button
               key={l}
               onClick={() => handleLanguageChange(l)}
               className={`px-3 py-1.5 rounded-full font-bold uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap flex-shrink-0 ${
-                lang === l ? 'bg-[#1e293b] text-white' : 'text-[#78716c] hover:text-[#1e293b]'
+                lang === l ? 'bg-[#16233A] text-white' : 'text-[#6B6560] hover:text-[#16233A]'
               }`}
             >
               {l === 'hinglish' ? 'Hing' : l === 'hindi' ? 'हिं' : l === 'tamil' ? 'த' : 'Eng'}
@@ -215,32 +215,32 @@ export const LessonSwipe: React.FC<LessonSwipeProps> = ({
 
       {/* LESSON COMPLETE CELEBRATION */}
       {completed ? (
-        <div className="flex-1 w-full max-w-md flex flex-col justify-center items-center text-center p-6 bg-white border border-[#e5dec9] rounded-3xl shadow-lg z-10 animate-fade-in my-8">
+        <div className="flex-1 w-full max-w-md flex flex-col justify-center items-center text-center p-6 bg-white border border-[#16233A]/6 rounded-3xl shadow-lg z-10 animate-fade-in my-8">
           <RinAvatar mood="excited" size={160} glowIntensity={0.9} evolutionLevel={evolutionLevel} />
           
-          <h2 className="text-2xl font-bold mt-6 mb-2 text-[#1e293b]">
+          <h2 className="text-2xl font-bold mt-6 mb-2 text-[#16233A]">
             {strings.lessonCompleted}
           </h2>
-          <p className="text-sm font-semibold text-[#78716c] max-w-sm mb-8 leading-relaxed">
+          <p className="text-sm font-semibold text-[#6B6560] max-w-sm mb-8 leading-relaxed">
             {strings.lessonCompletedDesc}
           </p>
 
-          <div className="w-full bg-[#faf6f0] border border-[#e5dec9] rounded-2xl p-5 mb-8 text-left">
-            <span className="text-[10px] font-bold text-[#d4a574] uppercase tracking-widest block mb-1">Unlocks Next Area</span>
+          <div className="w-full bg-[#FAF6F0] border border-[#16233A]/6 rounded-2xl p-5 mb-8 text-left">
+            <span className="text-[10px] font-bold text-[#D6A15F] uppercase tracking-widest block mb-1">Unlocks Next Area</span>
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-[#7dd3fc]/20 flex items-center justify-center text-[#7dd3fc]">
                 <Sparkles size={20} />
               </div>
               <div>
-                <span className="font-bold text-[#1e293b] text-sm block">Algebra Reef Completed!</span>
-                <span className="text-xs text-[#78716c] font-semibold">Unlocked: Equations Island</span>
+                <span className="font-bold text-[#16233A] text-sm block">Algebra Reef Completed!</span>
+                <span className="text-xs text-[#6B6560] font-semibold">Unlocked: Equations Island</span>
               </div>
             </div>
           </div>
 
           <button
             onClick={onBackToMap}
-            className="w-full bg-[#1e293b] hover:bg-[#0f172a] text-white py-4 rounded-2xl text-base font-bold shadow-md cursor-pointer active:scale-[0.99] transition-all"
+            className="w-full bg-[#16233A] hover:bg-[#1E2E4A] text-white py-4 rounded-2xl text-base font-bold shadow-md cursor-pointer active:scale-[0.99] transition-all"
           >
             {strings.backToMap}
           </button>
@@ -252,13 +252,13 @@ export const LessonSwipe: React.FC<LessonSwipeProps> = ({
           {/* Top Progress bar and Rin floating */}
           <div className="w-full flex items-center justify-between mb-4 px-2 flex-shrink-0 lesson-progress-row">
             <div className="flex-1 mr-4">
-              <div className="flex justify-between text-[11px] font-bold text-[#78716c] mb-1.5">
+              <div className="flex justify-between text-[11px] font-bold text-[#6B6560] mb-1.5">
                 <span>{topicData.name}</span>
                 <span>{cardIndex + 1} / {cards.length} Cards</span>
               </div>
-              <div className="w-full h-2 bg-[#f0ebe3] rounded-full overflow-hidden">
+              <div className="w-full h-2 bg-[#16233A]/4 rounded-full overflow-hidden">
                 <div 
-                  className="h-full bg-[#1e293b] transition-all duration-300"
+                  className="h-full bg-[#16233A] transition-all duration-300"
                   style={{ width: `${((cardIndex + 1) / cards.length) * 100}%` }}
                 ></div>
               </div>
@@ -285,12 +285,12 @@ export const LessonSwipe: React.FC<LessonSwipeProps> = ({
                   <div className="flex-1 flex flex-col min-h-0 text-left w-full h-full">
                     {/* Header: Title and TTS button */}
                     <div className="flex items-center justify-between flex-shrink-0 pb-2 border-b border-[#FAF6F0]">
-                      <span className="text-[10px] font-bold text-[#d4a574] uppercase tracking-widest leading-none bg-[#f5e6d3]/40 px-2.5 py-1.5 rounded-full">
+                      <span className="text-[10px] font-bold text-[#D6A15F] uppercase tracking-widest leading-none bg-[#FBF3E8] px-2.5 py-1.5 rounded-full">
                         {card.type}
                       </span>
                       <button
                         onClick={handleSpeak}
-                        className="p-1.5 rounded-full hover:bg-[#faf6f0] text-[#78716c] hover:text-[#1e293b] transition-all cursor-pointer"
+                        className="p-1.5 rounded-full hover:bg-[#16233A]/5 text-[#6B6560] hover:text-[#16233A] transition-all cursor-pointer"
                         title="Read out loud"
                       >
                         <Volume2 size={18} />
@@ -299,21 +299,21 @@ export const LessonSwipe: React.FC<LessonSwipeProps> = ({
 
                     {/* Scrollable Body contents */}
                     <div className="flex-1 overflow-y-auto no-scrollbar pr-1 py-3 min-h-0">
-                      <h3 className="text-lg sm:text-xl font-bold text-[#1e293b] mb-1.5 sm:mb-2.5 leading-snug">{card.title}</h3>
-                      <p className="text-xs sm:text-[14px] font-semibold text-[#78716c] leading-relaxed whitespace-pre-line">
+                      <h3 className="text-lg sm:text-xl font-bold text-[#16233A] mb-1.5 sm:mb-2.5 leading-snug">{card.title}</h3>
+                      <p className="text-xs sm:text-[14px] font-semibold text-[#6B6560] leading-relaxed whitespace-pre-line">
                         {card.body}
                       </p>
 
                       {/* Render math or icon element */}
                       {card.mediaType === 'math' && card.mediaVal && (
-                        <div className="mt-2 bg-[#faf6f0] border border-[#e5dec9]/50 rounded-xl p-2.5 text-center font-mono font-bold text-[#1e293b] text-sm sm:text-base select-all">
+                        <div className="mt-2 bg-[#FAF6F0] border border-[#16233A]/6 rounded-xl p-2.5 text-center font-mono font-bold text-[#16233A] text-sm sm:text-base select-all">
                           {card.mediaVal}
                         </div>
                       )}
                       
                       {card.mediaType === 'icon' && card.mediaVal && (
                         <div className="mt-3 flex justify-center text-[#d4a574]">
-                          <div className="w-12 h-12 rounded-xl bg-[#f5e6d3]/40 flex items-center justify-center">
+                          <div className="w-12 h-12 rounded-xl bg-[#FBF3E8] border border-[#FAF6F0] flex items-center justify-center">
                             {card.mediaVal === 'Scale' ? (
                               <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v17M12 3L4 7m8-4l8 4m-8 6h7M5 13h7m-7 0a3 3 0 100 6 3 3 0 000-6zm14 0a3 3 0 100 6 3 3 0 000-6z" />
@@ -332,17 +332,17 @@ export const LessonSwipe: React.FC<LessonSwipeProps> = ({
                         <div className="space-y-1.5 mt-2">
                           {card.options.map((option: string, idx: number) => {
                             const isSelected = selectedOption === idx;
-                            let style = 'border-[#e5dec9] hover:bg-[#faf6f0]';
+                            let style = 'border-[#16233A]/8 hover:bg-[#16233A]/4';
                             if (isAnswered) {
                               if (idx === card.answerIdx) {
                                 style = 'border-[#86efac] bg-[#86efac]/10 text-emerald-700';
                               } else if (isSelected) {
                                 style = 'border-[#fca5a5] bg-[#fca5a5]/10 text-red-700';
                               } else {
-                                style = 'border-[#e5dec9] opacity-50';
+                                style = 'border-[#16233A]/8 opacity-50';
                               }
                             } else if (isSelected) {
-                              style = 'border-[#1e293b] bg-[#1e293b]/5';
+                              style = 'border-[#16233A] bg-[#16233A]/4';
                             }
                             
                             return (
@@ -370,8 +370,8 @@ export const LessonSwipe: React.FC<LessonSwipeProps> = ({
                           disabled={selectedOption === null}
                           className={`w-full py-2.5 rounded-xl text-xs sm:text-sm font-bold shadow-sm transition-all cursor-pointer ${
                             selectedOption !== null 
-                              ? 'bg-[#1e293b] hover:bg-[#0f172a] text-white' 
-                              : 'bg-[#f0ebe3] text-[#78716c] opacity-50 cursor-not-allowed'
+                              ? 'bg-[#16233A] hover:bg-[#1E2E4A] text-white' 
+                              : 'bg-[#FAF6F0] text-[#A09790] opacity-50 cursor-not-allowed'
                           }`}
                         >
                           Submit Answer
@@ -395,7 +395,7 @@ export const LessonSwipe: React.FC<LessonSwipeProps> = ({
           </div>
 
           {/* Swipe tutorial reminder overlay when inactive */}
-          <div className="text-[10px] font-bold text-[#78716c] opacity-40 uppercase tracking-widest text-center mt-2 flex-shrink-0">
+          <div className="text-[10px] font-bold text-[#6B6560] opacity-40 uppercase tracking-widest text-center mt-2 flex-shrink-0">
             Swipe Right to complete card!
           </div>
 

@@ -81,18 +81,18 @@ export const OceanMap: React.FC<OceanMapProps> = ({ onSelectTopic, onNavigate, e
 
   // 3D rotation styles based on mouse position
   const tiltRin = {
-    transform: `rotateY(${mousePos.x * 28}deg) rotateX(${-mousePos.y * 28}deg) translateZ(40px)`,
-    transition: 'transform 0.15s ease-out'
+    transform: `rotateY(${mousePos.x * 8}deg) rotateX(${-mousePos.y * 8}deg) translateZ(20px)`,
+    transition: 'transform 0.2s ease-out'
   };
 
   const tiltBadgeFar = (offsetMultiplier: number) => ({
-    transform: `rotateY(${mousePos.x * 38 * offsetMultiplier}deg) rotateX(${-mousePos.y * 38 * offsetMultiplier}deg) translateZ(80px)`,
-    transition: 'transform 0.15s ease-out'
+    transform: `rotateY(${mousePos.x * 12 * offsetMultiplier}deg) rotateX(${-mousePos.y * 12 * offsetMultiplier}deg) translateZ(35px)`,
+    transition: 'transform 0.2s ease-out'
   });
 
   const tiltTableProps = {
-    transform: `rotateY(${mousePos.x * 15}deg) rotateX(${-mousePos.y * 15}deg) translateZ(20px)`,
-    transition: 'transform 0.25s ease-out'
+    transform: `rotateY(${mousePos.x * 5}deg) rotateX(${-mousePos.y * 5}deg) translateZ(10px)`,
+    transition: 'transform 0.3s ease-out'
   };
 
   // Data mapping for topics
@@ -169,7 +169,7 @@ export const OceanMap: React.FC<OceanMapProps> = ({ onSelectTopic, onNavigate, e
     <div 
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="min-h-screen text-[#1e293b] flex flex-col relative font-sans select-none overflow-x-hidden"
+      className="min-h-screen text-[#16233A] flex flex-col relative font-sans select-none overflow-x-hidden"
       style={{
         backgroundImage: "linear-gradient(rgba(250, 246, 240, 0.25), rgba(250, 246, 240, 0.25)), url('/assets/cozy_desk_bg.png')",
         backgroundSize: 'cover',
@@ -178,82 +178,82 @@ export const OceanMap: React.FC<OceanMapProps> = ({ onSelectTopic, onNavigate, e
       }}
     >
       {/* HEADER NAVBAR */}
-      <header className="w-full max-w-7xl mx-auto px-8 py-5 flex items-center justify-between z-20">
+      <header className="w-full max-w-7xl mx-auto px-8 md:px-12 lg:px-16 py-5 flex items-center justify-between z-20">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 overflow-hidden rounded-full bg-[#fde68a]/20 border border-white/50 flex items-center justify-center">
-            <img src="/assets/rin_mascot_3d_clean.png" alt="Rin Logo" className="w-8 h-8 object-contain" />
+          <div style={{ width: 36, height: 36, borderRadius: '50%', overflow: 'hidden', background: '#FBF3E8', border: '1.5px solid #F0D4A8', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <img src="/assets/rin_mascot_3d_clean.png" alt="Rin Logo" style={{ width: 28, height: 28, objectFit: 'contain' }} />
           </div>
-          <span className="text-xl font-bold tracking-widest text-[#1e293b]">RINHOZO</span>
+          <span style={{ fontSize: 15, fontWeight: 800, letterSpacing: '0.14em', color: '#16233A' }}>RINHOZO</span>
         </div>
 
         {/* Dashboard Navigation Menu (Claymorphic Pill) */}
-        <nav className="flex items-center bg-white/95 border border-[#e5dec9] rounded-full p-1.5 shadow-[0_8px_24px_rgba(30,41,59,0.06)] gap-2">
+        <nav className="flex items-center bg-white/95 border border-[#16233A]/8 rounded-full p-1.5 shadow-[0_8px_24px_rgba(22,35,58,0.04)] gap-1">
           <button 
             onClick={() => onNavigate('profile')} 
-            className="px-5 py-2 text-xs font-bold text-[#78716c] hover:text-[#1e293b] hover:bg-[#f5e6d3]/60 rounded-full transition-all cursor-pointer"
+            className="px-5 py-2 text-xs font-bold text-[#6B6560] hover:text-[#16233A] hover:bg-[#16233A]/5 rounded-full transition-all cursor-pointer"
           >
             Profile
           </button>
           <button 
             onClick={() => onNavigate('settings')} 
-            className="px-5 py-2 text-xs font-bold text-[#78716c] hover:text-[#1e293b] hover:bg-[#f5e6d3]/60 rounded-full transition-all cursor-pointer"
+            className="px-5 py-2 text-xs font-bold text-[#6B6560] hover:text-[#16233A] hover:bg-[#16233A]/5 rounded-full transition-all cursor-pointer"
           >
             Settings
           </button>
         </nav>
 
         {/* User Stats/Streak Display */}
-        <div className="flex items-center gap-2 bg-[#1e293b] text-white px-5 py-2.5 rounded-full text-xs font-bold shadow-md">
+        <div className="flex items-center gap-2 bg-[#16233A] text-white px-5 py-2.5 rounded-full text-xs font-bold shadow-[0_4px_14px_rgba(22,35,58,0.15)]">
           <span>{profile?.streak_count || 1} Day Streak</span>
         </div>
       </header>
 
       {/* DASHBOARD CONTENT */}
-      <main className="flex-1 w-full max-w-7xl mx-auto px-8 py-6 md:py-12 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center z-10">
+      <main className="flex-1 w-full max-w-7xl mx-auto px-8 md:px-12 lg:px-16 py-6 md:py-12 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center z-10">
         
         {/* LEFT COLUMN: ACTIVE TOPIC DETAILS PANEL */}
         <div className="lg:col-span-5 flex flex-col justify-center text-left">
           
-          <span className="text-xs font-bold text-[#d4a574] uppercase tracking-wider mb-2">
+          <span className="text-xs font-bold text-[#D6A15F] uppercase tracking-wider mb-2">
             Selected Reef Area
           </span>
           
-          <h1 className="text-3xl md:text-4xl lg:text-[44px] leading-tight font-bold text-[#1e293b] tracking-tight mb-4">
+          <h1 className="text-3xl md:text-4xl lg:text-[44px] leading-tight font-bold text-[#16233A] tracking-tight mb-4">
             {activeTopic.name}
           </h1>
 
-          <p className="text-[#78716c] text-sm mb-6 leading-relaxed">
+          <p className="text-[#6B6560] text-sm mb-6 leading-relaxed">
             {activeTopic.description}
           </p>
 
           {/* Expanded detail box */}
-          <div className="bg-white/95 border border-[#e5dec9] rounded-3xl p-6 shadow-[0_10px_30px_rgba(30,41,59,0.04)] clay-card mb-8">
-            <span className="text-[10px] font-bold text-[#78716c] uppercase tracking-wider block mb-1">
+          <div className="bg-white/95 border border-[#16233A]/6 rounded-3xl p-6 shadow-[0_10px_30px_rgba(22,35,58,0.02)] clay-card mb-8">
+            <span className="text-[10px] font-bold text-[#6B6560] uppercase tracking-wider block mb-1">
               Topic Breakdown
             </span>
-            <p className="text-xs font-semibold text-[#1e293b] leading-relaxed mb-4">
+            <p className="text-xs font-semibold text-[#16233A] leading-relaxed mb-4">
               {activeTopic.details}
             </p>
             
             <div className="grid grid-cols-2 gap-3 text-xs font-bold">
-              <div className="bg-[#faf6f0] p-3 rounded-xl border border-[#e5dec9]/40">
-                <span className="text-[9px] text-[#78716c] block uppercase">Difficulty</span>
-                <span className="text-[#1e293b]">{activeTopic.difficulty}</span>
+              <div className="bg-[#FAF6F0] p-3 rounded-xl border border-[#16233A]/6">
+                <span className="text-[9px] text-[#6B6560] block uppercase">Difficulty</span>
+                <span className="text-[#16233A]">{activeTopic.difficulty}</span>
               </div>
-              <div className="bg-[#faf6f0] p-3 rounded-xl border border-[#e5dec9]/40">
-                <span className="text-[9px] text-[#78716c] block uppercase">Status</span>
-                <span className="text-[#1e293b] capitalize">{activeTopic.status}</span>
+              <div className="bg-[#FAF6F0] p-3 rounded-xl border border-[#16233A]/6">
+                <span className="text-[9px] text-[#6B6560] block uppercase">Status</span>
+                <span className="text-[#16233A] capitalize">{activeTopic.status}</span>
               </div>
             </div>
 
             {/* Learning Style Adaptation Info */}
-            <div className="mt-4 pt-4 border-t border-[#faf6f0]">
-              <span className="text-[10px] font-bold text-[#78716c] uppercase tracking-wider block mb-2">
+            <div className="mt-4 pt-4 border-t border-[#FAF6F0]">
+              <span className="text-[10px] font-bold text-[#6B6560] uppercase tracking-wider block mb-2">
                 Rin Custom Adaptation
               </span>
               <div className="flex items-center gap-2">
                 <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
-                <span className="text-[11px] font-bold text-[#1e293b]">
+                <span className="text-[11px] font-bold text-[#16233A]">
                   Adapting to your learning style: {profile?.learning_style || 'story'} mode
                 </span>
               </div>
@@ -267,18 +267,18 @@ export const OceanMap: React.FC<OceanMapProps> = ({ onSelectTopic, onNavigate, e
               onClick={() => handleSelectTopicAction(activeTopic.id)}
               className={`flex items-center justify-center gap-2 px-8 py-4 rounded-full text-base font-bold shadow-lg transition-all group clay-button ${
                 activeTopic.status === 'locked' 
-                  ? 'bg-stone-300 text-stone-500 cursor-not-allowed shadow-none border-stone-200' 
-                  : 'bg-[#1e293b] hover:bg-[#0f172a] text-white cursor-pointer hover:-translate-y-0.5'
+                  ? 'bg-[#FAF6F0] text-[#A09790] cursor-not-allowed shadow-none border-[#16233A]/6' 
+                  : 'bg-[#16233A] hover:bg-[#1E2E4A] text-white cursor-pointer hover:-translate-y-0.5'
               }`}
             >
               {activeTopic.status === 'completed' ? 'Play Boss Battle' : activeTopic.status === 'locked' ? 'Locked' : 'Start Reef'}
               <ArrowRight size={18} className="transform group-hover:translate-x-1 transition-transform" />
             </button>
             
-            <div className="flex bg-white/95 border border-[#e5dec9] rounded-full p-1 self-center sm:self-start gap-1">
+            <div className="flex bg-white/95 border border-[#16233A]/6 rounded-full p-1 self-center sm:self-start gap-1">
               <button 
                 onClick={() => { setActiveEnv('reef'); setSelectedTopicId('algebra-reef'); }}
-                className={`px-4 py-2 rounded-full text-[10px] font-bold transition-all cursor-pointer ${selectedTopicId === 'algebra-reef' ? 'bg-[#1e293b] text-white' : 'text-[#78716c] hover:text-[#1e293b] hover:bg-[#f5e6d3]/40'}`}
+                className={`px-4 py-2 rounded-full text-[10px] font-bold transition-all cursor-pointer ${selectedTopicId === 'algebra-reef' ? 'bg-[#16233A] text-white' : 'text-[#6B6560] hover:text-[#16233A] hover:bg-[#16233A]/5'}`}
               >
                 Algebra
               </button>
@@ -291,10 +291,10 @@ export const OceanMap: React.FC<OceanMapProps> = ({ onSelectTopic, onNavigate, e
                 }}
                 className={`px-4 py-2 rounded-full text-[10px] font-bold transition-all cursor-pointer ${
                   volcanoProgress?.status === 'locked' 
-                    ? 'text-stone-400 cursor-not-allowed opacity-50' 
+                    ? 'text-[#A09790] cursor-not-allowed opacity-50' 
                     : selectedTopicId === 'physics-volcano' 
-                    ? 'bg-[#1e293b] text-white' 
-                    : 'text-[#78716c] hover:text-[#1e293b] hover:bg-[#f5e6d3]/40'
+                    ? 'bg-[#16233A] text-white' 
+                    : 'text-[#6B6560] hover:text-[#16233A] hover:bg-[#16233A]/5'
                 }`}
               >
                 Physics
@@ -308,10 +308,10 @@ export const OceanMap: React.FC<OceanMapProps> = ({ onSelectTopic, onNavigate, e
                 }}
                 className={`px-4 py-2 rounded-full text-[10px] font-bold transition-all cursor-pointer ${
                   islandProgress?.status === 'locked' 
-                    ? 'text-stone-400 cursor-not-allowed opacity-50' 
+                    ? 'text-[#A09790] cursor-not-allowed opacity-50' 
                     : selectedTopicId === 'history-island' 
-                    ? 'bg-[#1e293b] text-white' 
-                    : 'text-[#78716c] hover:text-[#1e293b] hover:bg-[#f5e6d3]/40'
+                    ? 'bg-[#16233A] text-white' 
+                    : 'text-[#6B6560] hover:text-[#16233A] hover:bg-[#16233A]/5'
                 }`}
               >
                 History
@@ -348,20 +348,20 @@ export const OceanMap: React.FC<OceanMapProps> = ({ onSelectTopic, onNavigate, e
             <button 
               onClick={() => onNavigate('profile')}
               style={tiltBadgeFar(1.2)}
-              className="absolute top-6 right-14 bg-white border border-[#e5dec9] rounded-2xl p-2.5 shadow-[0_8px_24px_rgba(30,41,59,0.08)] clay-card animate-float [animation-delay:2.2s] cursor-pointer group flex items-center gap-1.5 z-25 hover:scale-105"
+              className="absolute top-6 right-14 bg-white border border-[#16233A]/6 rounded-2xl p-2.5 shadow-[0_8px_24px_rgba(22,35,58,0.04)] clay-card animate-float [animation-delay:2.2s] cursor-pointer group flex items-center gap-1.5 z-25 hover:scale-105"
             >
               <BarChart3 size={18} className="text-[#7dd3fc]" />
-              <span className="text-[9px] font-bold text-[#78716c] opacity-0 group-hover:opacity-100 transition-opacity max-w-0 group-hover:max-w-[80px] overflow-hidden whitespace-nowrap">Stats</span>
+              <span className="text-[9px] font-bold text-[#6B6560] opacity-0 group-hover:opacity-100 transition-opacity max-w-0 group-hover:max-w-[80px] overflow-hidden whitespace-nowrap">Stats</span>
             </button>
 
             {/* Settings Puzzle Shortcut */}
             <button 
               onClick={() => onNavigate('settings')}
               style={tiltBadgeFar(1.05)}
-              className="absolute bottom-22 right-4 bg-white border border-[#e5dec9] rounded-2xl p-2.5 shadow-[0_8px_24px_rgba(30,41,59,0.08)] clay-card animate-float [animation-delay:1.1s] cursor-pointer group flex items-center gap-1.5 z-25 hover:scale-105"
+              className="absolute bottom-22 right-4 bg-white border border-[#16233A]/6 rounded-2xl p-2.5 shadow-[0_8px_24px_rgba(22,35,58,0.04)] clay-card animate-float [animation-delay:1.1s] cursor-pointer group flex items-center gap-1.5 z-25 hover:scale-105"
             >
-              <Puzzle size={18} className="text-[#78716c]" />
-              <span className="text-[9px] font-bold text-[#78716c] opacity-0 group-hover:opacity-100 transition-opacity max-w-0 group-hover:max-w-[80px] overflow-hidden whitespace-nowrap">Settings</span>
+              <Puzzle size={18} className="text-[#6B6560]" />
+              <span className="text-[9px] font-bold text-[#6B6560] opacity-0 group-hover:opacity-100 transition-opacity max-w-0 group-hover:max-w-[80px] overflow-hidden whitespace-nowrap">Settings</span>
             </button>
           </div>
 
@@ -485,16 +485,16 @@ export const OceanMap: React.FC<OceanMapProps> = ({ onSelectTopic, onNavigate, e
           </div>
 
           {/* FLOATING RIN BUBBLE (Speech Feedback) */}
-          <div className="absolute bottom-[-24px] right-4 bg-white border border-[#e5dec9] rounded-2xl p-4 shadow-[0_8px_24px_rgba(30,41,59,0.08)] flex items-start gap-3 max-w-[320px] text-left transform hover:scale-[1.02] transition-transform duration-300 clay-card z-20">
-            <div className="w-8 h-8 rounded-full bg-[#fde68a]/30 flex items-center justify-center flex-shrink-0 animate-glow-gold border border-white/50 overflow-hidden">
+          <div className="absolute bottom-[-24px] right-4 bg-white border border-[#16233A]/6 rounded-2xl p-4 shadow-[0_8px_24px_rgba(22,35,58,0.04)] flex items-start gap-3 max-w-[320px] text-left transform hover:scale-[1.02] transition-transform duration-300 clay-card z-20">
+            <div className="w-8 h-8 rounded-full bg-[#FAF6F0] flex items-center justify-center flex-shrink-0 animate-glow-gold border border-white/50 overflow-hidden">
               <img src="/assets/rin_mascot_3d_clean.png" alt="Mini Rin" className="w-6 h-6 object-contain" />
             </div>
             
             <div className="flex flex-col">
-              <span className="text-xs font-bold text-[#1e293b]">
+              <span className="text-xs font-bold text-[#16233A]">
                 Rin
               </span>
-              <p className="text-[11px] font-semibold text-[#78716c] leading-relaxed mt-1">
+              <p className="text-[11px] font-semibold text-[#6B6560] leading-relaxed mt-1">
                 {getRinSpeech()}
               </p>
             </div>
@@ -505,7 +505,7 @@ export const OceanMap: React.FC<OceanMapProps> = ({ onSelectTopic, onNavigate, e
       </main>
 
       {/* FOOTER */}
-      <footer className="w-full bg-[#f5e6d3]/30 border-t border-[#e5dec9]/40 py-6 mt-12 text-center text-xs font-bold text-[#78716c] tracking-wider uppercase z-20">
+      <footer className="w-full bg-[#16233A]/2 border-t border-[#16233A]/5 py-6 mt-12 text-center text-xs font-bold text-[#6B6560] tracking-wider uppercase z-20">
         © {new Date().getFullYear()} Rinhozo. Made with care for every student.
       </footer>
     </div>

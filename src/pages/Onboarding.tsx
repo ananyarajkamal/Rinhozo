@@ -27,8 +27,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({ strings, onCompleteOnboa
       id: 'concept',
       label: strings.styleConcept,
       icon: <BookOpen size={18} />,
-      color: 'border-amber-200 hover:bg-amber-50/30 text-amber-600',
-      activeColor: 'border-[#d4a574] bg-[#f5e6d3]/40'
+      color: 'border-[#D6A15F]/30 hover:bg-[#FBF3E8] text-[#D6A15F]',
+      activeColor: 'border-[#D6A15F] bg-[#FBF3E8]'
     },
     {
       id: 'story',
@@ -67,7 +67,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ strings, onCompleteOnboa
   };
 
   return (
-    <div className="min-h-screen bg-[#faf6f0] text-[#1e293b] flex flex-col items-center justify-center p-6 select-none overflow-hidden">
+    <div className="min-h-screen bg-[#FAF6F0] text-[#16233A] flex flex-col items-center justify-center p-6 select-none overflow-hidden">
       
       {/* Container */}
       <div className="w-full max-w-md flex flex-col items-center">
@@ -76,15 +76,15 @@ export const Onboarding: React.FC<OnboardingProps> = ({ strings, onCompleteOnboa
         <div className="mb-6 flex flex-col items-center">
           <RinAvatar mood={rinMood} size={130} glowIntensity={0.6} interactive={false} />
           {step === 1 && (
-            <div className="mt-3 bg-[#f5e6d3]/60 px-4 py-2 rounded-2xl inline-block max-w-[280px] text-center shadow-sm">
-              <p className="text-xs font-bold text-[#78716c] leading-snug">
+            <div className="mt-3 bg-[#FBF3E8] border border-[#FAF6F0] px-4 py-2 rounded-2xl inline-block max-w-[280px] text-center shadow-sm">
+              <p className="text-xs font-bold text-[#6B6560] leading-snug">
                 "Swipe right to say got it, or left to get another explanation."
               </p>
             </div>
           )}
           {step === 2 && (
-            <div className="mt-3 bg-[#f5e6d3]/60 px-4 py-2 rounded-2xl inline-block max-w-[280px] text-center shadow-sm">
-              <p className="text-xs font-bold text-[#78716c] leading-snug">
+            <div className="mt-3 bg-[#FBF3E8] border border-[#FAF6F0] px-4 py-2 rounded-2xl inline-block max-w-[280px] text-center shadow-sm">
+              <p className="text-xs font-bold text-[#6B6560] leading-snug">
                 "Rin is customizing your cards. Aap kis tarah seekhna chahte ho."
               </p>
             </div>
@@ -100,18 +100,18 @@ export const Onboarding: React.FC<OnboardingProps> = ({ strings, onCompleteOnboa
               active={true}
             >
               <div className="flex-1 flex flex-col justify-between items-center text-center py-4">
-                <div className="w-12 h-12 rounded-full bg-[#fde68a]/40 flex items-center justify-center text-[#d4a574]">
+                <div className="w-12 h-12 rounded-full bg-[#16233A]/4 flex items-center justify-center text-[#D6A15F]">
                   <Sparkles size={24} />
                 </div>
                 <div className="flex-1 flex flex-col justify-center my-6">
-                  <h3 className="text-xl font-bold text-[#1e293b] mb-2">Practice Swiping</h3>
-                  <p className="text-sm font-semibold text-[#78716c] px-4 leading-relaxed">
+                  <h3 className="text-xl font-bold text-[#16233A] mb-2">Practice Swiping</h3>
+                  <p className="text-sm font-semibold text-[#6B6560] px-4 leading-relaxed">
                     Swipe this card Right to say I got it.
                     <br />
                     Swipe Left to see it explained differently.
                   </p>
                 </div>
-                <div className="w-full bg-[#faf6f0] border border-[#e5dec9] rounded-2xl p-3 text-xs font-bold text-[#78716c]">
+                <div className="w-full bg-[#FAF6F0] border border-[#16233A]/6 rounded-2xl p-3 text-xs font-bold text-[#6B6560]">
                   Drag me left or right to test.
                 </div>
               </div>
@@ -121,9 +121,9 @@ export const Onboarding: React.FC<OnboardingProps> = ({ strings, onCompleteOnboa
 
         {/* STEP 2: PREFERENCE PICKER */}
         {step === 2 && (
-          <div className="w-full bg-white border border-[#e5dec9] rounded-3xl p-6 shadow-[0_8px_32px_rgba(30,41,59,0.04)] text-center">
-            <h3 className="text-lg font-bold text-[#1e293b] mb-1">{strings.onboardingStyleTitle}</h3>
-            <p className="text-xs font-semibold text-[#78716c] mb-5">{strings.onboardingStyleSubtitle}</p>
+          <div className="w-full bg-white border border-[#16233A]/6 rounded-3xl p-6 shadow-[0_8px_32px_rgba(22,35,58,0.02)] text-center">
+            <h3 className="text-lg font-bold text-[#16233A] mb-1">{strings.onboardingStyleTitle}</h3>
+            <p className="text-xs font-semibold text-[#6B6560] mb-5">{strings.onboardingStyleSubtitle}</p>
             
             <div className="space-y-2.5 mb-6 text-left">
               {learningStyles.map((style) => {
@@ -136,10 +136,10 @@ export const Onboarding: React.FC<OnboardingProps> = ({ strings, onCompleteOnboa
                       isActive ? style.activeColor : style.color
                     }`}
                   >
-                    <div className={`p-2.5 rounded-xl ${isActive ? 'bg-[#1e293b] text-white' : 'bg-[#faf6f0]'}`}>
+                    <div className={`p-2.5 rounded-xl ${isActive ? 'bg-[#16233A] text-white' : 'bg-[#FAF6F0]'}`}>
                       {style.icon}
                     </div>
-                    <span className="text-sm font-bold text-[#1e293b]">{style.label}</span>
+                    <span className="text-sm font-bold text-[#16233A]">{style.label}</span>
                   </button>
                 );
               })}
@@ -147,7 +147,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ strings, onCompleteOnboa
 
             <button
               onClick={handleSubmit}
-              className="w-full bg-[#1e293b] hover:bg-[#0f172a] text-white py-4 rounded-2xl text-base font-bold shadow-md active:scale-[0.99] transition-all cursor-pointer"
+              className="w-full bg-[#16233A] hover:bg-[#1E2E4A] text-white py-4 rounded-2xl text-base font-bold shadow-md active:scale-[0.99] transition-all cursor-pointer"
             >
               {strings.startLearning}
             </button>

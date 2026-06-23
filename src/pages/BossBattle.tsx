@@ -126,9 +126,9 @@ export const BossBattle: React.FC<BossBattleProps> = ({ topicId, onBattleEnd }) 
   };
 
   return (
-    <div className="min-h-screen bg-[#faf6f0] text-[#1e293b] flex flex-col items-center justify-center p-4 md:p-6 select-none overflow-hidden">
+    <div className="min-h-screen bg-[#FAF6F0] text-[#16233A] flex flex-col items-center justify-center p-4 md:p-6 select-none overflow-hidden">
       
-      <div className="w-full max-w-md bg-white border border-[#e5dec9] rounded-3xl p-6 shadow-lg relative flex flex-col">
+      <div className="w-full max-w-md bg-white border border-[#16233A]/6 rounded-3xl p-6 shadow-lg relative flex flex-col">
         
         {/* BATTLE COMPLETED SCREEN */}
         {battleCompleted ? (
@@ -140,8 +140,8 @@ export const BossBattle: React.FC<BossBattleProps> = ({ topicId, onBattleEnd }) 
                 <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 mt-6 mb-4">
                   <Award size={26} />
                 </div>
-                <h3 className="text-2xl font-bold text-[#1e293b] mb-2">Boss Defeated</h3>
-                <p className="text-sm font-semibold text-[#78716c] mb-6 px-4">
+                <h3 className="text-2xl font-bold text-[#16233A] mb-2">Boss Defeated</h3>
+                <p className="text-sm font-semibold text-[#6B6560] mb-6 px-4">
                   Excellent work. You scored {Math.round((correctCount / questions.length) * 100)} percent. Next area on the map has been unlocked.
                 </p>
               </>
@@ -150,8 +150,8 @@ export const BossBattle: React.FC<BossBattleProps> = ({ topicId, onBattleEnd }) 
                 <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center text-red-500 mt-6 mb-4">
                   <ShieldAlert size={26} />
                 </div>
-                <h3 className="text-2xl font-bold text-[#1e293b] mb-2">Defeat</h3>
-                <p className="text-sm font-semibold text-[#78716c] mb-6 px-4">
+                <h3 className="text-2xl font-bold text-[#16233A] mb-2">Defeat</h3>
+                <p className="text-sm font-semibold text-[#6B6560] mb-6 px-4">
                   You scored {Math.round((correctCount / questions.length) * 100)} percent. You need at least 60 percent to advance. Try again.
                 </p>
               </>
@@ -159,7 +159,7 @@ export const BossBattle: React.FC<BossBattleProps> = ({ topicId, onBattleEnd }) 
 
             <button
               onClick={handleFinish}
-              className="w-full bg-[#1e293b] hover:bg-[#0f172a] text-white py-4 rounded-2xl text-base font-bold shadow-md cursor-pointer transition-all active:scale-[0.99]"
+              className="w-full bg-[#16233A] hover:bg-[#1E2E4A] text-white py-4 rounded-2xl text-base font-bold shadow-md cursor-pointer transition-all active:scale-[0.99]"
             >
               Continue
             </button>
@@ -170,12 +170,12 @@ export const BossBattle: React.FC<BossBattleProps> = ({ topicId, onBattleEnd }) 
             {/* Header: Score and Rin Mascot */}
             <div className="flex items-center justify-between mb-6">
               <div className="flex-1 mr-4 text-left">
-                <span className="text-[10px] font-bold text-[#d4a574] uppercase tracking-wider block mb-1">
+                <span className="text-[10px] font-bold text-[#D6A15F] uppercase tracking-wider block mb-1">
                   Boss Battle - Question {currentIdx + 1} of {questions.length}
                 </span>
-                <div className="w-full h-1.5 bg-[#f0ebe3] rounded-full overflow-hidden">
+                <div className="w-full h-1.5 bg-[#16233A]/4 rounded-full overflow-hidden">
                   <div 
-                    className="h-full bg-[#1e293b] transition-all duration-300"
+                    className="h-full bg-[#16233A] transition-all duration-300"
                     style={{ width: `${((currentIdx + 1) / questions.length) * 100}%` }}
                   ></div>
                 </div>
@@ -185,7 +185,7 @@ export const BossBattle: React.FC<BossBattleProps> = ({ topicId, onBattleEnd }) 
 
             {/* Question Text */}
             <div className="text-left mb-6">
-              <h4 className="text-lg font-bold text-[#1e293b] leading-snug">
+              <h4 className="text-lg font-bold text-[#16233A] leading-snug">
                 {currentQuestion.text}
               </h4>
             </div>
@@ -194,18 +194,18 @@ export const BossBattle: React.FC<BossBattleProps> = ({ topicId, onBattleEnd }) 
             <div className="space-y-2.5 mb-6 text-left">
               {currentQuestion.options.map((option, idx) => {
                 const isSelected = selectedOption === idx;
-                let style = 'border-[#e5dec9] hover:bg-[#faf6f0]';
+                let style = 'border-[#16233A]/8 hover:bg-[#16233A]/4';
                 
                 if (isAnswered) {
                   if (idx === currentQuestion.answerIdx) {
-                    style = 'border-emerald-400 bg-emerald-50/10 text-emerald-800';
+                    style = 'border-emerald-400 bg-emerald-500/10 text-emerald-800';
                   } else if (isSelected) {
-                    style = 'border-red-400 bg-red-50/10 text-red-800';
+                    style = 'border-red-400 bg-red-500/10 text-red-800';
                   } else {
-                    style = 'border-[#e5dec9] opacity-40';
+                    style = 'border-[#16233A]/8 opacity-40';
                   }
                 } else if (isSelected) {
-                  style = 'border-[#1e293b] bg-[#1e293b]/5';
+                  style = 'border-[#16233A] bg-[#16233A]/4';
                 }
 
                 return (
@@ -227,8 +227,8 @@ export const BossBattle: React.FC<BossBattleProps> = ({ topicId, onBattleEnd }) 
             {isAnswered && (
               <div className={`p-4 rounded-2xl text-xs font-semibold leading-relaxed mb-6 border text-left ${
                 selectedOption === currentQuestion.answerIdx
-                  ? 'bg-emerald-50/10 border-emerald-300/30 text-emerald-800'
-                  : 'bg-red-50/10 border-red-300/30 text-red-800'
+                  ? 'bg-emerald-500/10 border-emerald-300/30 text-emerald-800'
+                  : 'bg-red-500/10 border-red-300/30 text-red-800'
               }`}>
                 <span className="font-bold block mb-1">
                   {selectedOption === currentQuestion.answerIdx ? 'Correct' : 'Incorrect'}
@@ -244,8 +244,8 @@ export const BossBattle: React.FC<BossBattleProps> = ({ topicId, onBattleEnd }) 
                 disabled={selectedOption === null}
                 className={`w-full py-4 rounded-2xl text-base font-bold shadow-md cursor-pointer transition-all ${
                   selectedOption !== null
-                    ? 'bg-[#1e293b] hover:bg-[#0f172a] text-white'
-                    : 'bg-[#f0ebe3] text-[#78716c] opacity-50 cursor-not-allowed'
+                    ? 'bg-[#16233A] hover:bg-[#1E2E4A] text-white'
+                    : 'bg-[#FAF6F0] text-[#A09790] opacity-50 cursor-not-allowed'
                 }`}
               >
                 Submit Answer
@@ -253,7 +253,7 @@ export const BossBattle: React.FC<BossBattleProps> = ({ topicId, onBattleEnd }) 
             ) : (
               <button
                 onClick={handleNext}
-                className="w-full bg-[#1e293b] hover:bg-[#0f172a] text-white py-4 rounded-2xl text-base font-bold shadow-md cursor-pointer transition-all active:scale-[0.99]"
+                className="w-full bg-[#16233A] hover:bg-[#1E2E4A] text-white py-4 rounded-2xl text-base font-bold shadow-md cursor-pointer transition-all active:scale-[0.99]"
               >
                 {currentIdx < questions.length - 1 ? 'Next Question' : 'Finish Battle'}
               </button>

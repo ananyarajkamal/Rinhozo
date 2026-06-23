@@ -72,8 +72,8 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({ onBackToMap, onLangu
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#faf6f0] flex items-center justify-center">
-        <div className="w-8 h-8 rounded-full border-4 border-[#d4a574]/20 border-t-[#d4a574] animate-spin"></div>
+      <div className="min-h-screen bg-[#FAF6F0] flex items-center justify-center">
+        <div className="w-8 h-8 rounded-full border-4 border-[#D6A15F]/20 border-t-[#D6A15F] animate-spin"></div>
       </div>
     );
   }
@@ -86,28 +86,28 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({ onBackToMap, onLangu
   ];
 
   return (
-    <div className="min-h-screen bg-[#faf6f0] text-[#1e293b] flex flex-col p-4 md:p-6 select-none">
+    <div className="min-h-screen bg-[#FAF6F0] text-[#16233A] flex flex-col p-4 md:p-6 select-none">
       
       {/* HEADER */}
-      <div className="w-full max-w-lg mx-auto flex items-center justify-between mb-6">
+      <div className="w-full max-w-md mx-auto flex items-center justify-between mb-6 mt-4">
         <button 
           onClick={onBackToMap}
-          className="p-2.5 rounded-full hover:bg-[#f0ebe3] text-[#78716c] hover:text-[#1e293b] transition-all cursor-pointer"
+          className="p-2.5 rounded-full border border-[#16233A]/8 hover:bg-[#FBF3E8] text-[#6B6560] hover:text-[#16233A] transition-all cursor-pointer active:scale-95"
         >
-          <ArrowLeft size={20} />
+          <ArrowLeft size={18} />
         </button>
-        <span className="text-sm font-bold uppercase tracking-wider text-[#78716c]">Settings</span>
+        <span className="text-sm font-bold uppercase tracking-wider text-[#6B6560]">Settings</span>
         <div className="w-10"></div> {/* Spacer */}
       </div>
 
       {/* SETTINGS FORM CARD */}
-      <div className="w-full max-w-md mx-auto bg-white border border-[#e5dec9] rounded-3xl p-6 shadow-md flex flex-col gap-6 text-left">
+      <div className="w-full max-w-md mx-auto bg-white border border-[#16233A]/6 rounded-3xl p-6 shadow-[0_8px_32px_rgba(22,35,58,0.02)] flex flex-col gap-6 text-left">
         
         {/* SECTION 1: LANGUAGE SWITCHER */}
         <div>
-          <div className="flex items-center gap-2 mb-3.5 text-[#1e293b]">
-            <Globe size={18} />
-            <h4 className="text-sm font-bold uppercase tracking-wider">Interface Language</h4>
+          <div className="flex items-center gap-2 mb-3.5 text-[#16233A]">
+            <Globe size={16} className="text-[#D6A15F]" />
+            <h4 className="text-xs font-bold uppercase tracking-wider">Interface Language</h4>
           </div>
           <div className="grid grid-cols-2 gap-2.5">
             {languages.map((lang) => {
@@ -116,10 +116,10 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({ onBackToMap, onLangu
                 <button
                   key={lang.code}
                   onClick={() => handleLanguageSelect(lang.code)}
-                  className={`p-3.5 border-2 rounded-xl text-xs font-bold text-center transition-all cursor-pointer ${
+                  className={`p-3.5 border-2 rounded-2xl text-xs font-bold text-center transition-all cursor-pointer active:scale-[0.98] ${
                     isActive 
-                      ? 'border-[#1e293b] bg-[#1e293b]/5 text-[#1e293b]' 
-                      : 'border-[#e5dec9] hover:bg-[#faf6f0] text-[#78716c]'
+                      ? 'border-[#16233A] bg-[#16233A] text-white shadow-sm' 
+                      : 'border-[#16233A]/8 bg-[#FAF6F0]/50 hover:bg-[#FBF3E8] text-[#6B6560]'
                   }`}
                 >
                   {lang.label}
@@ -130,15 +130,15 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({ onBackToMap, onLangu
         </div>
 
         {/* SECTION 2: AUDIO MODE */}
-        <div className="border-t border-[#e5dec9]/40 pt-5">
+        <div className="border-t border-[#16233A]/6 pt-5">
           <div className="flex items-center justify-between">
             <div className="flex items-start gap-3">
-              <div className="mt-0.5 text-[#78716c]">
+              <div className="mt-0.5 text-[#6B6560]">
                 <Volume2 size={18} />
               </div>
               <div className="flex flex-col text-left">
-                <span className="text-xs font-bold text-[#1e293b] uppercase tracking-wider">Audio Mode</span>
-                <span className="text-[11px] font-semibold text-[#78716c] leading-normal mt-0.5">
+                <span className="text-xs font-bold text-[#16233A] uppercase tracking-wider">Audio Mode</span>
+                <span className="text-[11px] font-semibold text-[#6B6560] leading-normal mt-0.5">
                   Read aloud concept descriptions automatically.
                 </span>
               </div>
@@ -147,11 +147,11 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({ onBackToMap, onLangu
             {/* Toggle switch */}
             <button
               onClick={() => toggleAudioMode(!audioEnabled)}
-              className={`w-11 h-6 rounded-full p-1 transition-colors cursor-pointer ${
-                audioEnabled ? 'bg-[#1e293b]' : 'bg-[#e5dec9]'
+              className={`w-11 h-6 rounded-full p-1 transition-colors duration-200 cursor-pointer relative flex items-center ${
+                audioEnabled ? 'bg-[#D6A15F]' : 'bg-[#16233A]/10'
               }`}
             >
-              <div className={`w-4 h-4 rounded-full bg-white transition-transform ${
+              <div className={`w-4 h-4 rounded-full bg-white shadow-sm transition-transform duration-200 ${
                 audioEnabled ? 'translate-x-5' : 'translate-x-0'
               }`}></div>
             </button>
@@ -159,18 +159,18 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({ onBackToMap, onLangu
         </div>
 
         {/* SECTION 3: ACCESSIBILITY OPTIONS */}
-        <div className="border-t border-[#e5dec9]/40 pt-5 space-y-5">
-          <span className="text-[10px] font-bold text-[#78716c] uppercase tracking-widest block">Accessibility</span>
+        <div className="border-t border-[#16233A]/6 pt-5 space-y-5">
+          <span className="text-[10px] font-bold text-[#6B6560] uppercase tracking-widest block">Accessibility</span>
 
           {/* High Contrast */}
           <div className="flex items-center justify-between">
             <div className="flex items-start gap-3">
-              <div className="mt-0.5 text-[#78716c]">
+              <div className="mt-0.5 text-[#6B6560]">
                 <Eye size={18} />
               </div>
               <div className="flex flex-col text-left">
-                <span className="text-xs font-bold text-[#1e293b] uppercase tracking-wider">High Contrast</span>
-                <span className="text-[11px] font-semibold text-[#78716c] leading-normal mt-0.5">
+                <span className="text-xs font-bold text-[#16233A] uppercase tracking-wider">High Contrast</span>
+                <span className="text-[11px] font-semibold text-[#6B6560] leading-normal mt-0.5">
                   Increase text readability and card outlines.
                 </span>
               </div>
@@ -178,11 +178,11 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({ onBackToMap, onLangu
             
             <button
               onClick={() => toggleHighContrast(!highContrast)}
-              className={`w-11 h-6 rounded-full p-1 transition-colors cursor-pointer ${
-                highContrast ? 'bg-[#1e293b]' : 'bg-[#e5dec9]'
+              className={`w-11 h-6 rounded-full p-1 transition-colors duration-200 cursor-pointer relative flex items-center ${
+                highContrast ? 'bg-[#D6A15F]' : 'bg-[#16233A]/10'
               }`}
             >
-              <div className={`w-4 h-4 rounded-full bg-white transition-transform ${
+              <div className={`w-4 h-4 rounded-full bg-white shadow-sm transition-transform duration-200 ${
                 highContrast ? 'translate-x-5' : 'translate-x-0'
               }`}></div>
             </button>
@@ -191,12 +191,12 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({ onBackToMap, onLangu
           {/* Reduced Motion */}
           <div className="flex items-center justify-between">
             <div className="flex items-start gap-3">
-              <div className="mt-0.5 text-[#78716c]">
+              <div className="mt-0.5 text-[#6B6560]">
                 <Activity size={18} />
               </div>
               <div className="flex flex-col text-left">
-                <span className="text-xs font-bold text-[#1e293b] uppercase tracking-wider">Reduced Motion</span>
-                <span className="text-[11px] font-semibold text-[#78716c] leading-normal mt-0.5">
+                <span className="text-xs font-bold text-[#16233A] uppercase tracking-wider">Reduced Motion</span>
+                <span className="text-[11px] font-semibold text-[#6B6560] leading-normal mt-0.5">
                   Disable jellyfish sway and card slide transitions.
                 </span>
               </div>
@@ -204,11 +204,11 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({ onBackToMap, onLangu
             
             <button
               onClick={() => toggleReducedMotion(!reducedMotion)}
-              className={`w-11 h-6 rounded-full p-1 transition-colors cursor-pointer ${
-                reducedMotion ? 'bg-[#1e293b]' : 'bg-[#e5dec9]'
+              className={`w-11 h-6 rounded-full p-1 transition-colors duration-200 cursor-pointer relative flex items-center ${
+                reducedMotion ? 'bg-[#D6A15F]' : 'bg-[#16233A]/10'
               }`}
             >
-              <div className={`w-4 h-4 rounded-full bg-white transition-transform ${
+              <div className={`w-4 h-4 rounded-full bg-white shadow-sm transition-transform duration-200 ${
                 reducedMotion ? 'translate-x-5' : 'translate-x-0'
               }`}></div>
             </button>
