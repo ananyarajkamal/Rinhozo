@@ -198,12 +198,12 @@ export const LessonSwipe: React.FC<LessonSwipeProps> = ({
         </button>
 
         {/* Mid-lesson Language Switcher */}
-        <div className="flex bg-[#f0ebe3] border border-[#e5dec9]/30 rounded-full p-1 text-xs">
+        <div className="flex bg-[#f0ebe3] border border-[#e5dec9]/30 rounded-full p-1 text-xs overflow-x-auto no-scrollbar max-w-full">
           {(['hinglish', 'english', 'hindi', 'tamil'] as SupportedLang[]).map((l) => (
             <button
               key={l}
               onClick={() => handleLanguageChange(l)}
-              className={`px-3 py-1.5 rounded-full font-bold uppercase tracking-wider transition-all cursor-pointer ${
+              className={`px-3 py-1.5 rounded-full font-bold uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap flex-shrink-0 ${
                 lang === l ? 'bg-[#1e293b] text-white' : 'text-[#78716c] hover:text-[#1e293b]'
               }`}
             >

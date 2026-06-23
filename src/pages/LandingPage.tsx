@@ -109,7 +109,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ strings, onGetStarted 
     <div 
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="min-h-screen bg-[#FAF6F0] text-[#1E293B] flex flex-col relative font-sans overflow-x-hidden perspective-3d select-none"
+      className="min-h-screen bg-[#FAF6F0] text-[#1E293B] flex flex-col relative font-sans overflow-x-hidden select-none"
     >
       <span className="sr-only">{strings.landingTitle} {strings.landingSubtitle}</span>
 
@@ -320,7 +320,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ strings, onGetStarted 
           initial="hidden"
           animate="visible"
           variants={animJellyfish}
-          className="w-full lg:absolute lg:right-0 lg:top-0 lg:h-full lg:w-[45%] flex flex-col items-center justify-center z-10"
+          className="w-full lg:w-[45%] flex flex-col items-center justify-center z-10 relative lg:min-h-[500px]"
         >
           {/* Centered Glowing Mascot Jellyfish Container */}
           <div 
@@ -457,10 +457,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({ strings, onGetStarted 
       </main>
 
       {/* SECTION: FEATURES */}
-      <section id="features" className="w-full bg-white py-24 px-6 md:px-12 z-20 border-t border-[#E7E5E4]/50 relative">
+      <section id="features" className="w-full bg-white py-16 md:py-24 px-6 md:px-12 z-20 border-t border-[#E7E5E4]/50 relative">
         <div className="max-w-[1200px] mx-auto text-center">
           <span className="text-[12px] font-bold text-[#D4A574] tracking-[0.2em] uppercase block mb-3">Core Features</span>
-          <h2 className="text-[32px] font-bold text-[#1E293B] mb-4 tracking-tight">Designed for Multilingual & Diverse Minds</h2>
+          <h2 className="text-[32px] md:text-[36px] font-bold text-[#1E293B] leading-tight mb-4 tracking-tight">Designed for Multilingual & Diverse Minds</h2>
           <p className="text-[#78716C] text-[16px] max-w-[600px] mx-auto mb-16 leading-relaxed">
             Rinhozo makes learning feel natural, engaging, and stress-free. Every gesture is designed with care to keep your mind focused.
           </p>
@@ -514,10 +514,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({ strings, onGetStarted 
       </section>
 
       {/* SECTION: HOW IT WORKS */}
-      <section id="how" className="w-full bg-[#FAF6F0] py-24 px-6 md:px-12 z-20 border-t border-[#E7E5E4]/50 relative">
+      <section id="how" className="w-full bg-[#FAF6F0] py-16 md:py-24 px-6 md:px-12 z-20 border-t border-[#E7E5E4]/50 relative">
         <div className="max-w-[1200px] mx-auto text-center">
           <span className="text-[12px] font-bold text-[#D4A574] tracking-[0.2em] uppercase block mb-3">Roadmap</span>
-          <h2 className="text-[32px] font-bold text-[#1E293B] mb-4 tracking-tight">Your Path to Mastery in 3 Simple Steps</h2>
+          <h2 className="text-[32px] md:text-[36px] font-bold text-[#1E293B] leading-tight mb-4 tracking-tight">Your Path to Mastery in 3 Simple Steps</h2>
           <p className="text-[#78716C] text-[16px] max-w-[600px] mx-auto mb-16 leading-relaxed">
             Rinhozo guides you seamlessly through lessons, adapting to your style as you progress.
           </p>
@@ -560,11 +560,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({ strings, onGetStarted 
       </section>
 
       {/* SECTION: FOR EDUCATORS */}
-      <section id="educators" className="w-full bg-white py-24 px-6 md:px-12 z-20 border-t border-[#E7E5E4]/50 relative">
-        <div className="max-w-[1200px] mx-auto flex flex-col lg:flex-row items-center justify-between gap-16">
+      <section id="educators" className="w-full bg-white py-16 md:py-24 px-6 md:px-12 z-20 border-t border-[#E7E5E4]/50 relative">
+        <div className="max-w-[1200px] mx-auto flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-16">
           <div className="w-full lg:w-[50%] text-left">
             <span className="text-[12px] font-bold text-[#D4A574] tracking-[0.2em] uppercase block mb-3">For Classrooms</span>
-            <h2 className="text-[32px] font-bold text-[#1E293B] mb-6 tracking-tight">Empower Every Student, Bridging Learning Gaps</h2>
+            <h2 className="text-[32px] md:text-[36px] font-bold text-[#1E293B] leading-tight mb-6 tracking-tight">Empower Every Student, Bridging Learning Gaps</h2>
             <p className="text-[#78716C] text-[16px] mb-8 leading-relaxed">
               Educators can monitor student learning progress offline, deploy customizable curriculum modules, and address neurodiverse needs with Rinhozo's built-in multi-modal adapters.
             </p>
@@ -630,10 +630,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({ strings, onGetStarted 
       </section>
 
       {/* SECTION: ABOUT */}
-      <section id="about" className="w-full bg-[#FAF6F0] py-24 px-6 md:px-12 z-20 border-t border-[#E7E5E4]/50 relative">
+      <section id="about" className="w-full bg-[#FAF6F0] py-16 md:py-24 px-6 md:px-12 z-20 border-t border-[#E7E5E4]/50 relative">
         <div className="max-w-[800px] mx-auto text-center">
           <span className="text-[12px] font-bold text-[#D4A574] tracking-[0.2em] uppercase block mb-3">About Us</span>
-          <h2 className="text-[32px] font-bold text-[#1E293B] mb-6 tracking-tight">Our Mission: Education Belongs to Everyone</h2>
+          <h2 className="text-[32px] md:text-[36px] font-bold text-[#1E293B] leading-tight mb-6 tracking-tight">Our Mission: Education Belongs to Everyone</h2>
           <p className="text-[#78716C] text-[16px] mb-8 leading-relaxed max-w-[640px] mx-auto">
             Rinhozo was born from a simple belief: learning should adapt to the student, not the other way around. By combining language personalization, cognitive scaffolding, and friendly visual support, we help students conquer study barriers one concept at a time.
           </p>
@@ -656,7 +656,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ strings, onGetStarted 
       </section>
 
       {/* SECTION 3: RIN CHAT BUBBLE */}
-      <div className="fixed z-40 max-w-[280px] bg-white rounded-[24px] rounded-br-[4px] p-5 shadow-[0_8px_32px_rgba(30,41,59,0.12)] border border-[#E7E5E4]/60 flex items-start gap-3.5 hover:scale-105 transition-transform duration-300 cursor-pointer fixed bottom-8 right-8 max-w-[280px] bottom-6 left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 w-[90vw] md:w-auto">
+      <div className="fixed z-40 bg-white rounded-[24px] rounded-br-[4px] p-5 shadow-[0_8px_32px_rgba(30,41,59,0.12)] border border-[#E7E5E4]/60 flex items-start gap-3.5 hover:scale-105 transition-transform duration-300 cursor-pointer bottom-6 left-1/2 -translate-x-1/2 w-[90vw] max-w-[280px] md:left-auto md:right-8 md:bottom-8 md:translate-x-0 md:w-auto">
         {/* Tiny avatar */}
         <div className="w-8 h-8 rounded-full bg-[#FDE68A]/30 flex items-center justify-center flex-shrink-0 border border-white/50 overflow-hidden">
           <img src="/assets/rin_mascot_3d_clean.png" alt="Mini Rin" className="w-6 h-6 object-contain" />

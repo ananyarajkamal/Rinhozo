@@ -98,10 +98,12 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
       </div>
 
       {/* Swipe hints visual aid */}
-      <div className="flex justify-between items-center text-text-muted/40 text-[9px] uppercase tracking-widest mt-2 font-semibold select-none border-t border-bg-elevated/50 pt-2 flex-shrink-0">
-        <span>Swipe Left to Adapt</span>
-        <span>Swipe Right to Next</span>
-      </div>
+      {active && (
+        <div className="flex justify-between items-center text-text-muted/40 text-[9px] uppercase tracking-widest mt-2 font-semibold select-none border-t border-bg-elevated/50 pt-2 flex-shrink-0">
+          <span>Swipe Left to Adapt</span>
+          <span>Swipe Right to Next</span>
+        </div>
+      )}
     </motion.div>
   );
 };
