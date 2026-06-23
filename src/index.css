@@ -1,58 +1,50 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Noto+Sans+Tamil:wght@400;500;600;700&family=Dancing+Script:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Noto+Sans+Tamil:wght@400;500;600;700&family=Dancing+Script:wght@700&display=swap');
 @import "tailwindcss";
 
 :root {
-  /* Design Tokens from UI/UX Brief */
-  --primary: #1e293b;
-  --primary-hover: #0f172a;
-  
-  --secondary: #d4a574;
-  --secondary-light: #f5e6d3;
-  
-  --accent: #7dd3fc;
-  --accent-glow: rgba(125, 211, 252, 0.3);
-  
-  --bg: #faf6f0;
-  --bg-card: #ffffff;
-  --bg-elevated: #f0ebe3;
-  
-  --text: #1e293b;
-  --text-muted: #78716c;
-  --text-inverse: #ffffff;
-  
+  /* Premium Design Tokens */
+  --navy:    #16233A;
+  --navy-90: #1E2E4A;
+  --gold:    #D6A15F;
+  --gold-lt: #F0D4A8;
+  --gold-bg: #FBF3E8;
+
+  --bg:         #FAF6F0;
+  --bg-card:    #FFFFFF;
+  --bg-soft:    #F5EFE8;
+
+  --text:       #16233A;
+  --text-muted: #6B6560;
+  --text-faint: #A09790;
+
   --success: #86efac;
-  --warn: #fcd34d;
-  --error: #fca5a5;
-  
-  --rin-body: #fefce8;
+  --warn:    #fcd34d;
+  --error:   #fca5a5;
+
   --rin-glow: #fde68a;
-  --rin-tentacle: #fef3c7;
+
+  --radius-card: 24px;
+  --radius-btn:  9999px;
+  --shadow-card: 0 4px 24px rgba(22, 35, 58, 0.06);
+  --shadow-hover: 0 12px 40px rgba(22, 35, 58, 0.10);
 }
 
 @theme {
-  --color-primary: var(--primary);
-  --color-primary-hover: var(--primary-hover);
-  --color-secondary: var(--secondary);
-  --color-secondary-light: var(--secondary-light);
-  --color-accent: var(--accent);
-  --color-accent-glow: var(--accent-glow);
-  --color-bg: var(--bg);
-  --color-bg-card: var(--bg-card);
-  --color-bg-elevated: var(--bg-elevated);
-  --color-text: var(--text);
-  --color-text-muted: var(--text-muted);
-  --color-text-inverse: var(--text-inverse);
-  
-  --color-success: var(--success);
-  --color-warn: var(--warn);
-  --color-error: var(--error);
-  
-  --color-rin-body: var(--rin-body);
-  --color-rin-glow: var(--rin-glow);
-  --color-rin-tentacle: var(--rin-tentacle);
+  --color-navy:         var(--navy);
+  --color-gold:         var(--gold);
+  --color-gold-lt:      var(--gold-lt);
+  --color-gold-bg:      var(--gold-bg);
+  --color-bg:           var(--bg);
+  --color-bg-card:      var(--bg-card);
+  --color-bg-soft:      var(--bg-soft);
+  --color-text:         var(--text);
+  --color-text-muted:   var(--text-muted);
+  --color-text-faint:   var(--text-faint);
+  --color-success:      var(--success);
+  --color-warn:         var(--warn);
+  --color-error:        var(--error);
 
-  --font-sans: 'Inter', 'Noto Sans Devanagari', 'Noto Sans Tamil', system-ui, sans-serif;
-  --font-display: 'Outfit', 'Inter', system-ui, sans-serif;
+  --font-sans:        'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
   --font-handwritten: 'Dancing Script', cursive;
 }
 
@@ -71,20 +63,34 @@ html, body {
   min-height: 100vh;
   min-height: 100dvh;
   overflow-x: hidden;
-  font-size: 16px;
-  line-height: 1.6;
+  font-size: 18px;
+  line-height: 1.5;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Typography utilities */
-.font-handwritten {
-  font-family: var(--font-handwritten);
+.font-handwritten { font-family: var(--font-handwritten); }
+
+/* Premium card base */
+.premium-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  border: 1px solid rgba(22, 35, 58, 0.06);
+  transition: transform 0.28s ease, box-shadow 0.28s ease;
+}
+.premium-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover);
 }
 
-.font-display {
-  font-family: var(--font-display);
+/* Glow blob utility */
+.glow-gold {
+  background: radial-gradient(circle, rgba(214,161,95,0.18) 0%, transparent 70%);
+}
+.glow-blue {
+  background: radial-gradient(circle, rgba(125,211,252,0.14) 0%, transparent 70%);
 }
 
 /* Hide default scrollbars for swipe interfaces but allow scrolling */
