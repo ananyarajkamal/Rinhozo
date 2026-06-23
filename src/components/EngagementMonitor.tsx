@@ -68,17 +68,17 @@ export const EngagementMonitor: React.FC<EngagementMonitorProps> = ({
   if (!showIntervention) return null;
 
   return (
-    <div className="absolute inset-0 bg-[#1e293b]/45 backdrop-blur-sm flex items-center justify-center p-6 z-50 animate-fade-in">
+    <div className="absolute inset-0 bg-[#17263F]/45 backdrop-blur-sm flex items-center justify-center p-6 z-50 animate-fade-in">
       
-      {/* Intervention Claymorphic Dialogue Card */}
-      <div className="w-full max-w-sm bg-white border border-[#e5dec9] rounded-3xl p-6 shadow-2xl clay-card text-center flex flex-col items-center">
+      {/* Intervention Dialogue Card */}
+      <div className="w-full max-w-sm bg-white border border-[#17263F]/6 rounded-3xl p-6 shadow-2xl text-center flex flex-col items-center">
         
         {/* Mascot */}
         <RinAvatar mood="concerned" size={110} interactive={false} glowIntensity={0.6} />
         
-        <h4 className="text-base font-bold text-[#1e293b] mt-4 mb-2">Need a different pace?</h4>
+        <h4 className="text-base font-bold text-[#17263F] mt-4 mb-2">Need a different pace?</h4>
         
-        <p className="text-xs font-semibold text-[#78716c] leading-relaxed mb-6 px-2">
+        <p className="text-xs font-semibold text-[#6B6560] leading-relaxed mb-6 px-2">
           I noticed you are moving through cards quickly. Let me help you learn comfortably. Would you like to hear the cards read out loud or try another style?
         </p>
 
@@ -86,7 +86,7 @@ export const EngagementMonitor: React.FC<EngagementMonitorProps> = ({
         <div className="w-full space-y-2.5">
           <button
             onClick={handleAudioAction}
-            className="w-full p-4 bg-[#1e293b] hover:bg-[#0f172a] text-white rounded-2xl text-xs font-bold shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer clay-button"
+            className="w-full p-4 bg-[#17263F] hover:bg-[#1E2E4A] text-white rounded-2xl text-xs font-bold shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
             <Volume2 size={16} />
             Enable Audio Mode
@@ -94,7 +94,7 @@ export const EngagementMonitor: React.FC<EngagementMonitorProps> = ({
           
           <button
             onClick={handleStyleAction}
-            className="w-full p-4 bg-white hover:bg-[#faf6f0] text-[#1e293b] border border-[#e5dec9] rounded-2xl text-xs font-bold shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer clay-button"
+            className="w-full p-4 bg-white hover:bg-[#FAF6F0] text-[#17263F] border border-[#17263F]/6 rounded-2xl text-xs font-bold shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
             <RefreshCw size={16} />
             Try Stories and Analogies
@@ -102,7 +102,7 @@ export const EngagementMonitor: React.FC<EngagementMonitorProps> = ({
           
           <button
             onClick={handleDismiss}
-            className="w-full py-2.5 text-[#78716c] hover:text-[#1e293b] text-[11px] font-bold tracking-wider uppercase cursor-pointer"
+            className="w-full py-2.5 text-[#6B6560] hover:text-[#17263F] text-[11px] font-bold tracking-wider uppercase cursor-pointer"
           >
             No thanks, I am skimming
           </button>
