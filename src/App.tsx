@@ -62,11 +62,6 @@ function App() {
         if (userProfile) {
           setProfile(userProfile);
           setStrings(LOCALES[userProfile.interface_lang]);
-          
-          // Check if onboarding completed (i.e. learning style set)
-          if (userProfile.learning_style) {
-            setRoute('map');
-          }
         }
         await updateEvolutionLevel();
       } catch (err) {
@@ -77,6 +72,14 @@ function App() {
     }
     initProfile();
   }, []);
+
+  const handleGetStarted = () => {
+    if (profile && profile.learning_style) {
+      setRoute('map');
+    } else {
+      setRoute('language-select');
+    }
+  };
 
   const handleSelectLanguage = async (selectedLang: SupportedLang) => {
     if (!profile) return;
@@ -175,7 +178,7 @@ function App() {
       return (
         <LandingPage 
           strings={strings} 
-          onGetStarted={() => setRoute('language-select')} 
+          onGetStarted={handleGetStarted} 
         />
       );
     case 'language-select':
@@ -250,7 +253,7 @@ function App() {
       return (
         <LandingPage 
           strings={strings} 
-          onGetStarted={() => setRoute('language-select')} 
+          onGetStarted={handleGetStarted} 
         />
       );
   }
