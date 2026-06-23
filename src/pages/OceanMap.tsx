@@ -5,8 +5,6 @@ import {
   Play, 
   Lock, 
   Award, 
-  Lightbulb, 
-  BookOpen, 
   BarChart3, 
   Puzzle, 
   ArrowRight
@@ -14,7 +12,7 @@ import {
 
 interface OceanMapProps {
   onSelectTopic: (topicId: string) => void;
-  onNavigate: (route: 'landing' | 'profile' | 'settings' | 'downloads' | 'reels') => void;
+  onNavigate: (route: 'landing' | 'profile' | 'settings') => void;
   evolutionLevel: number;
 }
 
@@ -183,7 +181,7 @@ export const OceanMap: React.FC<OceanMapProps> = ({ onSelectTopic, onNavigate, e
       <header className="w-full max-w-7xl mx-auto px-8 py-5 flex items-center justify-between z-20">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 overflow-hidden rounded-full bg-[#fde68a]/20 border border-white/50 flex items-center justify-center">
-            <img src="/assets/rin_mascot_3d.png" alt="Rin Logo" className="w-8 h-8 object-contain" />
+            <img src="/assets/rin_mascot_3d_clean.png" alt="Rin Logo" className="w-8 h-8 object-contain" />
           </div>
           <span className="text-xl font-bold tracking-widest text-[#1e293b]">RINHOZO</span>
         </div>
@@ -195,18 +193,6 @@ export const OceanMap: React.FC<OceanMapProps> = ({ onSelectTopic, onNavigate, e
             className="px-5 py-2 text-xs font-bold text-[#78716c] hover:text-[#1e293b] hover:bg-[#f5e6d3]/60 rounded-full transition-all cursor-pointer"
           >
             Profile
-          </button>
-          <button 
-            onClick={() => onNavigate('reels')} 
-            className="px-5 py-2 text-xs font-bold text-[#78716c] hover:text-[#1e293b] hover:bg-[#f5e6d3]/60 rounded-full transition-all cursor-pointer"
-          >
-            Learning Reels
-          </button>
-          <button 
-            onClick={() => onNavigate('downloads')} 
-            className="px-5 py-2 text-xs font-bold text-[#78716c] hover:text-[#1e293b] hover:bg-[#f5e6d3]/60 rounded-full transition-all cursor-pointer"
-          >
-            Downloads
           </button>
           <button 
             onClick={() => onNavigate('settings')} 
@@ -347,7 +333,7 @@ export const OceanMap: React.FC<OceanMapProps> = ({ onSelectTopic, onNavigate, e
             {/* MAIN GLOWING RIN AVATAR (3D PNG) */}
             <div className="animate-float" style={{ transformStyle: 'preserve-3d' }}>
               <img 
-                src="/assets/rin_mascot_3d.png" 
+                src="/assets/rin_mascot_3d_clean.png" 
                 alt="Rinhozo Mascot" 
                 className="w-[280px] h-[280px] object-contain transition-all duration-500"
                 style={{
@@ -358,26 +344,6 @@ export const OceanMap: React.FC<OceanMapProps> = ({ onSelectTopic, onNavigate, e
             </div>
 
             {/* FLOATING CLAYMORPHIC BADGES (Navigation Shortcuts) */}
-            {/* Reels Lightbulb Shortcut */}
-            <button 
-              onClick={() => onNavigate('reels')}
-              style={tiltBadgeFar(1.15)}
-              className="absolute top-4 left-14 bg-white border border-[#e5dec9] rounded-2xl p-2.5 shadow-[0_8px_24px_rgba(30,41,59,0.08)] clay-card animate-float [animation-delay:1.5s] cursor-pointer group flex items-center gap-1.5 z-25 hover:scale-105"
-            >
-              <Lightbulb size={18} className="text-[#d4a574]" fill="currentColor" fillOpacity={0.1} />
-              <span className="text-[9px] font-bold text-[#78716c] opacity-0 group-hover:opacity-100 transition-opacity max-w-0 group-hover:max-w-[80px] overflow-hidden whitespace-nowrap">Reels</span>
-            </button>
-
-            {/* Downloads Book Shortcut */}
-            <button 
-              onClick={() => onNavigate('downloads')}
-              style={tiltBadgeFar(0.95)}
-              className="absolute bottom-20 left-4 bg-white border border-[#e5dec9] rounded-2xl p-2.5 shadow-[0_8px_24px_rgba(30,41,59,0.08)] clay-card animate-float [animation-delay:0.5s] cursor-pointer group flex items-center gap-1.5 z-25 hover:scale-105"
-            >
-              <BookOpen size={18} className="text-[#d4a574]" />
-              <span className="text-[9px] font-bold text-[#78716c] opacity-0 group-hover:opacity-100 transition-opacity max-w-0 group-hover:max-w-[80px] overflow-hidden whitespace-nowrap">Downloads</span>
-            </button>
-
             {/* Stats Chart Shortcut */}
             <button 
               onClick={() => onNavigate('profile')}
@@ -447,7 +413,7 @@ export const OceanMap: React.FC<OceanMapProps> = ({ onSelectTopic, onNavigate, e
 
               {/* 3D Stacked Books Image */}
               <img 
-                src="/assets/stacked_books_3d.png" 
+                src="/assets/stacked_books_3d_clean.png" 
                 alt="History Island Stack of Books"
                 className={`w-[130px] h-auto object-contain transition-all ${islandProgress?.status === 'locked' ? 'grayscale opacity-75' : ''}`}
               />
@@ -473,9 +439,9 @@ export const OceanMap: React.FC<OceanMapProps> = ({ onSelectTopic, onNavigate, e
 
               {/* 3D Lined Notebook and Pen Image */}
               <img 
-                src="/assets/notebook_3d.png" 
+                src="/assets/notebook_3d_clean.png" 
                 alt="Algebra Reef Lined Notebook"
-                className="w-[200px] h-auto object-contain"
+                className={`w-[200px] h-auto object-contain transition-all ${reefProgress?.status === 'locked' ? 'grayscale opacity-75' : ''}`}
               />
             </div>
 
@@ -510,7 +476,7 @@ export const OceanMap: React.FC<OceanMapProps> = ({ onSelectTopic, onNavigate, e
 
               {/* 3D Coffee Cup Image */}
               <img 
-                src="/assets/coffee_cup_3d.png" 
+                src="/assets/coffee_cup_3d_clean.png" 
                 alt="Physics Volcano Coffee Cup"
                 className={`w-[90px] h-auto object-contain transition-all ${volcanoProgress?.status === 'locked' ? 'grayscale opacity-75' : ''}`}
               />
@@ -521,7 +487,7 @@ export const OceanMap: React.FC<OceanMapProps> = ({ onSelectTopic, onNavigate, e
           {/* FLOATING RIN BUBBLE (Speech Feedback) */}
           <div className="absolute bottom-[-24px] right-4 bg-white border border-[#e5dec9] rounded-2xl p-4 shadow-[0_8px_24px_rgba(30,41,59,0.08)] flex items-start gap-3 max-w-[320px] text-left transform hover:scale-[1.02] transition-transform duration-300 clay-card z-20">
             <div className="w-8 h-8 rounded-full bg-[#fde68a]/30 flex items-center justify-center flex-shrink-0 animate-glow-gold border border-white/50 overflow-hidden">
-              <img src="/assets/rin_mascot_3d.png" alt="Mini Rin" className="w-6 h-6 object-contain" />
+              <img src="/assets/rin_mascot_3d_clean.png" alt="Mini Rin" className="w-6 h-6 object-contain" />
             </div>
             
             <div className="flex flex-col">

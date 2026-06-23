@@ -7,8 +7,6 @@ import { LessonSwipe } from './pages/LessonSwipe';
 import { BossBattle } from './pages/BossBattle';
 import { ProfileStats } from './pages/ProfileStats';
 import { SettingsPage } from './pages/SettingsPage';
-import { DownloadManager } from './pages/DownloadManager';
-import { LearningReels } from './pages/LearningReels';
 import { LOCALES } from './locales/strings';
 import type { SupportedLang, UIStrings } from './locales/strings';
 import { db } from './lib/db';
@@ -22,9 +20,7 @@ type AppRoute =
   | 'learn' 
   | 'battle' 
   | 'profile' 
-  | 'settings' 
-  | 'downloads'
-  | 'reels';
+  | 'settings';
 
 function App() {
   const [route, setRoute] = useState<AppRoute>('landing');
@@ -235,18 +231,6 @@ function App() {
         <SettingsPage 
           onBackToMap={() => setRoute('map')} 
           onLanguageChanged={handleChangeLanguageMidSession}
-        />
-      );
-    case 'downloads':
-      return (
-        <DownloadManager 
-          onBackToMap={() => setRoute('map')} 
-        />
-      );
-    case 'reels':
-      return (
-        <LearningReels 
-          onBackToMap={() => setRoute('map')} 
         />
       );
     default:

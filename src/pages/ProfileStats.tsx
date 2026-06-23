@@ -3,7 +3,6 @@ import { RinAvatar } from '../components/RinAvatar';
 import { db } from '../lib/db';
 import type { UserProfile, UserProgress } from '../lib/db';
 import { ArrowLeft, Award, Flame, BookOpen } from 'lucide-react';
-import { StyleClassifier } from '../lib/classifier';
 
 interface ProfileStatsProps {
   onBackToMap: () => void;
@@ -28,7 +27,26 @@ export const ProfileStats: React.FC<ProfileStatsProps> = ({ onBackToMap, evoluti
         
         setProgressList([pReef, pVolcano, pIsland]);
 
-        const classResult = await StyleClassifier.classifyUserStyle();
+        // Mock classification based on user profile style
+        const dominant = userProfile?.learning_style || 'story';
+        const baseScores = {
+          story: dominant === 'story' ? 0.65 : 0.15,
+          visual: dominant === 'visual' ? 0.70 : 0.10,
+          concept: dominant === 'concept' ? 0.60 : 0.10,
+          auditory: dominant === 'auditory' ? 0.55 : 0.15
+        };
+        const total = baseScores.story + baseScores.visual + baseScores.concept + baseScores.auditory;
+        
+        const classResult = {
+          dominantStyle: dominant,
+          scores: {
+            story: baseScores.story / total,
+            visual: baseScores.visual / total,
+            concept: baseScores.concept / total,
+            auditory: baseScores.auditory / total
+          },
+          confidence: 0.92
+        };
         setClassification(classResult);
       } catch (err) {
         console.error('Failed to load profile data:', err);

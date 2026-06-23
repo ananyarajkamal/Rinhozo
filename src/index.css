@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Noto+Sans+Tamil:wght@400;500;600;700&family=Caveat:wght@500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Noto+Sans+Tamil:wght@400;500;600;700&family=Dancing+Script:wght@700&display=swap');
 @import "tailwindcss";
 
 :root {
@@ -52,7 +52,7 @@
   --color-rin-tentacle: var(--rin-tentacle);
 
   --font-sans: 'Inter', 'Noto Sans Devanagari', 'Noto Sans Tamil', system-ui, sans-serif;
-  --font-handwritten: 'Caveat', cursive;
+  --font-handwritten: 'Dancing Script', cursive;
 }
 
 /* Global Reset & Scrollbar Styling */
@@ -105,6 +105,11 @@ html, body {
   100% {
     transform: translateY(0px);
   }
+}
+
+@keyframes wave {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(20deg); }
 }
 
 @keyframes pulseGlow {
