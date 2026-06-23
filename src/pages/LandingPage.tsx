@@ -8,7 +8,10 @@ import {
   BarChart3, 
   Puzzle,
   Menu,
-  X
+  X,
+  Globe,
+  WifiOff,
+  Sparkles
 } from 'lucide-react';
 import type { UIStrings } from '../locales/strings';
 
@@ -85,6 +88,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({ strings, onGetStarted 
     visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay: 0.5, ease: 'easeOut' as const } }
   };
 
+  const handleNavClick = (id: string) => {
+    setActiveTab(id);
+    setIsMobileMenuOpen(false);
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   const navLinks = [
     { label: 'Home', id: 'home' },
     { label: 'Features', id: 'features' },
@@ -132,7 +144,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ strings, onGetStarted 
             {navLinks.map((link) => (
               <button
                 key={link.id}
-                onClick={() => setActiveTab(link.id)}
+                onClick={() => handleNavClick(link.id)}
                 className={`text-[14px] font-medium transition-all duration-200 cursor-pointer ${
                   activeTab === link.id
                     ? 'bg-[#F5E6D3] text-[#1E293B] px-4 py-2 rounded-full font-semibold'
@@ -188,10 +200,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ strings, onGetStarted 
               {navLinks.map((link) => (
                 <button
                   key={link.id}
-                  onClick={() => {
-                    setActiveTab(link.id);
-                    setIsMobileMenuOpen(false);
-                  }}
+                  onClick={() => handleNavClick(link.id)}
                   className={`text-left text-lg font-medium py-3 border-b border-[#E7E5E4]/50 cursor-pointer ${
                     activeTab === link.id ? 'text-[#D4A574]' : 'text-[#1E293B]'
                   }`}
@@ -205,7 +214,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ strings, onGetStarted 
       </AnimatePresence>
 
       {/* SECTION 2: HERO SECTION */}
-      <main className="flex-1 w-full flex flex-col lg:flex-row items-center justify-between z-10 gap-12 relative min-h-[calc(100vh-80px)] px-6 md:px-12 pt-[120px] pb-16 bg-[url('/assets/cozy_desk_bg.png')] bg-cover bg-center bg-no-repeat">
+      <main id="home" className="flex-1 w-full flex flex-col lg:flex-row items-center justify-between z-10 gap-12 relative min-h-[calc(100vh-80px)] px-6 md:px-12 pt-[120px] pb-16 bg-[url('/assets/cozy_desk_bg.png')] bg-cover bg-center bg-no-repeat">
         
         {/* LEFT ZONE (55% width) */}
         <motion.div 
@@ -446,6 +455,205 @@ export const LandingPage: React.FC<LandingPageProps> = ({ strings, onGetStarted 
         <div className="hidden lg:block absolute bottom-8 right-16 w-5 h-3 bg-white/60 rounded-full shadow-sm -rotate-12 select-none"></div>
 
       </main>
+
+      {/* SECTION: FEATURES */}
+      <section id="features" className="w-full bg-white py-24 px-6 md:px-12 z-20 border-t border-[#E7E5E4]/50 relative">
+        <div className="max-w-[1200px] mx-auto text-center">
+          <span className="text-[12px] font-bold text-[#D4A574] tracking-[0.2em] uppercase block mb-3">Core Features</span>
+          <h2 className="text-[32px] font-bold text-[#1E293B] mb-4 tracking-tight">Designed for Multilingual & Diverse Minds</h2>
+          <p className="text-[#78716C] text-[16px] max-w-[600px] mx-auto mb-16 leading-relaxed">
+            Rinhozo makes learning feel natural, engaging, and stress-free. Every gesture is designed with care to keep your mind focused.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* Feature 1 */}
+            <div className="bg-[#FAF6F0] p-8 rounded-[24px] border border-[#E7E5E4]/40 hover:translate-y-[-6px] transition-all duration-300 text-left clay-card">
+              <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-[#D4A574] mb-6 shadow-sm">
+                <Globe size={24} />
+              </div>
+              <h3 className="text-[18px] font-semibold text-[#1E293B] mb-3">Hinglish-First & Localized</h3>
+              <p className="text-[#78716c] text-[14px] leading-relaxed">
+                Conceptual translation that matches how we naturally speak at home. Supporting Hinglish, English, Hindi, and Tamil.
+              </p>
+            </div>
+
+            {/* Feature 2 */}
+            <div className="bg-[#FAF6F0] p-8 rounded-[24px] border border-[#E7E5E4]/40 hover:translate-y-[-6px] transition-all duration-300 text-left clay-card">
+              <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-[#7DD3FC] mb-6 shadow-sm">
+                <Puzzle size={24} />
+              </div>
+              <h3 className="text-[18px] font-semibold text-[#1E293B] mb-3">Tactile Card Swiping</h3>
+              <p className="text-[#78716c] text-[14px] leading-relaxed">
+                Swipe-to-learn cards designed to reduce cognitive load and help neurodivergent learners focus on one concept at a time.
+              </p>
+            </div>
+
+            {/* Feature 3 */}
+            <div className="bg-[#FAF6F0] p-8 rounded-[24px] border border-[#E7E5E4]/40 hover:translate-y-[-6px] transition-all duration-300 text-left clay-card">
+              <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-[#D4A574] mb-6 shadow-sm">
+                <Sparkles size={24} />
+              </div>
+              <h3 className="text-[18px] font-semibold text-[#1E293B] mb-3">Adaptive Learning</h3>
+              <p className="text-[#78716c] text-[14px] leading-relaxed">
+                Choose visual models, direct concept cards, stories, or audio-guided reading. Rinhozo adapts dynamically.
+              </p>
+            </div>
+
+            {/* Feature 4 */}
+            <div className="bg-[#FAF6F0] p-8 rounded-[24px] border border-[#E7E5E4]/40 hover:translate-y-[-6px] transition-all duration-300 text-left clay-card">
+              <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-[#86EFAC] mb-6 shadow-sm">
+                <WifiOff size={24} />
+              </div>
+              <h3 className="text-[18px] font-semibold text-[#1E293B] mb-3">Offline-First Design</h3>
+              <p className="text-[#78716c] text-[14px] leading-relaxed">
+                Full offline capability. Learning progress is stored in IndexedDB and syncs seamlessly when back online.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION: HOW IT WORKS */}
+      <section id="how" className="w-full bg-[#FAF6F0] py-24 px-6 md:px-12 z-20 border-t border-[#E7E5E4]/50 relative">
+        <div className="max-w-[1200px] mx-auto text-center">
+          <span className="text-[12px] font-bold text-[#D4A574] tracking-[0.2em] uppercase block mb-3">Roadmap</span>
+          <h2 className="text-[32px] font-bold text-[#1E293B] mb-4 tracking-tight">Your Path to Mastery in 3 Simple Steps</h2>
+          <p className="text-[#78716C] text-[16px] max-w-[600px] mx-auto mb-16 leading-relaxed">
+            Rinhozo guides you seamlessly through lessons, adapting to your style as you progress.
+          </p>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 relative">
+            {/* Step 1 */}
+            <div className="flex flex-col items-center">
+              <div className="w-16 h-16 rounded-full bg-white border-2 border-[#D4A574] flex items-center justify-center text-[20px] font-bold text-[#D4A574] mb-6 shadow-md">
+                1
+              </div>
+              <h3 className="text-[20px] font-semibold text-[#1E293B] mb-3">Choose Your Style</h3>
+              <p className="text-[#78716c] text-[14px] max-w-[280px] leading-relaxed">
+                Pick your preferred learning language (Hinglish/Hindi/Tamil/English) and customized content presentation style.
+              </p>
+            </div>
+
+            {/* Step 2 */}
+            <div className="flex flex-col items-center">
+              <div className="w-16 h-16 rounded-full bg-white border-2 border-[#7DD3FC] flex items-center justify-center text-[20px] font-bold text-[#7DD3FC] mb-6 shadow-md">
+                2
+              </div>
+              <h3 className="text-[20px] font-semibold text-[#1E293B] mb-3">Swipe Through Lessons</h3>
+              <p className="text-[#78716c] text-[14px] max-w-[280px] leading-relaxed">
+                Review byte-sized visual/story conceptual cards at your own pace. Solve check-in quizzes as you swipe.
+              </p>
+            </div>
+
+            {/* Step 3 */}
+            <div className="flex flex-col items-center">
+              <div className="w-16 h-16 rounded-full bg-white border-2 border-[#86EFAC] flex items-center justify-center text-[20px] font-bold text-[#86EFAC] mb-6 shadow-md">
+                3
+              </div>
+              <h3 className="text-[20px] font-semibold text-[#1E293B] mb-3">Conquer Boss Battles</h3>
+              <p className="text-[#78716c] text-[14px] max-w-[280px] leading-relaxed">
+                Test your conceptual knowledge in boss challenges to evolve your jellyfish guide (Rin) and unlock new study rooms.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION: FOR EDUCATORS */}
+      <section id="educators" className="w-full bg-white py-24 px-6 md:px-12 z-20 border-t border-[#E7E5E4]/50 relative">
+        <div className="max-w-[1200px] mx-auto flex flex-col lg:flex-row items-center justify-between gap-16">
+          <div className="w-full lg:w-[50%] text-left">
+            <span className="text-[12px] font-bold text-[#D4A574] tracking-[0.2em] uppercase block mb-3">For Classrooms</span>
+            <h2 className="text-[32px] font-bold text-[#1E293B] mb-6 tracking-tight">Empower Every Student, Bridging Learning Gaps</h2>
+            <p className="text-[#78716C] text-[16px] mb-8 leading-relaxed">
+              Educators can monitor student learning progress offline, deploy customizable curriculum modules, and address neurodiverse needs with Rinhozo's built-in multi-modal adapters.
+            </p>
+            
+            <div className="space-y-4 mb-8">
+              <div className="flex items-center gap-3">
+                <span className="w-5 h-5 rounded-full bg-[#86EFAC]/20 flex items-center justify-center text-[#86EFAC]">✓</span>
+                <span className="text-[15px] font-semibold text-[#1E293B]">Individual student progress analytics</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="w-5 h-5 rounded-full bg-[#86EFAC]/20 flex items-center justify-center text-[#86EFAC]">✓</span>
+                <span className="text-[15px] font-semibold text-[#1E293B]">Neurodivergent-friendly accessibility guidelines</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="w-5 h-5 rounded-full bg-[#86EFAC]/20 flex items-center justify-center text-[#86EFAC]">✓</span>
+                <span className="text-[15px] font-semibold text-[#1E293B]">Full offline classroom compatibility</span>
+              </div>
+            </div>
+
+            <button 
+              onClick={onGetStarted}
+              className="flex items-center gap-1.5 bg-[#1E293B] hover:bg-[#0F172A] text-white px-8 py-4 rounded-full text-[15px] font-medium shadow-md transition-all group cursor-pointer"
+            >
+              Learn More for Schools
+              <ArrowRight size={18} />
+            </button>
+          </div>
+
+          <div className="w-full lg:w-[45%] flex justify-center">
+            <div className="bg-[#FAF6F0] p-6 rounded-[28px] border border-[#E7E5E4]/50 shadow-[0_8px_32px_rgba(30,41,59,0.04)] w-full max-w-[440px] text-left clay-card">
+              <span className="text-[10px] font-bold text-[#78716C] uppercase tracking-widest block mb-4">Classroom Dashboard</span>
+              <div className="bg-white rounded-2xl p-4 border border-[#E7E5E4]/30 shadow-sm mb-4">
+                <span className="text-[12px] font-bold text-[#1E293B] block">Average Class Streak</span>
+                <span className="text-[28px] font-bold text-[#D4A574]">14 Days 🔥</span>
+              </div>
+
+              <div className="bg-white rounded-2xl p-4 border border-[#E7E5E4]/30 shadow-sm">
+                <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider block mb-3">Student Style Distribution</span>
+                <div className="space-y-3">
+                  <div>
+                    <div className="flex justify-between text-xs font-bold text-[#1E293B] mb-1">
+                      <span>Story Analogies</span>
+                      <span>55%</span>
+                    </div>
+                    <div className="w-full h-2 bg-[#FAF6F0] rounded-full overflow-hidden">
+                      <div className="h-full bg-[#D4A574]" style={{ width: '55%' }}></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex justify-between text-xs font-bold text-[#1E293B] mb-1">
+                      <span>Visual Models</span>
+                      <span>30%</span>
+                    </div>
+                    <div className="w-full h-2 bg-[#FAF6F0] rounded-full overflow-hidden">
+                      <div className="h-full bg-[#7DD3FC]" style={{ width: '30%' }}></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION: ABOUT */}
+      <section id="about" className="w-full bg-[#FAF6F0] py-24 px-6 md:px-12 z-20 border-t border-[#E7E5E4]/50 relative">
+        <div className="max-w-[800px] mx-auto text-center">
+          <span className="text-[12px] font-bold text-[#D4A574] tracking-[0.2em] uppercase block mb-3">About Us</span>
+          <h2 className="text-[32px] font-bold text-[#1E293B] mb-6 tracking-tight">Our Mission: Education Belongs to Everyone</h2>
+          <p className="text-[#78716C] text-[16px] mb-8 leading-relaxed max-w-[640px] mx-auto">
+            Rinhozo was born from a simple belief: learning should adapt to the student, not the other way around. By combining language personalization, cognitive scaffolding, and friendly visual support, we help students conquer study barriers one concept at a time.
+          </p>
+
+          <div className="relative inline-block bg-white p-6 rounded-2xl border border-[#E7E5E4]/30 shadow-sm max-w-[320px] mb-12 rotate-[-1deg] hover:rotate-0 transition-transform duration-300">
+            <span className="font-handwritten text-[#D4A574] text-[24px]">
+              Education belongs to everyone. ♡
+            </span>
+          </div>
+
+          <div>
+            <button 
+              onClick={onGetStarted}
+              className="bg-[#1E293B] hover:bg-[#0F172A] text-white px-8 py-4 rounded-full text-[15px] font-semibold shadow-md transition-all cursor-pointer"
+            >
+              Join Rinhozo Today
+            </button>
+          </div>
+        </div>
+      </section>
 
       {/* SECTION 3: RIN CHAT BUBBLE */}
       <div className="fixed z-40 max-w-[280px] bg-white rounded-[24px] rounded-br-[4px] p-5 shadow-[0_8px_32px_rgba(30,41,59,0.12)] border border-[#E7E5E4]/60 flex items-start gap-3.5 hover:scale-105 transition-transform duration-300 cursor-pointer fixed bottom-8 right-8 max-w-[280px] bottom-6 left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 w-[90vw] md:w-auto">
