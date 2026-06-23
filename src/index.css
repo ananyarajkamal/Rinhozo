@@ -194,3 +194,51 @@ html, body {
   animation: swayRight 3.5s ease-in-out infinite;
   transform-origin: top center;
 }
+
+/* 3D Claymorphic depth styles */
+.clay-card {
+  background-color: var(--bg-card);
+  border-radius: 28px;
+  box-shadow: 
+    10px 10px 30px rgba(30, 41, 59, 0.05),
+    -10px -10px 30px #ffffff,
+    inset 3px 3px 6px rgba(255, 255, 255, 0.8),
+    inset -3px -3px 6px rgba(30, 41, 59, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.clay-card:hover {
+  box-shadow: 
+    14px 14px 40px rgba(30, 41, 59, 0.07),
+    -14px -14px 40px #ffffff,
+    inset 4px 4px 8px rgba(255, 255, 255, 0.9),
+    inset -4px -4px 8px rgba(30, 41, 59, 0.04);
+}
+
+.clay-button {
+  border-radius: 9999px;
+  box-shadow: 
+    4px 4px 12px rgba(30, 41, 59, 0.06),
+    -4px -4px 12px #ffffff,
+    inset 2px 2px 4px rgba(255, 255, 255, 0.7),
+    inset -2px -2px 4px rgba(30, 41, 59, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.clay-button:active {
+  box-shadow: 
+    inset 2px 2px 5px rgba(30, 41, 59, 0.1),
+    inset -2px -2px 5px rgba(255, 255, 255, 0.7);
+  transform: scale(0.98);
+}
+
+.perspective-3d {
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+.book-spine-3d {
+  background: linear-gradient(90deg, rgba(30, 41, 59, 0.15) 0%, rgba(30, 41, 59, 0) 10%, rgba(255, 255, 255, 0.2) 20%, rgba(255, 255, 255, 0) 30%, rgba(0, 0, 0, 0.1) 95%, rgba(0, 0, 0, 0.2) 100%);
+}

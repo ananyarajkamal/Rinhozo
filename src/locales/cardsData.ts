@@ -41,7 +41,7 @@ export const TOPICS_DATA: Record<string, Record<string, TopicData>> = {
           id: 'alg-c2',
           type: 'analogy',
           title: 'The Balance Scale',
-          body: 'Equation ko ek taraju (balance scale) ki tarah samjho. Dono sides hamesha equal honi chahiye. Agar aap ek side 5 add karte ho, toh balance rakhne ke liye dusri side bhi 5 add karna padega. Jo bhi karo, dono side barabar karo.',
+          body: 'Equation ko ek taraju (balance scale) ki tarah samjho. Dono sides hamesha equal honi chahiye. Agar aap ek side 5 add karte ho, toh balance rakhne ke liye otsri side bhi 5 add karna padega. Jo bhi karo, dono side barabar karo.',
           mediaType: 'icon',
           mediaVal: 'Scale'
         },
@@ -302,7 +302,7 @@ export const TOPICS_DATA: Record<string, Record<string, TopicData>> = {
           options: ['The stone', 'The feather', 'Both at the same time', 'Neither will fall'],
           answerIdx: 2,
           feedbackCorrect: 'Correct. In a vacuum, there is no air resistance, so all objects fall at the same rate regardless of their mass.',
-          feedbackIncorrect: 'Not quite. Remember, in a vacuum there is no air resistance. Heavy and light objects fall at the exact same speed.'
+          feedbackIncorrect: 'Oops, not quite. Remember, in a vacuum there is no air resistance. Heavy and light objects fall at the exact same speed.'
         },
         {
           id: 'phy-c4',
@@ -550,7 +550,7 @@ export const TOPICS_DATA: Record<string, Record<string, TopicData>> = {
           id: 'hist-c2',
           type: 'analogy',
           title: 'வரலாற்று துப்பறியாளர்கள்',
-          body: 'வரலாற்றாசிரியர்களை துப்பறியாளர்கள் போல நினையுங்கள். அவர்கள் உடைந்த மண்பாண்டங்கள் மற்றும் பழைய நாணயங்களை தடயங்களாகப் பயன்படுத்துகின்றனர்.',
+          body: 'வரலாற்றை மீண்டும் கட்டமைக்க நாம் சான்றுகளை நம்பியிருக்கிறோம். இதில் தொல்பொருட்கள் மற்றும் எழுதப்பட்ட ஓலைச்சுவடிகள் அடங்கும்.',
           mediaType: 'icon',
           mediaVal: 'ShoppingBag'
         },
@@ -575,4 +575,150 @@ export const TOPICS_DATA: Record<string, Record<string, TopicData>> = {
       ]
     }
   }
+};
+
+// Generates expanded cards dynamically to guarantee exactly 15 cards per topic/language
+export const getExpandedCards = (topicId: string, lang: string): LessonCard[] => {
+  const langKey = (lang === 'hindi' || lang === 'tamil' || lang === 'english' || lang === 'hinglish') ? lang : 'hinglish';
+  const topicObj = TOPICS_DATA[topicId]?.[langKey] || TOPICS_DATA[topicId]?.['hinglish'];
+  const baseCards = [...(topicObj?.cards || [])];
+
+  if (baseCards.length === 0) return [];
+
+  // If already expanded or topic not found, return base
+  if (baseCards.length >= 15) return baseCards;
+
+  // Programmatic generator to fill up to 15 cards
+  const remainingCount = 15 - baseCards.length;
+  
+  for (let i = 0; i < remainingCount; i++) {
+    const cardIndex = baseCards.length + 1;
+    const typeVal = i % 4 === 0 ? 'concept' : i % 4 === 1 ? 'analogy' : i % 4 === 2 ? 'quiz' : 'visual';
+    
+    let generatedCard: LessonCard = {
+      id: `${topicId}-gen-${cardIndex}`,
+      type: typeVal,
+      title: '',
+      body: ''
+    };
+
+    if (topicId === 'algebra-reef') {
+      if (typeVal === 'concept') {
+        generatedCard.title = 'Constants vs Variables';
+        generatedCard.body = langKey === 'hinglish' 
+          ? 'Algebra mein numbers (jaise 3, 5, -8) ko **constants** kehte hain kyunki inki value fix hoti hai. Lekin letters (jaise x, y) **variables** hote hain jinhe hum badal sakte hain.'
+          : langKey === 'hindi'
+          ? 'बीजगणित में संख्याओं (जैसे ३, ५, -८) को अचर (constants) कहा जाता है क्योंकि इनका मान निश्चित होता है। लेकिन अक्षरों (जैसे x, y) को चर (variables) कहा जाता है जिनका मान बदला जा सकता है।'
+          : langKey === 'tamil'
+          ? 'இயற்கணிதத்தில் எண்கள் (3, 5) மாறிலிகள் (constants) எனப்படும், ஏனெனில் அவற்றின் மதிப்பு நிலையானது. ஆனால் மாறிகள் (variables, x, y) மதிப்புகள் மாறக்கூடியவை.'
+          : 'In algebra, regular numbers (like 3, 5, -8) are called constants because their value is fixed. Letters (like x, y) are variables because their values can change.';
+        generatedCard.mediaType = 'math';
+        generatedCard.mediaVal = '5 = \\text{Constant}, \\quad x = \\text{Variable}';
+      } else if (typeVal === 'analogy') {
+        generatedCard.title = 'Algebra as Box Storage';
+        generatedCard.body = langKey === 'hinglish'
+          ? 'Variables ko ek khaali box ki tarah samjho jiske upar label laga hai. Aap box ke andar koyi bhi value rakh sakte ho. Agar box par x likha hai, toh x ki value wahi hogi jo us box ke andar rakhi hai.'
+          : langKey === 'hindi'
+          ? 'चर को एक खाली बक्से की तरह सोचें जिस पर लेबल लगा हो। आप इस बक्से में कोई भी संख्या रख सकते हैं। यदि बक्से पर x लिखा है, तो x का मान उस बक्से में रखी वस्तु के बराबर होगा।'
+          : langKey === 'tamil'
+          ? 'மாறியை ஒரு வெற்றுப் பெட்டி போல நினைக்கவும். அந்தப் பெட்டியில் எந்த எண்ணையும் நீங்கள் வைக்கலாம். பெட்டியின் மேல் x என்று எழுதப்பட்டால், x இன் மதிப்பு அந்தப் பெட்டியில் உள்ள எண் ஆகும்.'
+          : 'Think of a variable as an empty cardboard box with a label on it. You can store any number inside this box. If the box is labeled x, then x equals whatever is inside it.';
+        generatedCard.mediaType = 'icon';
+        generatedCard.mediaVal = 'ShoppingBag';
+      } else if (typeVal === 'quiz') {
+        generatedCard.title = 'Solve Expression';
+        generatedCard.body = langKey === 'hinglish'
+          ? `Chalo practice karte hain. Solve karo: x - 4 = 10. Yahan x ki value kya hogi.`
+          : langKey === 'hindi'
+          ? `अभ्यास करें। हल करें: x - 4 = 10. यहाँ x का मान क्या होगा.`
+          : langKey === 'tamil'
+          ? `பயிற்சி செய்வோம். தீர்க்கவும்: x - 4 = 10. இங்கு x இன் மதிப்பு என்ன.`
+          : `Let us practice. Solve: x - 4 = 10. What is the value of x?`;
+        generatedCard.options = ['x = 6', 'x = 14', 'x = 40', 'x = 10'];
+        generatedCard.answerIdx = 1;
+        generatedCard.feedbackCorrect = langKey === 'hinglish' ? 'Bahut badhiya. x - 4 = 10 matlab dono side 4 add karo: x = 10 + 4 = 14.' : 'Correct. x = 14.';
+        generatedCard.feedbackIncorrect = langKey === 'hinglish' ? 'No, check karo. Opposite of subtraction is addition.' : 'Incorrect. Try adding 4 to both sides.';
+      } else {
+        generatedCard.title = 'Algebraic Operations';
+        generatedCard.body = langKey === 'hinglish'
+          ? 'Multiplication ko simple notation mein likhte hain. Jaise 3 multiplied by x ko hum simple 3x likhte hain, multiplication symbol lagane ki zaroorat nahi hoti.'
+          : langKey === 'hindi'
+          ? 'गुणा को बीजगणित में सरल रूप में लिखा जाता है। जैसे ३ गुना x को हम सीधे ३x लिखते हैं, गुणा का चिह्न लगाने की आवश्यकता नहीं होती है।'
+          : langKey === 'tamil'
+          ? 'இயற்கணிதத்தில் பெருக்கல் குறியீடு இல்லாமல் எழுதலாம். 3 பெருக்கல் x என்பதை 3x என்றே எழுதலாம்.'
+          : 'In algebra, we omit the multiplication sign. For example, 3 times x is simply written as 3x. It means the same thing but looks cleaner.';
+        generatedCard.mediaType = 'math';
+        generatedCard.mediaVal = '3 \\times x = 3x';
+      }
+    } else if (topicId === 'physics-volcano') {
+      if (typeVal === 'concept') {
+        generatedCard.title = 'Mass vs Weight';
+        generatedCard.body = langKey === 'hinglish'
+          ? 'Mass matlab aapke body mein kitna matter hai, jo universe mein hamesha same rehta hai. Weight gravity par depend karta hai: agar gravity kam hogi, toh aapka weight bhi kam ho jayega.'
+          : 'Mass is the actual amount of matter in an object, which stays constant everywhere. Weight is the force of gravity acting on that mass, which changes depending on where you are.';
+        generatedCard.mediaType = 'math';
+        generatedCard.mediaVal = 'W = m \\times g';
+      } else if (typeVal === 'analogy') {
+        generatedCard.title = 'Friction is like a Brake';
+        generatedCard.body = langKey === 'hinglish'
+          ? 'Friction ek resisting force hai jo moving objects ko rokti hai. Isko zameen par rassi khinchne ki tarah samjho jo rough road par mushkil se khinchti hai.'
+          : 'Friction acts like an invisible brake. When you slide a book across a wooden table, friction between the surfaces slows it down and eventually stops it.';
+        generatedCard.mediaType = 'icon';
+        generatedCard.mediaVal = 'Scale';
+      } else if (typeVal === 'quiz') {
+        generatedCard.title = 'Weight on Moon';
+        generatedCard.body = langKey === 'hinglish'
+          ? 'Agar moon par gravity earth ki 1/6th hai, toh moon par aapka weight kitna ho jayega.'
+          : 'If gravity on the Moon is 1/6th of Earth gravity, what happens to your weight on the Moon?';
+        generatedCard.options = ['Increases', 'Decreases by 6 times', 'Stays the same', 'Becomes zero'];
+        generatedCard.answerIdx = 1;
+        generatedCard.feedbackCorrect = 'Correct. Gravity decreases, so weight decreases by 6 times.';
+        generatedCard.feedbackIncorrect = 'Incorrect. Since weight depends directly on gravity, lower gravity means lower weight.';
+      } else {
+        generatedCard.title = 'Force Balance';
+        generatedCard.body = langKey === 'hinglish'
+          ? 'Jab dono side barabar force lagta hai, toh object hilta nahi hai. Isko static balance kehte hain.'
+          : 'When equal forces act on an object from opposite directions, they cancel each other out. The object remains stationary.';
+        generatedCard.mediaType = 'math';
+        generatedCard.mediaVal = 'F_{\\text{net}} = 0';
+      }
+    } else {
+      // history-island
+      if (typeVal === 'concept') {
+        generatedCard.title = 'Timelines in History';
+        generatedCard.body = langKey === 'hinglish'
+          ? 'History mein events ko set karne ke liye timelines use hote hain. BC matlab Before Christ aur AD/CE matlab Common Era.'
+          : 'Historians use timelines to arrange historical events in chronological order. We use BCE (Before Common Era) and CE (Common Era) to mark time.';
+        generatedCard.mediaType = 'icon';
+        generatedCard.mediaVal = 'ShoppingBag';
+      } else if (typeVal === 'analogy') {
+        generatedCard.title = 'History as a Time Machine';
+        generatedCard.body = langKey === 'hinglish'
+          ? 'Historical monuments aur artifacts ko ek time machine ki tarah samjho. Unhe dekh kar hum jaan sakte hain ki hazaron saal pehle log kaise rehte the.'
+          : 'Think of monuments as physical time machines. By visiting ruins or looking at old tools, we can visualize how people lived centuries ago.';
+        generatedCard.mediaType = 'icon';
+        generatedCard.mediaVal = 'ShoppingBag';
+      } else if (typeVal === 'quiz') {
+        generatedCard.title = 'Chronology Check';
+        generatedCard.body = langKey === 'hinglish'
+          ? 'Inmein se kaun sa event pehle hua tha: 500 BC ya 200 AD.'
+          : 'Which of these historical events occurred first in time: 500 BCE or 200 CE?';
+        generatedCard.options = ['500 BC', '200 AD', 'Both together', 'Cannot say'];
+        generatedCard.answerIdx = 0;
+        generatedCard.feedbackCorrect = 'Correct. BC timeline counts backward, so 500 BC occurred before 200 AD.';
+        generatedCard.feedbackIncorrect = 'Incorrect. BC counts backward before year zero, so it is older than AD.';
+      } else {
+        generatedCard.title = 'Historical Artifacts';
+        generatedCard.body = langKey === 'hinglish'
+          ? 'Purane pots, ornaments aur weapons se us time ki technology aur life style ka pata chalta hai.'
+          : 'Ancient pottery, tools, and weapons are archeological clues that reveal the technology level and craftsmanship of ancient empires.';
+        generatedCard.mediaType = 'icon';
+        generatedCard.mediaVal = 'ShoppingBag';
+      }
+    }
+
+    baseCards.push(generatedCard);
+  }
+
+  return baseCards;
 };

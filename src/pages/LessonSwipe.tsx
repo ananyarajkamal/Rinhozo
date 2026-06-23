@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { SwipeCard } from '../components/SwipeCard';
 import { RinAvatar } from '../components/RinAvatar';
 import type { RinMood } from '../components/RinAvatar';
-import { TOPICS_DATA } from '../locales/cardsData';
+import { TOPICS_DATA, getExpandedCards } from '../locales/cardsData';
 import { LOCALES } from '../locales/strings';
 import type { SupportedLang, UIStrings } from '../locales/strings';
 import { db } from '../lib/db';
 import { ArrowLeft, Check, X, Volume2, Sparkles } from 'lucide-react';
+import { EngagementMonitor } from '../components/EngagementMonitor';
 
 interface LessonSwipeProps {
   topicId: string;
@@ -14,6 +15,7 @@ interface LessonSwipeProps {
   strings: UIStrings;
   onBackToMap: () => void;
   onChangeLanguage: (lang: SupportedLang) => void;
+  evolutionLevel: number;
 }
 
 export const LessonSwipe: React.FC<LessonSwipeProps> = ({
@@ -21,10 +23,12 @@ export const LessonSwipe: React.FC<LessonSwipeProps> = ({
   initialLang,
   strings: initialStrings,
   onBackToMap,
-  onChangeLanguage
+  onChangeLanguage,
+  evolutionLevel
 }) => {
   const [lang, setLang] = useState<SupportedLang>(initialLang);
   const [strings, setStrings] = useState<UIStrings>(initialStrings);
+  const [cards, setCards] = useState<any[]>(() => getExpandedCards(topicId, lang));
   const [cardIndex, setCardIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [isAnswered, setIsAnswered] = useState(false);
@@ -32,10 +36,10 @@ export const LessonSwipe: React.FC<LessonSwipeProps> = ({
   const [rinMood, setRinMood] = useState<RinMood>('happy');
   const [completed, setCompleted] = useState(false);
   const [startTime, setStartTime] = useState<number>(Date.now());
+  const [audioMode, setAudioMode] = useState(false);
 
   // Load cards for topic and language
   const topicData = TOPICS_DATA[topicId]?.[lang] || TOPICS_DATA[topicId]?.['hinglish'];
-  const cards = topicData?.cards || [];
   const currentCard = cards[cardIndex];
 
   // Set strings whenever language changes
@@ -50,7 +54,21 @@ export const LessonSwipe: React.FC<LessonSwipeProps> = ({
     setIsAnswered(false);
     setFeedback(null);
     setRinMood('happy');
-  }, [cardIndex]);
+
+    // Auto-read in audio mode
+    if (audioMode && currentCard) {
+      const timer = setTimeout(() => {
+        handleSpeak();
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [cardIndex, audioMode, currentCard]);
+
+  // Reload cards if topicId or lang changes
+  useEffect(() => {
+    setCards(getExpandedCards(topicId, lang));
+    setCardIndex(0);
+  }, [topicId, lang]);
 
   const handleLanguageChange = (newLang: SupportedLang) => {
     setLang(newLang);
@@ -58,6 +76,7 @@ export const LessonSwipe: React.FC<LessonSwipeProps> = ({
   };
 
   const handleSwipeRight = async () => {
+    if (!currentCard) return;
     // Log view/completed action
     const timeSpent = Date.now() - startTime;
     await db.logInteraction({
@@ -84,6 +103,7 @@ export const LessonSwipe: React.FC<LessonSwipeProps> = ({
   };
 
   const handleSwipeLeft = async () => {
+    if (!currentCard) return;
     // Explain differently logic: trigger Rin concern, then reset card to show another style
     setRinMood('concerned');
     const timeSpent = Date.now() - startTime;
@@ -112,7 +132,7 @@ export const LessonSwipe: React.FC<LessonSwipeProps> = ({
   };
 
   const handleCheckAnswer = () => {
-    if (selectedOption === null || isAnswered) return;
+    if (selectedOption === null || isAnswered || !currentCard) return;
     
     setIsAnswered(true);
     const correct = selectedOption === currentCard.answerIdx;
@@ -128,6 +148,7 @@ export const LessonSwipe: React.FC<LessonSwipeProps> = ({
 
   // Speaks the card title and body (Web Speech API)
   const handleSpeak = () => {
+    if (!currentCard) return;
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel(); // Stop current speech
       
@@ -156,8 +177,16 @@ export const LessonSwipe: React.FC<LessonSwipeProps> = ({
     }
   };
 
+  const handleSwitchStyle = () => {
+    const allCards = getExpandedCards(topicId, lang);
+    const storyAnalogies = allCards.filter(c => c.type === 'analogy' || c.type === 'concept');
+    const others = allCards.filter(c => c.type !== 'analogy' && c.type !== 'concept');
+    setCards([...storyAnalogies, ...others]);
+    setCardIndex(0);
+  };
+
   return (
-    <div className="min-h-screen bg-[#faf6f0] text-[#1e293b] flex flex-col items-center p-4 md:p-6 overflow-hidden">
+    <div className="min-h-screen bg-[#faf6f0] text-[#1e293b] flex flex-col items-center p-4 md:p-6 overflow-hidden relative">
       
       {/* HEADER BAR */}
       <div className="w-full max-w-lg flex items-center justify-between mb-4 z-20">
@@ -187,7 +216,7 @@ export const LessonSwipe: React.FC<LessonSwipeProps> = ({
       {/* LESSON COMPLETE CELEBRATION */}
       {completed ? (
         <div className="flex-1 w-full max-w-md flex flex-col justify-center items-center text-center p-6 bg-white border border-[#e5dec9] rounded-3xl shadow-lg z-10 animate-fade-in my-8">
-          <RinAvatar mood="excited" size={160} glowIntensity={0.9} />
+          <RinAvatar mood="excited" size={160} glowIntensity={0.9} evolutionLevel={evolutionLevel} />
           
           <h2 className="text-2xl font-bold mt-6 mb-2 text-[#1e293b]">
             {strings.lessonCompleted}
@@ -236,7 +265,7 @@ export const LessonSwipe: React.FC<LessonSwipeProps> = ({
             </div>
             
             <div className="relative">
-              <RinAvatar mood={rinMood} size={70} interactive={false} glowIntensity={0.5} />
+              <RinAvatar mood={rinMood} size={70} interactive={false} glowIntensity={0.5} evolutionLevel={evolutionLevel} />
             </div>
           </div>
 
@@ -302,7 +331,7 @@ export const LessonSwipe: React.FC<LessonSwipeProps> = ({
                       {/* Quiz Options */}
                       {card.type === 'quiz' && card.options && (
                         <div className="space-y-2 mt-4">
-                          {card.options.map((option, idx) => {
+                          {card.options.map((option: string, idx: number) => {
                             const isSelected = selectedOption === idx;
                             let style = 'border-[#e5dec9] hover:bg-[#faf6f0]';
                             if (isAnswered) {
@@ -373,6 +402,16 @@ export const LessonSwipe: React.FC<LessonSwipeProps> = ({
 
         </div>
       )}
+
+      <EngagementMonitor
+        cardIndex={cardIndex}
+        active={!completed && !!currentCard}
+        onActivateAudio={() => {
+          setAudioMode(true);
+          handleSpeak();
+        }}
+        onSwitchStyle={handleSwitchStyle}
+      />
     </div>
   );
 };

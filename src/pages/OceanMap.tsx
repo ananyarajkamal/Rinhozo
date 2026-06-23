@@ -2,14 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { RinAvatar } from '../components/RinAvatar';
 import { db } from '../lib/db';
 import type { UserProfile, UserProgress } from '../lib/db';
-import { Play, Lock, User, Settings, Download, Award } from 'lucide-react';
+import { Play, Lock, User, Settings, Download, Award, Film } from 'lucide-react';
 
 interface OceanMapProps {
   onSelectTopic: (topicId: string) => void;
-  onNavigate: (route: 'landing' | 'profile' | 'settings' | 'downloads') => void;
+  onNavigate: (route: 'landing' | 'profile' | 'settings' | 'downloads' | 'reels') => void;
+  evolutionLevel: number;
 }
 
-export const OceanMap: React.FC<OceanMapProps> = ({ onSelectTopic, onNavigate }) => {
+export const OceanMap: React.FC<OceanMapProps> = ({ onSelectTopic, onNavigate, evolutionLevel }) => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [reefProgress, setReefProgress] = useState<UserProgress | null>(null);
   const [volcanoProgress, setVolcanoProgress] = useState<UserProgress | null>(null);
@@ -157,7 +158,7 @@ export const OceanMap: React.FC<OceanMapProps> = ({ onSelectTopic, onNavigate })
       {/* TOP HEADER */}
       <header className="w-full max-w-7xl mx-auto px-6 py-4 flex items-center justify-between z-10 border-b border-[#e5dec9]/30 bg-[#faf6f0]/75 backdrop-blur-md">
         <div className="flex items-center gap-3">
-          <RinAvatar mood={activeEnv === 'reef' ? 'happy' : activeEnv === 'volcano' ? 'excited' : 'calm'} size={44} interactive={false} glowIntensity={0.4} />
+          <RinAvatar mood={activeEnv === 'reef' ? 'happy' : activeEnv === 'volcano' ? 'excited' : 'calm'} size={44} interactive={false} glowIntensity={0.4} evolutionLevel={evolutionLevel} />
           <div className="flex flex-col text-left">
             <span className="text-sm font-bold text-[#1e293b] leading-tight">Ocean Map</span>
             <span className="text-[11px] font-semibold text-[#78716c] uppercase tracking-wider">
@@ -174,6 +175,13 @@ export const OceanMap: React.FC<OceanMapProps> = ({ onSelectTopic, onNavigate })
             title="Profile"
           >
             <User size={18} />
+          </button>
+          <button 
+            onClick={() => onNavigate('reels')}
+            className="p-3 bg-white hover:bg-[#f0ebe3] text-[#1e293b] border border-[#e5dec9] rounded-2xl shadow-sm transition-all cursor-pointer"
+            title="Learning Reels"
+          >
+            <Film size={18} />
           </button>
           <button 
             onClick={() => onNavigate('downloads')}

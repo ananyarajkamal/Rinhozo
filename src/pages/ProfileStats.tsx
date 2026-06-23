@@ -3,14 +3,17 @@ import { RinAvatar } from '../components/RinAvatar';
 import { db } from '../lib/db';
 import type { UserProfile, UserProgress } from '../lib/db';
 import { ArrowLeft, Award, Flame, BookOpen } from 'lucide-react';
+import { StyleClassifier } from '../lib/classifier';
 
 interface ProfileStatsProps {
   onBackToMap: () => void;
+  evolutionLevel: number;
 }
 
-export const ProfileStats: React.FC<ProfileStatsProps> = ({ onBackToMap }) => {
+export const ProfileStats: React.FC<ProfileStatsProps> = ({ onBackToMap, evolutionLevel }) => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [progressList, setProgressList] = useState<UserProgress[]>([]);
+  const [classification, setClassification] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -24,6 +27,9 @@ export const ProfileStats: React.FC<ProfileStatsProps> = ({ onBackToMap }) => {
         const pIsland = await db.getProgress('history-island');
         
         setProgressList([pReef, pVolcano, pIsland]);
+
+        const classResult = await StyleClassifier.classifyUserStyle();
+        setClassification(classResult);
       } catch (err) {
         console.error('Failed to load profile data:', err);
       } finally {
@@ -75,7 +81,7 @@ export const ProfileStats: React.FC<ProfileStatsProps> = ({ onBackToMap }) => {
         {/* User Mascot Banner */}
         <div className="flex items-center gap-4 border-b border-[#e5dec9]/40 pb-5">
           <div className="relative">
-            <RinAvatar mood="excited" size={80} interactive={false} glowIntensity={0.5} />
+            <RinAvatar mood="excited" size={80} interactive={false} glowIntensity={0.5} evolutionLevel={evolutionLevel} />
           </div>
           <div className="text-left">
             <h3 className="text-lg font-bold text-[#1e293b]">{profile?.name}</h3>
@@ -113,19 +119,45 @@ export const ProfileStats: React.FC<ProfileStatsProps> = ({ onBackToMap }) => {
         {/* LEARNING STYLE SUMMARY */}
         <div className="bg-[#faf6f0] border border-[#e5dec9]/60 rounded-2xl p-4 text-left">
           <span className="text-[10px] font-bold text-[#78716c] uppercase block mb-1.5">Dominant Learning Style</span>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 mb-3">
             <div className="w-10 h-10 rounded-xl bg-[#7dd3fc]/20 flex items-center justify-center text-[#7dd3fc]">
               <BookOpen size={20} />
             </div>
             <div>
               <span className="text-sm font-bold text-[#1e293b] block">
-                {profile ? getStyleLabel(profile.learning_style) : 'Adaptive Style'}
+                {profile ? getStyleLabel(classification?.dominantStyle || profile.learning_style) : 'Adaptive Style'}
               </span>
               <span className="text-[11px] font-semibold text-[#78716c] mt-0.5 block">
                 Rin adapts explanations to match this preference.
               </span>
             </div>
           </div>
+          {classification && classification.scores && (
+            <div className="border-t border-[#e5dec9]/40 pt-3 mt-2 space-y-2">
+              <span className="text-[9px] font-bold text-[#78716c] uppercase block mb-1">Style Vector Breakdown</span>
+              <div className="grid grid-cols-2 gap-2 text-[10px] font-bold text-[#78716c]">
+                <div className="flex justify-between items-center bg-white px-2 py-1.5 rounded-lg border border-[#e5dec9]/40">
+                  <span>Story</span>
+                  <span className="text-[#1e293b]">{Math.round(classification.scores.story * 100)}%</span>
+                </div>
+                <div className="flex justify-between items-center bg-white px-2 py-1.5 rounded-lg border border-[#e5dec9]/40">
+                  <span>Visual</span>
+                  <span className="text-[#1e293b]">{Math.round(classification.scores.visual * 100)}%</span>
+                </div>
+                <div className="flex justify-between items-center bg-white px-2 py-1.5 rounded-lg border border-[#e5dec9]/40">
+                  <span>Concept</span>
+                  <span className="text-[#1e293b]">{Math.round(classification.scores.concept * 100)}%</span>
+                </div>
+                <div className="flex justify-between items-center bg-white px-2 py-1.5 rounded-lg border border-[#e5dec9]/40">
+                  <span>Auditory</span>
+                  <span className="text-[#1e293b]">{Math.round(classification.scores.auditory * 100)}%</span>
+                </div>
+              </div>
+              <div className="text-[9px] font-semibold text-[#78716c] text-right mt-1.5">
+                Classifier Confidence: <span className="font-bold text-[#1e293b]">{Math.round(classification.confidence * 100)}%</span>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* COMPLETED BADGES */}

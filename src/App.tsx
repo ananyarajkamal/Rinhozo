@@ -8,6 +8,7 @@ import { BossBattle } from './pages/BossBattle';
 import { ProfileStats } from './pages/ProfileStats';
 import { SettingsPage } from './pages/SettingsPage';
 import { DownloadManager } from './pages/DownloadManager';
+import { LearningReels } from './pages/LearningReels';
 import { LOCALES } from './locales/strings';
 import type { SupportedLang, UIStrings } from './locales/strings';
 import { db } from './lib/db';
@@ -22,7 +23,8 @@ type AppRoute =
   | 'battle' 
   | 'profile' 
   | 'settings' 
-  | 'downloads';
+  | 'downloads'
+  | 'reels';
 
 function App() {
   const [route, setRoute] = useState<AppRoute>('landing');
@@ -30,6 +32,27 @@ function App() {
   const [strings, setStrings] = useState<UIStrings>(LOCALES.hinglish);
   const [loading, setLoading] = useState(true);
   const [activeTopicId, setActiveTopicId] = useState<string>('algebra-reef');
+  const [evolutionLevel, setEvolutionLevel] = useState(1);
+
+  const updateEvolutionLevel = async () => {
+    try {
+      const pReef = await db.getProgress('algebra-reef');
+      const pVolcano = await db.getProgress('physics-volcano');
+      const pIsland = await db.getProgress('history-island');
+      
+      const count = [pReef, pVolcano, pIsland].filter(p => p.status === 'completed').length;
+      const userProfile = await db.getProfile();
+      const streak = userProfile?.streak_count || 1;
+      
+      let level = count + 1;
+      if (count === 3 && streak >= 2) {
+        level = 5;
+      }
+      setEvolutionLevel(level);
+    } catch (err) {
+      console.error('Failed to update evolution level:', err);
+    }
+  };
 
   // Initialize profile and set default language strings
   useEffect(() => {
@@ -45,6 +68,7 @@ function App() {
             setRoute('map');
           }
         }
+        await updateEvolutionLevel();
       } catch (err) {
         console.error('Failed to initialize profile:', err);
       } finally {
@@ -128,6 +152,8 @@ function App() {
       await db.checkAndUpdateStreak();
     }
     
+    await updateEvolutionLevel();
+    
     // Always navigate back to map after battle ends
     setRoute('map');
   };
@@ -170,6 +196,7 @@ function App() {
         <OceanMap 
           onSelectTopic={handleSelectTopic} 
           onNavigate={(target) => setRoute(target as AppRoute)}
+          evolutionLevel={evolutionLevel}
         />
       );
     case 'learn':
@@ -178,8 +205,12 @@ function App() {
           topicId={activeTopicId}
           initialLang={profile?.interface_lang || 'hinglish'}
           strings={strings}
-          onBackToMap={() => setRoute('map')}
+          onBackToMap={async () => {
+            await updateEvolutionLevel();
+            setRoute('map');
+          }}
           onChangeLanguage={handleChangeLanguageMidSession}
+          evolutionLevel={evolutionLevel}
         />
       );
     case 'battle':
@@ -193,6 +224,7 @@ function App() {
       return (
         <ProfileStats 
           onBackToMap={() => setRoute('map')} 
+          evolutionLevel={evolutionLevel}
         />
       );
     case 'settings':
@@ -205,6 +237,12 @@ function App() {
     case 'downloads':
       return (
         <DownloadManager 
+          onBackToMap={() => setRoute('map')} 
+        />
+      );
+    case 'reels':
+      return (
+        <LearningReels 
           onBackToMap={() => setRoute('map')} 
         />
       );
