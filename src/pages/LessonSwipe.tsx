@@ -186,10 +186,10 @@ export const LessonSwipe: React.FC<LessonSwipeProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-[#faf6f0] text-[#1e293b] flex flex-col items-center p-4 md:p-6 overflow-hidden relative">
+    <div className="min-h-screen bg-[#faf6f0] text-[#1e293b] flex flex-col items-center p-4 md:p-6 overflow-hidden relative lesson-container">
       
       {/* HEADER BAR */}
-      <div className="w-full max-w-lg flex items-center justify-between mb-4 z-20 flex-shrink-0">
+      <div className="w-full max-w-lg flex items-center justify-between mb-4 z-20 flex-shrink-0 lesson-header">
         <button 
           onClick={onBackToMap}
           className="p-2.5 rounded-full hover:bg-[#f0ebe3] text-[#78716c] hover:text-[#1e293b] transition-all cursor-pointer"
@@ -250,7 +250,7 @@ export const LessonSwipe: React.FC<LessonSwipeProps> = ({
         <div className="flex-1 w-full max-w-md flex flex-col justify-between items-center z-10 py-2">
           
           {/* Top Progress bar and Rin floating */}
-          <div className="w-full flex items-center justify-between mb-4 px-2 flex-shrink-0">
+          <div className="w-full flex items-center justify-between mb-4 px-2 flex-shrink-0 lesson-progress-row">
             <div className="flex-1 mr-4">
               <div className="flex justify-between text-[11px] font-bold text-[#78716c] mb-1.5">
                 <span>{topicData.name}</span>
@@ -270,7 +270,7 @@ export const LessonSwipe: React.FC<LessonSwipeProps> = ({
           </div>
 
           {/* SWIPE CARD DECK */}
-          <div className="relative w-full h-[60vh] min-h-[300px] max-h-[440px] max-w-sm my-2 flex-shrink-0">
+          <div className="relative w-full h-[60vh] min-h-[300px] max-h-[440px] max-w-sm my-2 flex-shrink-0 lesson-card-deck">
             {cards.slice(cardIndex, cardIndex + 2).reverse().map((card, i, arr) => {
               const isActive = i === arr.length - 1;
               return (
@@ -282,9 +282,9 @@ export const LessonSwipe: React.FC<LessonSwipeProps> = ({
                   className={isActive ? '' : 'transform scale-95 translate-y-4 opacity-40 pointer-events-none'}
                 >
                   {/* Inside Card Layout */}
-                  <div className="flex-1 flex flex-col justify-between text-left">
+                  <div className="flex-1 flex flex-col min-h-0 text-left w-full h-full">
                     {/* Header: Title and TTS button */}
-                    <div className="flex items-start justify-between">
+                    <div className="flex items-center justify-between flex-shrink-0 pb-2 border-b border-[#FAF6F0]">
                       <span className="text-[10px] font-bold text-[#d4a574] uppercase tracking-widest leading-none bg-[#f5e6d3]/40 px-2.5 py-1.5 rounded-full">
                         {card.type}
                       </span>
@@ -297,9 +297,9 @@ export const LessonSwipe: React.FC<LessonSwipeProps> = ({
                       </button>
                     </div>
 
-                    {/* Body contents */}
-                    <div className="flex-1 flex flex-col justify-center my-2 overflow-y-auto no-scrollbar pr-1">
-                      <h3 className="text-lg sm:text-xl font-bold text-[#1e293b] mb-1.5 sm:mb-3 leading-snug">{card.title}</h3>
+                    {/* Scrollable Body contents */}
+                    <div className="flex-1 overflow-y-auto no-scrollbar pr-1 py-3 min-h-0">
+                      <h3 className="text-lg sm:text-xl font-bold text-[#1e293b] mb-1.5 sm:mb-2.5 leading-snug">{card.title}</h3>
                       <p className="text-xs sm:text-[14px] font-semibold text-[#78716c] leading-relaxed whitespace-pre-line">
                         {card.body}
                       </p>
@@ -312,15 +312,14 @@ export const LessonSwipe: React.FC<LessonSwipeProps> = ({
                       )}
                       
                       {card.mediaType === 'icon' && card.mediaVal && (
-                        <div className="mt-4 flex justify-center text-[#d4a574]">
-                          <div className="w-14 h-14 rounded-2xl bg-[#f5e6d3]/40 flex items-center justify-center">
-                            {/* Render icon based on name */}
+                        <div className="mt-3 flex justify-center text-[#d4a574]">
+                          <div className="w-12 h-12 rounded-xl bg-[#f5e6d3]/40 flex items-center justify-center">
                             {card.mediaVal === 'Scale' ? (
-                              <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                              <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v17M12 3L4 7m8-4l8 4m-8 6h7M5 13h7m-7 0a3 3 0 100 6 3 3 0 000-6zm14 0a3 3 0 100 6 3 3 0 000-6z" />
                               </svg>
                             ) : (
-                              <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                              <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                               </svg>
                             )}
@@ -363,32 +362,32 @@ export const LessonSwipe: React.FC<LessonSwipeProps> = ({
                       )}
                     </div>
 
-                    {/* Bottom Action for Quiz */}
-                    {card.type === 'quiz' && !isAnswered && (
-                      <button
-                        onClick={handleCheckAnswer}
-                        disabled={selectedOption === null}
-                        className={`w-full py-2.5 mt-2 rounded-xl text-xs sm:text-sm font-bold shadow-sm transition-all cursor-pointer ${
-                          selectedOption !== null 
-                            ? 'bg-[#1e293b] hover:bg-[#0f172a] text-white' 
-                            : 'bg-[#f0ebe3] text-[#78716c] opacity-50 cursor-not-allowed'
-                        }`}
-                      >
-                        Submit Answer
-                      </button>
-                    )}
+                    {/* Footer / Quiz Submit Action & Feedback */}
+                    <div className="flex-shrink-0 pt-2 border-t border-[#FAF6F0] w-full">
+                      {card.type === 'quiz' && !isAnswered && (
+                        <button
+                          onClick={handleCheckAnswer}
+                          disabled={selectedOption === null}
+                          className={`w-full py-2.5 rounded-xl text-xs sm:text-sm font-bold shadow-sm transition-all cursor-pointer ${
+                            selectedOption !== null 
+                              ? 'bg-[#1e293b] hover:bg-[#0f172a] text-white' 
+                              : 'bg-[#f0ebe3] text-[#78716c] opacity-50 cursor-not-allowed'
+                          }`}
+                        >
+                          Submit Answer
+                        </button>
+                      )}
 
-                    {/* Quiz Feedback display */}
-                    {feedback && (
-                      <div className={`mt-2 p-3 rounded-xl text-xs font-semibold leading-relaxed border ${
-                        selectedOption === currentCard.answerIdx 
-                          ? 'bg-[#86efac]/10 border-[#86efac]/30 text-emerald-800' 
-                          : 'bg-[#fca5a5]/10 border-[#fca5a5]/30 text-red-800'
-                      }`}>
-                        {feedback}
-                      </div>
-                    )}
-
+                      {feedback && (
+                        <div className={`p-2.5 rounded-xl text-xs font-semibold leading-relaxed border ${
+                          selectedOption === currentCard.answerIdx 
+                            ? 'bg-[#86efac]/10 border-[#86efac]/30 text-emerald-800' 
+                            : 'bg-[#fca5a5]/10 border-[#fca5a5]/30 text-red-800'
+                        }`}>
+                          {feedback}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </SwipeCard>
               );

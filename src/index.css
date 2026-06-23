@@ -247,3 +247,22 @@ html, body {
 .book-spine-3d {
   background: linear-gradient(90deg, rgba(30, 41, 59, 0.15) 0%, rgba(30, 41, 59, 0) 10%, rgba(255, 255, 255, 0.2) 20%, rgba(255, 255, 255, 0) 30%, rgba(0, 0, 0, 0.1) 95%, rgba(0, 0, 0, 0.2) 100%);
 }
+
+@media (max-height: 640px) {
+  .lesson-container {
+    padding: 8px !important;
+  }
+  .lesson-header {
+    margin-bottom: 8px !important;
+  }
+  .lesson-progress-row {
+    margin-bottom: 8px !important;
+  }
+  .lesson-card-deck {
+    height: 52vh !important;
+    min-height: 250px !important;
+    margin-top: 4px !important;
+    margin-bottom: 4px !important;
+  }
+}
+
