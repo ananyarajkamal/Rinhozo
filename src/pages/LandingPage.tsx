@@ -1,1088 +1,1828 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { motion, useInView, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import {
-  ArrowRight, Play, Menu, X,
-  BookOpen, Lightbulb, Puzzle, BarChart3, GraduationCap, Sprout,
-  Mail, Phone, MapPin, Heart, Star, Send,
-  Brain, Eye, TrendingUp
+  ArrowRight, ArrowLeft, Play, Pause, Volume2, Clock,
+  Sparkles, BookOpen, Sprout, Star, Bell,
+  RotateCcw, Lock,
+  FileText, Award, LayoutDashboard, Timer,
+  BarChart3, Lightbulb, Users, HeartHandshake, Settings,
+  Trophy, Compass
 } from 'lucide-react';
-import type { UIStrings } from '../locales/strings';
 
 interface LandingPageProps {
-  strings: UIStrings;
-  onGetStarted: () => void;
+  strings?: any;
+  onGetStarted?: () => void;
 }
 
-/* ─── tiny helpers ──────────────────────────────── */
+/* ─── FADE UP ANIMATION FOR FIGMA SHOTS ─── */
 const fadeUp = (delay = 0) => ({
-  hidden: { opacity: 0, y: 32 },
+  hidden: { opacity: 0, y: 24 },
   visible: {
-    opacity: 1, y: 0,
-    transition: { duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] as const },
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
   },
 });
 
-function Section({ id, className, style, children }: { id?: string; className?: string; style?: React.CSSProperties; children: React.ReactNode }) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: '-80px' });
-  return (
-    <motion.section
-      id={id}
-      ref={ref}
-      initial="hidden"
-      animate={inView ? 'visible' : 'hidden'}
-      className={className}
-      style={style}
-    >
-      {children}
-    </motion.section>
-  );
-}
+export const LandingPage: React.FC<LandingPageProps> = ({ strings: _strings, onGetStarted: _onGetStarted }) => {
+  /* SCREEN STATE: 1 to 12 */
+  const [currentScreen, setCurrentScreen] = useState<number>(1);
+  const [, setIsMobileNavOpen] = useState(false);
 
-/* ─── floating mascot card ──────────────────────── */
-function FloatCard({
-  icon, label, sub, delay, style,
-}: { icon: React.ReactNode; label: string; sub?: string; delay: number; style: React.CSSProperties }) {
-  return (
-    <motion.div
-      animate={{ y: [0, -10, 0] }}
-      transition={{ duration: 3 + delay * 0.4, repeat: Infinity, ease: 'easeInOut', delay }}
-      className="absolute z-20 bg-white/80 backdrop-blur-md border border-white/90 rounded-2xl px-4 py-3 shadow-[0_8px_32px_rgba(22,35,58,0.10)] flex items-center gap-3 select-none"
-      style={style}
-    >
-      <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 bg-[#FBF3E8]">
-        {icon}
-      </div>
-      <div>
-        <div className="text-[13px] font-bold text-[#16233A] leading-tight">{label}</div>
-        {sub && <div className="text-[11px] text-[#6B6560] leading-tight">{sub}</div>}
-      </div>
-    </motion.div>
-  );
-}
+  /* SHARED DATA STATES (BINDING PROTOTYPE DYNAMICS) */
+  const [userName, setUserName] = useState('Ananya');
+  const [userAge, setUserAge] = useState('13');
+  const [userGrade, setUserGrade] = useState('8th Grade');
+  const [learningGoal, setLearningGoal] = useState('Improve focus and grades');
+  const [favoriteSubjects, setFavoriteSubjects] = useState<string[]>(['Mathematics', 'Science', 'Art']);
+  const [preferredStudyTime, setPreferredStudyTime] = useState('Evening (6 PM - 9 PM)');
 
-/* ─── feature card ──────────────────────────────── */
-function FeatureCard({
-  icon, color, bg, title, desc, delay,
-}: { icon: React.ReactNode; color: string; bg: string; title: string; desc: string; delay: number }) {
-  return (
-    <motion.div 
-      variants={fadeUp(delay)} 
-      className="bg-white border border-[#17263F]/6 rounded-[24px] p-8 shadow-[0_8px_32px_rgba(22,35,58,0.01)] flex flex-col gap-6 text-left transition-all hover:translate-y-[-6px] hover:shadow-[0_16px_40px_rgba(22,35,58,0.06)]"
-    >
-      <div
-        className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0"
-        style={{ background: bg, color }}
-      >
-        {icon}
-      </div>
-      <div>
-        <h3 className="text-[18px] font-bold text-[#17263F] mb-2 leading-snug">{title}</h3>
-        <p className="text-[14px] text-[#6B6560] leading-relaxed">{desc}</p>
-      </div>
-    </motion.div>
-  );
-}
+  /* ASSESSMENT STATE */
+  const [assessmentVal, setAssessmentVal] = useState<number>(3); // 1 to 5 (Never, Rarely, Sometimes, Often, Always)
 
-/* ═══════════════════════════════════════════════════
-   MAIN COMPONENT
-═══════════════════════════════════════════════════ */
-export const LandingPage: React.FC<LandingPageProps> = ({ strings, onGetStarted }) => {
-  const [scrolled, setScrolled] = useState(false);
-  const [activeTab, setActiveTab] = useState('home');
-  const [mobileOpen, setMobileOpen] = useState(false);
+  /* PREFERENCES STATE */
+  const [selectedPrefs, setSelectedPrefs] = useState<string[]>(['visual', 'interactive', 'bursts']);
 
+  /* FOCUS TIMER STATE */
+  const [timerSeconds, setTimerSeconds] = useState(1493); // 24:53
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
+  const [timerProgress] = useState(2); // 2/10 cards
+  const [focusStreak] = useState(7);
+  const [focusScore] = useState(82);
+
+  /* MOOD TRACKER */
+  const [userMood, setUserMood] = useState<'happy' | 'concerned' | 'excited' | 'calm'>('calm');
+
+  /* ACCESSIBILITY & SETTINGS STATES */
+  const [reduceDistractions, setReduceDistractions] = useState(false);
+  const [softColors, setSoftColors] = useState(false);
+  const [dyslexiaFont, setDyslexiaFont] = useState(false);
+  const [highContrast, setHighContrast] = useState(false);
+
+  const [notifStudy, setNotifStudy] = useState(true);
+  const [notifBreak, setNotifBreak] = useState(true);
+  const [notifGoal, setNotifGoal] = useState(true);
+  const [notifMascot, setNotifMascot] = useState(true);
+
+  const [sessionLength, setSessionLength] = useState(25);
+  const [shortBreakLength, setShortBreakLength] = useState(5);
+  const [longBreakLength, setLongBreakLength] = useState(20);
+  const [bgMusic, setBgMusic] = useState('Lo-Fi beats');
+
+  /* COUNTDOWN TIMER EFFECT */
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 32);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+    let interval: any = null;
+    if (isTimerRunning && timerSeconds > 0) {
+      interval = setInterval(() => {
+        setTimerSeconds(s => s - 1);
+      }, 1000);
+    } else {
+      clearInterval(interval);
+    }
+    return () => clearInterval(interval);
+  }, [isTimerRunning, timerSeconds]);
 
-  const goto = (id: string) => {
-    setActiveTab(id);
-    setMobileOpen(false);
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const formatTime = (totalSeconds: number) => {
+    const mins = Math.floor(totalSeconds / 60);
+    const secs = totalSeconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const navLinks = [
-    { label: 'Home', id: 'home' },
-    { label: 'Features', id: 'features' },
-    { label: 'How it works', id: 'how' },
-    { label: 'For Educators', id: 'educators' },
-    { label: 'About', id: 'about' },
-    { label: 'Contact', id: 'contact' },
-  ];
+  /* SUBJECT TOOGLE HELPER */
+  const toggleSubject = (subj: string) => {
+    if (favoriteSubjects.includes(subj)) {
+      setFavoriteSubjects(favoriteSubjects.filter(s => s !== subj));
+    } else {
+      setFavoriteSubjects([...favoriteSubjects, subj]);
+    }
+  };
 
-  const features = [
-    { icon: <BookOpen size={24} />, color: '#D4A373', bg: '#FBF3E8', title: 'Adaptive Learning', desc: 'Personalized content that adapts to your attention, pace, and learning preferences.' },
-    { icon: <Lightbulb size={24} />, color: '#7DD3FC', bg: '#EFF9FF', title: 'Attention Insights', desc: 'Detects focus levels in real-time and recommends the right support when you need it.' },
-    { icon: <Puzzle size={24} />, color: '#C084FC', bg: '#FAF0FF', title: 'Neurodiverse Friendly', desc: 'Designed for ADHD and diverse learning styles with inclusive experiences.' },
-    { icon: <BarChart3 size={24} />, color: '#86EFAC', bg: '#F0FDF4', title: 'Learning Analytics', desc: 'Track progress, patterns, and behaviors with easy-to-understand visual insights.' },
-    { icon: <GraduationCap size={24} />, color: '#D4A373', bg: '#FBF3E8', title: 'Educator Dashboard', desc: 'Actionable insights and tools for educators to support every learner better.' },
-    { icon: <Sprout size={24} />, color: '#F87171', bg: '#FFF1F1', title: 'Growth Journey', desc: 'Celebrate milestones and see growth through your personalized learning journey.' },
-  ];
+  /* PREFERENCE TOGGLE HELPER */
+  const togglePref = (prefId: string) => {
+    if (selectedPrefs.includes(prefId)) {
+      setSelectedPrefs(selectedPrefs.filter(p => p !== prefId));
+    } else {
+      setSelectedPrefs([...selectedPrefs, prefId]);
+    }
+  };
+
+  /* RENDER 3D JELLYFISH MASCOT (RIN) WITH BIOLUMINESCENT MOOD GLOW */
+  const renderMascot = (size = 180, isFloating = true, isTilted = true) => {
+    const glowColors = {
+      happy: 'rgba(214, 161, 95, 0.45)', // gold
+      concerned: 'rgba(248, 113, 113, 0.45)', // rose
+      excited: 'rgba(125, 211, 252, 0.55)', // cyan
+      calm: 'rgba(183, 216, 143, 0.45)' // soft green
+    };
+
+    return (
+      <div 
+        className="relative inline-flex items-center justify-center select-none"
+        style={{ width: size, height: size }}
+      >
+        {/* Soft internal light emission */}
+        <motion.div
+          animate={{ 
+            scale: [0.94, 1.06, 0.94],
+            opacity: [0.6, 0.9, 0.6]
+          }}
+          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute inset-0 rounded-full pointer-events-none"
+          style={{
+            background: `radial-gradient(circle, ${glowColors[userMood]} 0%, transparent 65%)`,
+            filter: 'blur(16px)',
+            zIndex: 1
+          }}
+        />
+
+        {/* Mascot PNG with Apple-style floating float motion */}
+        <motion.div
+          animate={isFloating ? { y: [0, -12, 0] } : {}}
+          transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+          className="w-full h-full flex items-center justify-center relative z-10"
+          style={{ transform: isTilted ? 'rotate(-6deg)' : 'none' }}
+        >
+          <img 
+            src="/assets/rin_mascot_3d_clean.png" 
+            alt="Rin Mascot" 
+            className="w-[90%] h-[90%] object-contain filter drop-shadow-[0_16px_32px_rgba(22,35,58,0.12)]"
+          />
+        </motion.div>
+
+        {/* Magical floating sparkles */}
+        <div className="absolute top-[10%] left-[20%] text-[#D4A373] opacity-35 animate-pulse">
+          <Sparkles size={16} />
+        </div>
+        <div className="absolute bottom-[25%] right-[15%] text-[#8AB6D6] opacity-30 animate-pulse delay-500">
+          <Sparkles size={14} />
+        </div>
+      </div>
+    );
+  };
+
+  /* SHARED SIDEBAR FOR SCREENS 5 to 12 */
+  const renderSidebar = () => {
+    const menuItems = [
+      { id: 5, label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
+      { id: 6, label: 'Focus Mode', icon: <Timer size={20} /> },
+      { id: 7, label: 'Insights', icon: <BarChart3 size={20} /> },
+      { id: 8, label: 'AI Tips', icon: <Lightbulb size={20} /> },
+      { id: 9, label: 'Growth Journey', icon: <Trophy size={20} /> },
+      { id: 10, label: 'Educators', icon: <Users size={20} /> },
+      { id: 11, label: 'Parents', icon: <HeartHandshake size={20} /> },
+      { id: 12, label: 'Settings', icon: <Settings size={20} /> },
+    ];
+
+    return (
+      <aside className="w-20 lg:w-24 bg-white border-r border-[#17263F]/6 flex flex-col items-center py-8 justify-between shrink-0 select-none">
+        {/* Brand Logo */}
+        <button 
+          onClick={() => setCurrentScreen(1)} 
+          className="w-12 h-12 flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
+        >
+          <img src="/assets/rin_mascot_3d_clean.png" alt="Rin logo" className="w-10 h-10 object-contain transform rotate-[-8deg]" />
+        </button>
+
+        {/* Navigation Grid */}
+        <nav className="flex flex-col gap-3.5">
+          {menuItems.map(item => {
+            const isActive = currentScreen === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => setCurrentScreen(item.id)}
+                className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all relative group cursor-pointer ${
+                  isActive 
+                    ? 'bg-[#17263F] text-white shadow-md' 
+                    : 'text-[#8C847B] hover:text-[#17263F] hover:bg-[#FAF6F0]'
+                }`}
+              >
+                {item.icon}
+                {/* Tooltip */}
+                <span className="absolute left-16 bg-[#17263F] text-white text-[11px] font-bold tracking-wide py-1 px-3 rounded-lg opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity whitespace-nowrap z-50">
+                  {item.label}
+                </span>
+              </button>
+            );
+          })}
+        </nav>
+
+        {/* Small Rin mascot head marker at the bottom */}
+        <div className="flex flex-col items-center gap-1 opacity-70">
+          <span className="text-[10px] font-bold text-[#8C847B] tracking-wider uppercase">Rin</span>
+          <div className="w-1.5 h-1.5 rounded-full bg-[#D4A373] animate-pulse" />
+        </div>
+      </aside>
+    );
+  };
 
   return (
-    <div
-      className="min-h-screen flex flex-col overflow-x-hidden"
-      style={{ background: '#FAF6F0', color: '#16233A', fontFamily: "'Plus Jakarta Sans', Inter, system-ui, sans-serif" }}
+    <div 
+      className={`min-h-screen flex flex-col bg-[#FAF6F0] text-[#17263F] font-sans selection:bg-[#D4A373]/20 transition-all duration-300 ${
+        dyslexiaFont ? 'dyslexia-font' : ''
+      } ${highContrast ? 'high-contrast-mode' : ''}`}
+      style={{ 
+        fontFamily: dyslexiaFont ? "'Comic Sans MS', cursive, sans-serif" : "'Plus Jakarta Sans', Inter, sans-serif" 
+      }}
     >
-      <span className="sr-only">{strings.landingTitle}</span>
-
+      
       {/* ════════════════════════════════════════════
-          NAVBAR
+          APP WRAPPER OR MAIN GRID
       ════════════════════════════════════════════ */}
-      <header
-        style={{
-          position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50,
-          transition: 'all 0.3s ease',
-          background: scrolled ? 'rgba(250,246,240,0.85)' : 'transparent',
-          backdropFilter: scrolled ? 'blur(16px)' : 'none',
-          borderBottom: scrolled ? '1px solid rgba(22,35,58,0.07)' : '1px solid transparent',
-        }}
-      >
-        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 40px', height: 72, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 24 }}>
+      <div className="flex-1 flex min-h-screen">
+        
+        {/* Render sidebar for dashboard screens (5 to 12) */}
+        {currentScreen >= 5 && renderSidebar()}
 
-          {/* Logo */}
-          <button onClick={() => goto('home')} style={{ display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer', background: 'none', border: 'none', padding: 0 }}>
-            <img src="/assets/rin_mascot_3d_clean.png" alt="Rin Logo" style={{ width: 38, height: 38, objectFit: 'contain', transform: 'rotate(-8deg)', filter: 'drop-shadow(0 4px 8px rgba(22,35,58,0.06))' }} />
-            <span style={{ fontSize: 18, fontWeight: 800, letterSpacing: '0.04em', color: '#17263F', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>RINHOZO</span>
-          </button>
-
-          {/* Desktop nav */}
-          <nav style={{ display: 'flex', alignItems: 'center', gap: 4 }} className="hidden md:flex">
-            {navLinks.map(link => (
-              <button
-                key={link.id}
-                onClick={() => goto(link.id)}
-                style={{
-                  padding: '8px 20px',
-                  borderRadius: 9999,
-                  fontSize: 14,
-                  fontWeight: 500,
-                  cursor: 'pointer',
-                  transition: 'all 0.18s ease',
-                  background: activeTab === link.id ? 'rgba(22,35,58,0.07)' : 'transparent',
-                  border: activeTab === link.id ? '1px solid rgba(22,35,58,0.12)' : '1px solid transparent',
-                  color: activeTab === link.id ? '#16233A' : '#6B6560',
-                  fontFamily: 'inherit',
-                }}
-              >
-                {link.label}
-              </button>
-            ))}
-          </nav>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <button
-              onClick={onGetStarted}
-              className="hidden md:flex"
-              style={{
-                alignItems: 'center', gap: 6,
-                background: '#16233A', color: '#fff',
-                padding: '10px 24px', borderRadius: 9999,
-                fontSize: 14, fontWeight: 600,
-                border: 'none', cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                fontFamily: 'inherit',
-                boxShadow: '0 2px 12px rgba(22,35,58,0.18)',
-              }}
-              onMouseEnter={e => (e.currentTarget.style.background = '#1E2E4A')}
-              onMouseLeave={e => (e.currentTarget.style.background = '#16233A')}
-            >
-              Get Started <ArrowRight size={14} />
-            </button>
-
-            <button
-              onClick={() => setMobileOpen(!mobileOpen)}
-              className="md:hidden"
-              style={{ width: 40, height: 40, borderRadius: '50%', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#16233A' }}
-            >
-              {mobileOpen ? <X size={20} /> : <Menu size={20} />}
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* Mobile menu */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
-            style={{ position: 'fixed', top: 72, left: 0, right: 0, zIndex: 40, background: 'rgba(250,246,240,0.98)', backdropFilter: 'blur(16px)', borderBottom: '1px solid rgba(22,35,58,0.08)', padding: '20px 24px' }}
-          >
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginBottom: 16 }}>
-              {navLinks.map(link => (
-                <button key={link.id} onClick={() => goto(link.id)}
-                  style={{ textAlign: 'left', padding: '12px 16px', borderRadius: 12, fontSize: 15, fontWeight: 500, cursor: 'pointer', background: activeTab === link.id ? '#FBF3E8' : 'transparent', border: 'none', color: '#16233A', fontFamily: 'inherit' }}
+        {/* Main Content Area */}
+        <main className="flex-1 flex flex-col overflow-y-auto px-6 py-8 lg:p-12">
+          
+          {/* SCREEN 1: Welcome to Rin */}
+          {currentScreen === 1 && (
+            <div className="max-w-[1280px] mx-auto w-full flex flex-col justify-between h-full">
+              {/* Navbar */}
+              <header className="flex items-center justify-between py-4 mb-16">
+                <div className="flex items-center gap-3">
+                  <img src="/assets/rin_mascot_3d_clean.png" alt="Rin" className="w-9 h-9 object-contain transform rotate-[-8deg]" />
+                  <span className="text-16 font-extrabold tracking-[0.18em] text-[#17263F]">RINHOZO</span>
+                </div>
+                <button 
+                  onClick={() => setCurrentScreen(2)}
+                  className="bg-[#17263F] hover:bg-[#253958] text-white font-bold text-sm px-6 py-3 rounded-full transition-all active:scale-[0.98] shadow-sm cursor-pointer"
                 >
-                  {link.label}
+                  Get Started →
                 </button>
-              ))}
-            </div>
-            <button onClick={onGetStarted} style={{ width: '100%', background: '#16233A', color: '#fff', padding: '14px', borderRadius: 9999, fontSize: 15, fontWeight: 600, border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}>
-              Get Started
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              </header>
 
-      {/* ════════════════════════════════════════════
-          HERO
-      ════════════════════════════════════════════ */}
-      <section
-        id="home"
-        style={{ position: 'relative', minHeight: '100vh', display: 'flex', alignItems: 'center', overflow: 'hidden' }}
-      >
-        {/* Ambient glow blobs */}
-        <div style={{ position: 'absolute', top: '-10%', right: '-5%', width: 700, height: 700, borderRadius: '50%', background: 'radial-gradient(circle, rgba(214,161,95,0.14) 0%, transparent 65%)', pointerEvents: 'none' }} />
-        <div style={{ position: 'absolute', bottom: '-5%', left: '-8%', width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, rgba(125,211,252,0.10) 0%, transparent 65%)', pointerEvents: 'none' }} />
-        <div style={{ position: 'absolute', top: '30%', left: '38%', width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle, rgba(214,161,95,0.08) 0%, transparent 65%)', pointerEvents: 'none' }} />
-
-        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 40px', width: '100%', paddingTop: 120, paddingBottom: 80, display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 64 }} className="flex-col lg:flex-row" >
-
-          {/* ── LEFT TEXT ── */}
-          <motion.div
-            initial="hidden" animate="visible"
-            style={{ flex: '0 0 auto', width: '100%', maxWidth: 540 }}
-            className="lg:max-w-[540px] w-full"
-          >
-            {/* Badge */}
-            <motion.div variants={fadeUp(0.0)}>
-              <span style={{
-                display: 'inline-flex', alignItems: 'center', gap: 8,
-                background: '#FBF3E8', color: '#D6A15F',
-                fontSize: 12, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase',
-                padding: '8px 16px', borderRadius: 9999, border: '1px solid rgba(214,161,95,0.25)',
-                marginBottom: 32,
-              }}>
-                <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#D6A15F', display: 'inline-block', animation: 'pulse 2s infinite' }} />
-                AI-Powered Learning Companion
-              </span>
-            </motion.div>
-
-            {/* Headline */}
-            <motion.div variants={fadeUp(0.08)} style={{ marginBottom: 24 }}>
-              <h1 style={{ fontSize: 'clamp(44px, 6vw, 72px)', fontWeight: 800, color: '#16233A', lineHeight: 1.08, letterSpacing: '-0.025em', margin: 0 }}>
-                Learning that<br />
-                <span style={{ position: 'relative', display: 'inline-block' }}>
-                  adapts
-                  <svg style={{ position: 'absolute', bottom: -4, left: 0, right: 0, width: '100%' }} height="6" viewBox="0 0 200 6" preserveAspectRatio="none">
-                    <path d="M0 5 Q50 0 100 4 Q150 8 200 3" fill="none" stroke="#D6A15F" strokeWidth="2.5" strokeLinecap="round" />
-                  </svg>
-                </span>{' '}to you
-              </h1>
-            </motion.div>
-
-            {/* Subheading */}
-            <motion.p variants={fadeUp(0.16)} style={{ fontSize: 18, fontWeight: 400, color: '#6B6560', lineHeight: 1.7, marginBottom: 40, maxWidth: 480 }}>
-              An AI learning companion designed for neurodiverse minds. Personalized support, adaptive attention guidance, and learning experiences that <strong style={{ color: '#16233A', fontWeight: 600 }}>grow with you.</strong>
-            </motion.p>
-
-            {/* CTA Buttons */}
-            <motion.div variants={fadeUp(0.24)} style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 56 }}>
-              <button
-                onClick={onGetStarted}
-                style={{
-                  display: 'flex', alignItems: 'center', gap: 8,
-                  background: '#16233A', color: '#fff',
-                  padding: '18px 32px', borderRadius: 9999,
-                  fontSize: 16, fontWeight: 600, border: 'none', cursor: 'pointer',
-                  boxShadow: '0 4px 20px rgba(22,35,58,0.22)',
-                  transition: 'all 0.22s ease', fontFamily: 'inherit',
-                }}
-                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 28px rgba(22,35,58,0.28)'; }}
-                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 20px rgba(22,35,58,0.22)'; }}
-              >
-                Start Your Journey <ArrowRight size={18} />
-              </button>
-
-              <button
-                onClick={onGetStarted}
-                style={{
-                  display: 'flex', alignItems: 'center', gap: 8,
-                  background: '#fff', color: '#16233A',
-                  padding: '18px 32px', borderRadius: 9999,
-                  fontSize: 16, fontWeight: 600,
-                  border: '1.5px solid rgba(22,35,58,0.12)', cursor: 'pointer',
-                  boxShadow: '0 2px 10px rgba(22,35,58,0.06)',
-                  transition: 'all 0.22s ease', fontFamily: 'inherit',
-                }}
-                onMouseEnter={e => { e.currentTarget.style.background = '#FBF3E8'; e.currentTarget.style.borderColor = 'rgba(214,161,95,0.35)'; }}
-                onMouseLeave={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.borderColor = 'rgba(22,35,58,0.12)'; }}
-              >
-                <span style={{ width: 28, height: 28, borderRadius: '50%', background: '#FBF3E8', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <Play size={10} fill="#D6A15F" color="#D6A15F" style={{ marginLeft: 1 }} />
-                </span>
-                See How It Works
-              </button>
-            </motion.div>
-
-            {/* Trust strip */}
-            <motion.div variants={fadeUp(0.32)} style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
-              <div style={{ display: 'flex', marginLeft: -8 }}>
-                {['#FDE68A', '#FBCFE8', '#BBF7D0', '#BAE6FD'].map((c, i) => (
-                  <div key={i} style={{ width: 32, height: 32, borderRadius: '50%', border: '2px solid #FAF6F0', background: c, marginLeft: -8, flexShrink: 0 }} />
-                ))}
-              </div>
-              <div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: '#16233A' }}>Trusted by 500+ students</div>
-                <div style={{ fontSize: 12, color: '#6B6560' }}>across schools & homes</div>
-              </div>
-              <div style={{ width: 1, height: 28, background: 'rgba(22,35,58,0.12)' }} />
-              <div style={{ fontSize: 14, fontWeight: 600, color: '#D6A15F' }}>★★★★★</div>
-            </motion.div>
-          </motion.div>
-
-          {/* ── RIGHT: MASCOT + FLOATING CARDS ── */}
-          <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', minHeight: 520, minWidth: 0 }} className="hidden lg:flex">
-
-            {/* Soft ring behind jellyfish */}
-            <motion.div
-              animate={{ opacity: [0.4, 0.7, 0.4], scale: [0.96, 1.04, 0.96] }}
-              transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-              style={{ position: 'absolute', width: 420, height: 420, borderRadius: '50%', background: 'radial-gradient(circle, rgba(253,230,138,0.35) 0%, transparent 65%)', pointerEvents: 'none' }}
-            />
-
-            {/* Jellyfish */}
-            <motion.div
-              animate={{ y: [0, -16, 0] }}
-              transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-              style={{ position: 'relative', zIndex: 10, width: 380, height: 380 }}
-            >
-              <img
-                src="/assets/rin_mascot_3d_clean.png"
-                alt="Rin — your AI learning companion"
-                style={{ width: '100%', height: '100%', objectFit: 'contain', filter: 'drop-shadow(0 24px 48px rgba(22,35,58,0.12))' }}
-              />
-            </motion.div>
-
-            {/* Floating cards */}
-            <FloatCard
-              icon={<Brain size={18} color="#D6A15F" />}
-              label="Personalized Learning"
-              sub="Adapts to you"
-              delay={0}
-              style={{ top: '8%', left: '-2%' }}
-            />
-            <FloatCard
-              icon={<Eye size={18} color="#7DD3FC" />}
-              label="Focus Support"
-              sub="Always attentive"
-              delay={0.6}
-              style={{ top: '6%', right: '2%' }}
-            />
-            <FloatCard
-              icon={<BarChart3 size={18} color="#86EFAC" />}
-              label="Attention Insights"
-              sub="Real-time data"
-              delay={1.1}
-              style={{ bottom: '20%', left: '-6%' }}
-            />
-            <FloatCard
-              icon={<TrendingUp size={18} color="#F87171" />}
-              label="Progress Growth"
-              sub="Every milestone"
-              delay={1.6}
-              style={{ bottom: '24%', right: '-2%' }}
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════════
-          FEATURES
-      ════════════════════════════════════════════ */}
-      <Section
-        id="features"
-        className=""
-        style={{ background: '#FFFDF9', padding: '120px 0', borderTop: '1px solid rgba(22,35,58,0.06)' } as React.CSSProperties}
-      >
-        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 40px' }}>
-
-          {/* Header */}
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-12 mb-16">
-            <motion.div variants={fadeUp(0)} className="max-w-[640px] w-full text-left">
-              <span className="text-[12px] font-bold tracking-[0.2em] text-[#D4A373] uppercase block mb-3">
-                Core Features
-              </span>
-              <h2 className="text-[36px] lg:text-[48px] font-extrabold text-[#17263F] leading-tight mb-4 tracking-tight">
-                Features <span className="font-handwritten text-[#D4A373] text-[36px] lg:text-[44px] block lg:inline ml-0 lg:ml-2">made for every learner ♡</span>
-              </h2>
-              <p className="text-[16px] lg:text-[17px] text-[#6B6560] leading-relaxed max-w-[520px]">
-                Rinhozo adapts to different learning styles, attention needs, and growth journeys.
-              </p>
-            </motion.div>
-            
-            {/* Mascot on Right */}
-            <motion.div 
-              variants={fadeUp(0.12)} 
-              className="hidden lg:flex flex-1 justify-end pr-16 relative"
-            >
-              {/* Backglow */}
-              <div className="absolute top-[20%] right-[10%] w-72 h-72 rounded-full bg-radial from-[#D4A373]/12 to-transparent blur-2xl pointer-events-none" />
-              <motion.div
-                animate={{ y: [0, -12, 0] }}
-                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-                className="w-48 h-48 relative z-10"
-              >
-                <img 
-                  src="/assets/rin_mascot_3d_clean.png" 
-                  alt="Rin Mascot" 
-                  className="w-full h-full object-contain filter drop-shadow-[0_16px_32px_rgba(22,35,58,0.08)]"
-                />
-              </motion.div>
-            </motion.div>
-          </div>
-
-          {/* Grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 24 }}>
-            {features.map((f, i) => (
-              <FeatureCard key={i} {...f} delay={i * 0.07} />
-            ))}
-          </div>
-
-          {/* Bottom CTA Banner */}
-          <motion.div 
-            variants={fadeUp(0.35)}
-            className="mt-16 bg-[#FFFDF9] border border-[#17263F]/6 rounded-[24px] p-6 lg:p-8 shadow-[0_8px_32px_rgba(22,35,58,0.02)] flex flex-col md:flex-row items-center justify-between gap-6"
-          >
-            <div className="flex items-center gap-4 text-left">
-              <div className="w-14 h-14 rounded-full overflow-hidden bg-[#FBF3E8] border border-[#D4A373]/20 flex items-center justify-center flex-shrink-0">
-                <img src="/assets/rin_mascot_3d_clean.png" alt="Rin" className="w-10 h-10 object-contain" />
-              </div>
-              <p className="text-[15px] lg:text-[16px] font-bold text-[#17263F] max-w-[480px] leading-snug">
-                "Every feature is built with one goal — helping you learn better, your way."
-              </p>
-            </div>
-            <button
-              onClick={onGetStarted}
-              className="bg-[#17263F] hover:bg-[#1E2E4A] text-white font-bold text-sm tracking-wide px-8 py-4.5 rounded-full transition-all active:scale-[0.98] shadow-md flex items-center gap-2 cursor-pointer flex-shrink-0"
-            >
-              Start Your Journey <ArrowRight size={16} />
-            </button>
-          </motion.div>
-        </div>
-      </Section>
-
-      {/* ════════════════════════════════════════════
-          HOW IT WORKS
-      ════════════════════════════════════════════ */}
-      <Section
-        id="how"
-        style={{ background: '#FAF6F0', padding: '120px 0', borderTop: '1px solid rgba(22,35,58,0.06)' } as React.CSSProperties}
-      >
-        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 40px' }}>
-
-          {/* Header */}
-          <div className="max-w-[640px] w-full text-left mb-16">
-            <span className="text-[12px] font-bold tracking-[0.2em] text-[#D4A373] uppercase block mb-3">
-              Process
-            </span>
-            <h2 className="text-[36px] lg:text-[48px] font-extrabold text-[#17263F] leading-tight mb-4 tracking-tight">
-              How it <span className="font-handwritten text-[#D4A373] text-[36px] lg:text-[44px] block lg:inline ml-0 lg:ml-2">works ♡</span>
-            </h2>
-            <p className="text-[16px] lg:text-[17px] text-[#6B6560] leading-relaxed max-w-[520px]">
-              Rinhozo makes learning simple, supportive, and personalized in four easy steps.
-            </p>
-          </div>
-
-          <div className="flex flex-col lg:flex-row gap-16 items-center">
-            
-            {/* Timeline */}
-            <div className="flex-1 flex flex-col gap-6 relative w-full">
-              {/* Timeline Connector Line */}
-              <div className="absolute left-8 top-10 bottom-10 w-[2px] bg-[#D4A373]/20 z-0" />
-              
-              {[
-                { num: '1', title: 'Create Profile', desc: 'Tell us a bit about yourself so Rin can understand your learning style.' },
-                { num: '2', title: 'AI Understands You', desc: 'Rin analyzes your attention patterns, preferences, and learning needs.' },
-                { num: '3', title: 'Personalized Learning', desc: 'Get lessons and support that adapt in real-time to you.' },
-                { num: '4', title: 'Grow & Achieve', desc: 'Track progress, celebrate milestones, and keep growing every day.' },
-              ].map((step, i) => (
+              {/* Hero content */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center my-auto">
                 <motion.div 
-                  key={i}
-                  variants={fadeUp(0.1 + i * 0.08)}
-                  className="flex gap-6 items-start relative z-10 group"
+                  initial="hidden" animate="visible" variants={fadeUp(0)}
+                  className="lg:col-span-6 text-left"
                 >
-                  <div className="w-16 h-16 rounded-full bg-[#FFFDF9] border border-[#17263F]/6 shadow-sm flex items-center justify-center flex-shrink-0 text-[18px] font-bold text-[#D4A373] group-hover:border-[#D4A373]/30 transition-colors">
-                    {step.num}
-                  </div>
-                  <div className="flex-1 bg-[#FFFDF9] border border-[#17263F]/6 rounded-[20px] p-5 shadow-[0_4px_24px_rgba(22,35,58,0.01)] text-left hover:border-[#D4A373]/25 transition-all duration-200">
-                    <h4 className="text-[16px] font-bold text-[#17263F] mb-1">{step.title}</h4>
-                    <p className="text-[14px] text-[#6B6560] leading-relaxed">{step.desc}</p>
+                  <span className="inline-flex items-center gap-2 bg-[#FFFDF9] border border-[#17263F]/6 rounded-full px-4 py-1.5 text-xs font-bold text-[#D4A373] tracking-wide mb-8 shadow-sm">
+                    <span className="w-2 h-2 rounded-full bg-[#D4A373] animate-pulse" />
+                    AI-powered learning companion
+                  </span>
+                  <h1 className="text-[52px] lg:text-[72px] font-black text-[#17263F] leading-[0.98] tracking-[-0.04em] mb-6">
+                    Welcome to<br />Rinhozo
+                  </h1>
+                  <p className="text-[18px] text-[#6E665E] leading-[1.5] max-w-[460px] mb-8 font-normal">
+                    Let's create a learning experience that understands you. Personalized study, focus, and progress.
+                  </p>
+                  
+                  <div className="flex flex-wrap gap-4">
+                    <button
+                      onClick={() => setCurrentScreen(2)}
+                      className="bg-[#17263F] hover:bg-[#253958] text-white font-bold text-[16px] px-8 py-4.5 rounded-[18px] shadow-[0_4px_15px_rgba(212,163,115,0.15)] transition-all active:scale-[0.98] cursor-pointer flex items-center gap-2"
+                    >
+                      Start Journey <ArrowRight size={18} />
+                    </button>
+                    <button
+                      onClick={() => setCurrentScreen(5)}
+                      className="bg-white hover:bg-[#F6F0E8] border border-[#17263F]/12 text-[#17263F] font-bold text-[16px] px-8 py-4.5 rounded-[18px] transition-all active:scale-[0.98] cursor-pointer"
+                    >
+                      Sign In
+                    </button>
                   </div>
                 </motion.div>
-              ))}
-            </div>
 
-            {/* Right side desk/workspace visual collage */}
-            <div className="flex-1 relative flex items-center justify-center min-h-[500px] w-full">
-              
-              {/* Soft ambient backglows */}
-              <div className="absolute top-[20%] left-[20%] w-80 h-80 rounded-full bg-radial from-[#D4A373]/12 to-transparent blur-3xl pointer-events-none" />
-              <div className="absolute bottom-[20%] right-[10%] w-72 h-72 rounded-full bg-radial from-[#7DD3FC]/8 to-transparent blur-3xl pointer-events-none" />
-
-              {/* Stacked books (bottom left) */}
-              <motion.div
-                animate={{ y: [0, -4, 0] }}
-                transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-                className="absolute bottom-[10%] left-[10%] w-48 z-10"
-              >
-                <img 
-                  src="/assets/stacked_books_3d_clean.png" 
-                  alt="Stacked Books" 
-                  className="w-full object-contain filter drop-shadow-[0_12px_24px_rgba(22,35,58,0.06)]"
-                />
-              </motion.div>
-
-              {/* Coffee Cup (bottom right) */}
-              <motion.div
-                animate={{ y: [0, -3, 0] }}
-                transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
-                className="absolute bottom-[8%] right-[12%] w-40 z-20"
-              >
-                <img 
-                  src="/assets/coffee_cup_3d_clean.png" 
-                  alt="Coffee Cup" 
-                  className="w-full object-contain filter drop-shadow-[0_12px_24px_rgba(22,35,58,0.06)]"
-                />
-              </motion.div>
-
-              {/* Open Notebook (center background/base) */}
-              <motion.div
-                className="w-[85%] max-w-[420px] relative z-10"
-                style={{ transform: 'rotate(-2deg)' }}
-              >
-                <img 
-                  src="/assets/notebook_3d_clean.png" 
-                  alt="Notebook" 
-                  className="w-full object-contain filter drop-shadow-[0_20px_40px_rgba(22,35,58,0.07)]"
-                />
-                
-                {/* Overlay text on open notebook to make it feel premium & alive */}
-                <div 
-                  className="absolute inset-0 flex items-center justify-center p-8 select-none pointer-events-none"
-                  style={{ transform: 'rotate(2deg)' }}
+                {/* Large visual on right */}
+                <motion.div 
+                  initial="hidden" animate="visible" variants={fadeUp(0.12)}
+                  className="lg:col-span-6 flex items-center justify-center relative min-h-[480px]"
                 >
-                  <p className="font-handwritten text-[#6B6560] text-[20px] lg:text-[24px] max-w-[200px] text-center leading-snug mt-[-10px]">
-                    "Small steps every day lead to big changes." ♡
+                  <div className="absolute top-[10%] w-[380px] h-[380px] rounded-full bg-radial from-[#D4A373]/12 to-transparent blur-3xl pointer-events-none" />
+                  
+                  {/* Cozy desk scene with stacked books, coffee mug, and plant */}
+                  <div className="relative w-full max-w-[480px] h-[400px] flex items-center justify-center">
+                    
+                    {/* Plant */}
+                    <div className="absolute left-[8%] bottom-[15%] w-36 z-10 flex flex-col items-center">
+                      <div className="w-16 h-12 bg-[#F6F0E8] rounded-2xl border border-[#17263F]/6 flex items-end justify-center p-2">
+                        <Sprout size={28} className="text-[#A8C686]" />
+                      </div>
+                    </div>
+
+                    {/* Stacked books (Curiosity, Focus, Growth) */}
+                    <div className="absolute right-[8%] bottom-[12%] w-[180px] z-10 rotate-[-3deg] filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.06)]">
+                      <img src="/assets/stacked_books_3d_clean.png" alt="Stacked Books" className="w-full object-contain" />
+                      <div className="absolute inset-0 flex flex-col items-center justify-center text-[8px] font-black text-[#17263F]/70 tracking-wider gap-3">
+                        <span className="uppercase mt-[8px]">Curiosity</span>
+                        <span className="uppercase ml-2">Focus</span>
+                        <span className="uppercase mr-1 mb-1">Growth</span>
+                      </div>
+                    </div>
+
+                    {/* Coffee mug */}
+                    <div className="absolute bottom-[8%] left-[45%] w-24 z-20 rotate-[5deg] filter drop-shadow-[0_6px_12px_rgba(0,0,0,0.05)]">
+                      <img src="/assets/coffee_cup_3d_clean.png" alt="Coffee" className="w-full object-contain" />
+                    </div>
+
+                    {/* Notebook in background */}
+                    <div className="absolute top-[28%] left-[20%] w-[260px] z-0 opacity-40">
+                      <img src="/assets/notebook_3d_clean.png" alt="Notebook" className="w-full object-contain" />
+                    </div>
+
+                    {/* Giant 3D mascot floating in center */}
+                    <div className="absolute top-0 z-30">
+                      {renderMascot(340, true, true)}
+                    </div>
+
+                  </div>
+                </motion.div>
+              </div>
+
+              {/* Bottom tag line */}
+              <footer className="text-center py-4 border-t border-[#17263F]/6 mt-16 flex items-center justify-center gap-2">
+                <img src="/assets/rin_mascot_3d_clean.png" alt="Rin logo" className="w-5.5 h-5.5 object-contain" />
+                <p className="text-[13px] font-bold text-[#8C847B]">
+                  Rinhozo is here to support you every step of the way. ♡
+                </p>
+              </footer>
+            </div>
+          )}
+
+          {/* SCREEN 2: Profile Setup (wizard) */}
+          {currentScreen === 2 && (
+            <div className="max-w-[1280px] mx-auto w-full flex flex-col justify-between h-full">
+              {/* Wizard Nav */}
+              <div className="flex items-center justify-between mb-12">
+                <button 
+                  onClick={() => setCurrentScreen(1)}
+                  className="flex items-center gap-2 text-sm font-bold text-[#8C847B] hover:text-[#17263F]"
+                >
+                  <ArrowLeft size={16} /> Back to welcome
+                </button>
+                <span className="text-xs font-bold text-[#8C847B] uppercase tracking-wider">Step 1 of 4</span>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 my-auto items-stretch">
+                {/* Left indicators */}
+                <div className="lg:col-span-3 flex flex-col justify-center gap-4 text-left border-r border-[#17263F]/6 pr-8">
+                  {[
+                    { num: '1', label: 'Profile', active: true },
+                    { num: '2', label: 'Assessment', active: false },
+                    { num: '3', label: 'Preferences', active: false },
+                    { num: '4', label: 'Finish', active: false }
+                  ].map((step, i) => (
+                    <div key={i} className="flex items-center gap-4 py-2 opacity-90">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black border ${
+                        step.active ? 'bg-[#17263F] text-white border-[#17263F]' : 'border-[#17263F]/20 text-[#8C847B]'
+                      }`}>
+                        {step.num}
+                      </div>
+                      <span className={`text-sm font-bold ${step.active ? 'text-[#17263F]' : 'text-[#8C847B]'}`}>
+                        {step.label}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Form Card */}
+                <div className="lg:col-span-6 flex flex-col justify-center text-left">
+                  <div className="bg-[#FFFDF9] border border-[#17263F]/6 rounded-[24px] p-8 shadow-[0_8px_30px_rgba(0,0,0,0.05)]">
+                    <h2 className="text-[32px] font-extrabold text-[#17263F] tracking-tight mb-1">
+                      Let's get to know you <span className="font-handwritten text-[#D4A373] text-[28px] inline-block ml-1">♡</span>
+                    </h2>
+                    <p className="text-[14px] text-[#6E665E] font-medium mb-6">This helps Rin personalize your learning journey.</p>
+                    
+                    <div className="space-y-4">
+                      {/* Name & Age */}
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-[11px] font-bold text-[#8C847B] uppercase tracking-wider pl-1">First Name</label>
+                          <input 
+                            type="text" 
+                            value={userName}
+                            onChange={(e) => setUserName(e.target.value)}
+                            placeholder="Ananya"
+                            className="bg-[#FAF6F0] border border-[#17263F]/8 rounded-[18px] px-5 py-3.5 text-sm text-[#17263F] focus:outline-none focus:border-[#D4A373]/50"
+                          />
+                        </div>
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-[11px] font-bold text-[#8C847B] uppercase tracking-wider pl-1">Age</label>
+                          <input 
+                            type="text" 
+                            value={userAge}
+                            onChange={(e) => setUserAge(e.target.value)}
+                            placeholder="13"
+                            className="bg-[#FAF6F0] border border-[#17263F]/8 rounded-[18px] px-5 py-3.5 text-sm text-[#17263F] focus:outline-none focus:border-[#D4A373]/50"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Grade & Goal */}
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-[11px] font-bold text-[#8C847B] uppercase tracking-wider pl-1">Grade</label>
+                          <input 
+                            type="text" 
+                            value={userGrade}
+                            onChange={(e) => setUserGrade(e.target.value)}
+                            placeholder="8th Grade"
+                            className="bg-[#FAF6F0] border border-[#17263F]/8 rounded-[18px] px-5 py-3.5 text-sm text-[#17263F] focus:outline-none focus:border-[#D4A373]/50"
+                          />
+                        </div>
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-[11px] font-bold text-[#8C847B] uppercase tracking-wider pl-1">Learning Goal</label>
+                          <input 
+                            type="text" 
+                            value={learningGoal}
+                            onChange={(e) => setLearningGoal(e.target.value)}
+                            placeholder="Improve focus and grades"
+                            className="bg-[#FAF6F0] border border-[#17263F]/8 rounded-[18px] px-5 py-3.5 text-sm text-[#17263F] focus:outline-none focus:border-[#D4A373]/50"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Favorite Subjects */}
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-[11px] font-bold text-[#8C847B] uppercase tracking-wider pl-1">Favorite Subjects</label>
+                        <div className="flex flex-wrap gap-2 py-1">
+                          {['Mathematics', 'Science', 'Art', 'History', 'Geography'].map(subj => {
+                            const isFav = favoriteSubjects.includes(subj);
+                            return (
+                              <button
+                                key={subj}
+                                onClick={() => toggleSubject(subj)}
+                                className={`text-[12px] font-bold px-4 py-2 rounded-full border transition-all cursor-pointer ${
+                                  isFav 
+                                    ? 'bg-[#17263F] border-[#17263F] text-white shadow-sm' 
+                                    : 'border-[#17263F]/8 bg-[#FAF6F0]/50 hover:bg-[#F6F0E8] text-[#6E665E]'
+                                }`}
+                              >
+                                {subj}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Study Time */}
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-[11px] font-bold text-[#8C847B] uppercase tracking-wider pl-1">Preferred Study Time</label>
+                        <select
+                          value={preferredStudyTime}
+                          onChange={(e) => setPreferredStudyTime(e.target.value)}
+                          className="bg-[#FAF6F0] border border-[#17263F]/8 rounded-[18px] px-5 py-3.5 text-sm text-[#17263F] focus:outline-none focus:border-[#D4A373]/50 appearance-none cursor-pointer"
+                        >
+                          <option value="Morning (8 AM - 12 PM)">Morning (8 AM - 12 PM)</option>
+                          <option value="Afternoon (12 PM - 4 PM)">Afternoon (12 PM - 4 PM)</option>
+                          <option value="Evening (6 PM - 9 PM)">Evening (6 PM - 9 PM)</option>
+                          <option value="Night (9 PM - 12 AM)">Night (9 PM - 12 AM)</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right side mascot */}
+                <div className="lg:col-span-3 flex flex-col justify-center items-center">
+                  {renderMascot(220, true, true)}
+                  <div className="bg-[#FFFDF9] border border-[#17263F]/6 rounded-2xl px-5 py-3 mt-4 text-[12px] font-bold text-[#6E665E] leading-snug max-w-[200px] text-center shadow-sm">
+                    "Hi Ananya! Let's fill out your profile details so we can get started." 💛
+                  </div>
+                </div>
+              </div>
+
+              {/* Wizard Footer Buttons */}
+              <div className="flex justify-between items-center mt-12 border-t border-[#17263F]/6 pt-6">
+                <button
+                  onClick={() => setCurrentScreen(1)}
+                  className="bg-white hover:bg-[#F6F0E8] border border-[#17263F]/12 text-[#17263F] font-bold text-sm px-6 py-3 rounded-full transition-all active:scale-[0.98] cursor-pointer"
+                >
+                  Back
+                </button>
+                <button
+                  onClick={() => setCurrentScreen(3)}
+                  className="bg-[#17263F] hover:bg-[#253958] text-white font-bold text-sm px-8 py-3.5 rounded-full transition-all active:scale-[0.98] shadow-md cursor-pointer flex items-center gap-2"
+                >
+                  Continue <ArrowRight size={16} />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* SCREEN 3: Neurodiverse Assessment */}
+          {currentScreen === 3 && (
+            <div className="max-w-[1280px] mx-auto w-full flex flex-col justify-between h-full">
+              {/* Wizard Nav */}
+              <div className="flex items-center justify-between mb-12">
+                <button 
+                  onClick={() => setCurrentScreen(2)}
+                  className="flex items-center gap-2 text-sm font-bold text-[#8C847B] hover:text-[#17263F]"
+                >
+                  <ArrowLeft size={16} /> Back to profile setup
+                </button>
+                <span className="text-xs font-bold text-[#8C847B] uppercase tracking-wider">Step 2 of 4</span>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 my-auto items-stretch">
+                {/* Left indicators */}
+                <div className="lg:col-span-3 flex flex-col justify-center gap-4 text-left border-r border-[#17263F]/6 pr-8">
+                  {[
+                    { num: '1', label: 'Profile', active: false },
+                    { num: '2', label: 'Assessment', active: true },
+                    { num: '3', label: 'Preferences', active: false },
+                    { num: '4', label: 'Finish', active: false }
+                  ].map((step, i) => (
+                    <div key={i} className="flex items-center gap-4 py-2 opacity-90">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black border ${
+                        step.active ? 'bg-[#17263F] text-white border-[#17263F]' : 'border-[#17263F]/20 text-[#8C847B]'
+                      }`}>
+                        {step.num}
+                      </div>
+                      <span className={`text-sm font-bold ${step.active ? 'text-[#17263F]' : 'text-[#8C847B]'}`}>
+                        {step.label}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Form Card */}
+                <div className="lg:col-span-6 flex flex-col justify-center text-left">
+                  <div className="bg-[#FFFDF9] border border-[#17263F]/6 rounded-[24px] p-8 shadow-[0_8px_30px_rgba(0,0,0,0.05)]">
+                    <h2 className="text-[32px] font-extrabold text-[#17263F] tracking-tight mb-1">
+                      Help us understand you better <span className="font-handwritten text-[#D4A373] text-[28px] inline-block ml-1">♡</span>
+                    </h2>
+                    <p className="text-[14px] text-[#6E665E] font-medium mb-8">There are no right or wrong answers.</p>
+                    
+                    <div className="bg-[#F6F0E8]/50 border border-[#17263F]/6 rounded-[20px] p-6 mb-8 text-center">
+                      <p className="text-[17px] font-bold text-[#17263F] leading-relaxed">
+                        "I find it difficult to maintain attention during long study sessions."
+                      </p>
+                    </div>
+
+                    {/* Interactive Slider Track */}
+                    <div className="space-y-6">
+                      <div className="flex justify-between items-center text-xs font-bold text-[#8C847B] px-1 uppercase tracking-wider">
+                        <span>Never</span>
+                        <span>Always</span>
+                      </div>
+                      
+                      {/* Slider Input */}
+                      <div className="relative px-2">
+                        <input 
+                          type="range" 
+                          min="1" 
+                          max="5" 
+                          step="1"
+                          value={assessmentVal}
+                          onChange={(e) => setAssessmentVal(Number(e.target.value))}
+                          className="w-full accent-[#D4A373] h-2 bg-[#F6F0E8] rounded-lg appearance-none cursor-pointer focus:outline-none"
+                        />
+                        {/* Interactive labels under slider track */}
+                        <div className="flex justify-between text-[11px] font-extrabold text-[#6E665E] mt-3">
+                          <span className={assessmentVal === 1 ? 'text-[#D4A373]' : ''}>Never</span>
+                          <span className={assessmentVal === 2 ? 'text-[#D4A373]' : ''}>Rarely</span>
+                          <span className={assessmentVal === 3 ? 'text-[#D4A373]' : ''}>Sometimes</span>
+                          <span className={assessmentVal === 4 ? 'text-[#D4A373]' : ''}>Often</span>
+                          <span className={assessmentVal === 5 ? 'text-[#D4A373]' : ''}>Always</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Bottom encouragement notification */}
+                    <div className="mt-8 border-t border-[#17263F]/6 pt-6 flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-full overflow-hidden bg-[#FBF3E8] flex items-center justify-center border border-[#D4A373]/25 flex-shrink-0">
+                        <img src="/assets/rin_mascot_3d_clean.png" alt="Rin" className="w-7 h-7 object-contain" />
+                      </div>
+                      <p className="text-[12px] font-bold text-[#6E665E]">
+                        "There are no wrong answers. We're here to support you." 💛
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right side mascot */}
+                <div className="lg:col-span-3 flex flex-col justify-center items-center">
+                  {renderMascot(220, true, true)}
+                </div>
+              </div>
+
+              {/* Wizard Footer Buttons */}
+              <div className="flex justify-between items-center mt-12 border-t border-[#17263F]/6 pt-6">
+                <button
+                  onClick={() => setCurrentScreen(2)}
+                  className="bg-white hover:bg-[#F6F0E8] border border-[#17263F]/12 text-[#17263F] font-bold text-sm px-6 py-3 rounded-full transition-all active:scale-[0.98] cursor-pointer"
+                >
+                  Back
+                </button>
+                <button
+                  onClick={() => setCurrentScreen(4)}
+                  className="bg-[#17263F] hover:bg-[#253958] text-white font-bold text-sm px-8 py-3.5 rounded-full transition-all active:scale-[0.98] shadow-md cursor-pointer flex items-center gap-2"
+                >
+                  Next <ArrowRight size={16} />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* SCREEN 4: Learning Preferences */}
+          {currentScreen === 4 && (
+            <div className="max-w-[1280px] mx-auto w-full flex flex-col justify-between h-full">
+              {/* Wizard Nav */}
+              <div className="flex items-center justify-between mb-12">
+                <button 
+                  onClick={() => setCurrentScreen(3)}
+                  className="flex items-center gap-2 text-sm font-bold text-[#8C847B] hover:text-[#17263F]"
+                >
+                  <ArrowLeft size={16} /> Back to assessment
+                </button>
+                <span className="text-xs font-bold text-[#8C847B] uppercase tracking-wider">Step 3 of 4</span>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 my-auto items-stretch">
+                {/* Left indicators */}
+                <div className="lg:col-span-3 flex flex-col justify-center gap-4 text-left border-r border-[#17263F]/6 pr-8">
+                  {[
+                    { num: '1', label: 'Profile', active: false },
+                    { num: '2', label: 'Assessment', active: false },
+                    { num: '3', label: 'Preferences', active: true },
+                    { num: '4', label: 'Finish', active: false }
+                  ].map((step, i) => (
+                    <div key={i} className="flex items-center gap-4 py-2 opacity-90">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black border ${
+                        step.active ? 'bg-[#17263F] text-white border-[#17263F]' : 'border-[#17263F]/20 text-[#8C847B]'
+                      }`}>
+                        {step.num}
+                      </div>
+                      <span className={`text-sm font-bold ${step.active ? 'text-[#17263F]' : 'text-[#8C847B]'}`}>
+                        {step.label}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Form Card */}
+                <div className="lg:col-span-6 flex flex-col justify-center text-left">
+                  <div className="bg-[#FFFDF9] border border-[#17263F]/6 rounded-[24px] p-8 shadow-[0_8px_30px_rgba(0,0,0,0.05)]">
+                    <h2 className="text-[32px] font-extrabold text-[#17263F] tracking-tight mb-1">
+                      How do you learn best? <span className="font-handwritten text-[#D4A373] text-[28px] inline-block ml-1">♡</span>
+                    </h2>
+                    <p className="text-[14px] text-[#6E665E] font-medium mb-6">Select all that apply.</p>
+                    
+                    {/* Grid of 6 selectable cards */}
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                      {[
+                        { id: 'visual', label: 'Visual Learner', icon: <BookOpen size={20} /> },
+                        { id: 'audio', label: 'Audio Learner', icon: <Volume2 size={20} /> },
+                        { id: 'reading', label: 'Reading Learner', icon: <FileText size={20} /> },
+                        { id: 'interactive', label: 'Interactive Learner', icon: <Compass size={20} /> },
+                        { id: 'bursts', label: 'Short Study Bursts', icon: <Clock size={20} /> },
+                        { id: 'pomodoro', label: 'Pomodoro Sessions', icon: <Timer size={20} /> }
+                      ].map(pref => {
+                        const isSel = selectedPrefs.includes(pref.id);
+                        return (
+                          <button
+                            key={pref.id}
+                            onClick={() => togglePref(pref.id)}
+                            className={`p-4 border-2 rounded-2xl flex flex-col items-center justify-center text-center gap-3.5 transition-all select-none cursor-pointer relative overflow-hidden ${
+                              isSel 
+                                ? 'border-[#D4A373] bg-[#F6F0E8]/40 shadow-[0_4px_20px_rgba(212,163,115,0.15)] scale-[1.02]' 
+                                : 'border-[#17263F]/6 hover:bg-[#FAF6F0] text-[#6E665E]'
+                            }`}
+                          >
+                            {/* Inner gold glow when active */}
+                            {isSel && (
+                              <div className="absolute inset-0 bg-radial from-[#D4A373]/8 to-transparent pointer-events-none" />
+                            )}
+                            <div className={`p-2.5 rounded-xl ${isSel ? 'bg-[#17263F] text-white' : 'bg-[#FAF6F0] text-[#17263F]'}`}>
+                              {pref.icon}
+                            </div>
+                            <span className="text-[13px] font-bold leading-tight text-[#17263F]">{pref.label}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right side mascot */}
+                <div className="lg:col-span-3 flex flex-col justify-center items-center">
+                  {renderMascot(220, true, true)}
+                </div>
+              </div>
+
+              {/* Wizard Footer Buttons */}
+              <div className="flex justify-between items-center mt-12 border-t border-[#17263F]/6 pt-6">
+                <button
+                  onClick={() => setCurrentScreen(3)}
+                  className="bg-white hover:bg-[#F6F0E8] border border-[#17263F]/12 text-[#17263F] font-bold text-sm px-6 py-3 rounded-full transition-all active:scale-[0.98] cursor-pointer"
+                >
+                  Back
+                </button>
+                <button
+                  onClick={() => setCurrentScreen(5)}
+                  className="bg-[#17263F] hover:bg-[#253958] text-white font-bold text-sm px-8 py-3.5 rounded-full transition-all active:scale-[0.98] shadow-md cursor-pointer flex items-center gap-2"
+                >
+                  Continue <ArrowRight size={16} />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* SCREEN 5: Dashboard */}
+          {currentScreen === 5 && (
+            <div className="max-w-[1280px] w-full mx-auto flex flex-col gap-6 text-left">
+              {/* Header block */}
+              <div className="flex items-center justify-between border-b border-[#17263F]/6 pb-6">
+                <div>
+                  <h1 className="text-[28px] lg:text-[36px] font-extrabold text-[#17263F] tracking-tight">
+                    Good Evening, {userName}! 🌸
+                  </h1>
+                  <p className="text-[14px] text-[#6E665E] font-semibold mt-0.5">
+                    Rin says: "You're doing better than you think." 💛
                   </p>
                 </div>
-              </motion.div>
-
-              {/* Floating mascot Rin (top right of notebook) */}
-              <motion.div
-                animate={{ 
-                  y: [0, -15, 0],
-                  rotate: [1, -2, 1]
-                }}
-                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-                className="absolute top-[8%] right-[18%] w-44 z-30"
-              >
-                <img 
-                  src="/assets/rin_mascot_3d_clean.png" 
-                  alt="Rin Mascot" 
-                  className="w-full object-contain filter drop-shadow-[0_24px_48px_rgba(22,35,58,0.14)]"
-                />
-              </motion.div>
-
-              {/* Sparkle details */}
-              <div className="absolute top-[18%] left-[20%] text-[#D4A373] opacity-30 animate-pulse">
-                <svg className="w-5 h-5 fill-currentColor" viewBox="0 0 24 24"><path d="M12 2L2 12h10v10l10-10H12V2z"/></svg>
-              </div>
-              <div className="absolute bottom-[35%] right-[15%] text-[#7DD3FC] opacity-35 animate-pulse delay-700">
-                <svg className="w-4 h-4 fill-currentColor" viewBox="0 0 24 24"><path d="M12 2L2 12h10v10l10-10H12V2z"/></svg>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </Section>
-
-      {/* ════════════════════════════════════════════
-          FOR EDUCATORS
-      ════════════════════════════════════════════ */}
-      <Section
-        id="educators"
-        style={{ background: '#FFFDF9', padding: '120px 0', borderTop: '1px solid rgba(22,35,58,0.06)' } as React.CSSProperties}
-      >
-        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 40px' }}>
-          <div className="flex flex-col lg:flex-row items-center gap-16">
-
-            {/* Left side benefits */}
-            <motion.div variants={fadeUp(0)} className="w-full lg:w-[45%] text-left">
-              <span className="text-[12px] font-bold tracking-[0.2em] text-[#D4A373] uppercase block mb-3">For Classrooms</span>
-              <h2 className="text-[36px] lg:text-[48px] font-extrabold text-[#17263F] leading-tight mb-4 tracking-tight">
-                For <span className="font-handwritten text-[#D4A373] text-[36px] lg:text-[44px] block lg:inline ml-0 lg:ml-2">Educators ♡</span>
-              </h2>
-              <p className="text-[16px] lg:text-[17px] text-[#6B6560] leading-relaxed mb-8">
-                Rinhozo empowers educators with insights and tools to support every learner better.
-              </p>
-
-              <div className="space-y-4">
-                {[
-                  'Real-time attention and engagement insights',
-                  'Personalized recommendations for each student',
-                  'Track progress and learning patterns',
-                  'Create supportive, inclusive classrooms'
-                ].map((item, i) => (
-                  <div key={i} className="flex items-center gap-3.5">
-                    <div className="w-6 h-6 rounded-full bg-[#FBF3E8] border border-[#D4A373]/20 flex items-center justify-center flex-shrink-0">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#D4A373" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
-                    </div>
-                    <span className="text-[15px] font-bold text-[#17263F]">{item}</span>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-
-            {/* Right side dashboard mockup */}
-            <motion.div variants={fadeUp(0.12)} className="w-full lg:w-[55%] min-w-0">
-              {/* Dashboard Browser Frame Mockup */}
-              <div className="bg-[#FFFDF9] border border-[#17263F]/6 rounded-[24px] shadow-[0_16px_48px_rgba(22,35,58,0.02)] overflow-hidden">
-                {/* Browser Topbar */}
-                <div className="bg-[#FAF6F0]/60 border-b border-[#17263F]/6 px-6 py-4 flex items-center justify-between">
-                  <div className="flex gap-2">
-                    <div className="w-2.5 h-2.5 rounded-full bg-[#F87171]" />
-                    <div className="w-2.5 h-2.5 rounded-full bg-[#FBBF24]" />
-                    <div className="w-2.5 h-2.5 rounded-full bg-[#34D399]" />
-                  </div>
-                  <span className="text-[10px] font-bold text-[#6B6560] tracking-wider uppercase">Educator Dashboard</span>
-                  <div className="w-6 h-6 rounded-full bg-[#FBF3E8] border border-[#D4A373]/25 flex items-center justify-center overflow-hidden">
-                    <img src="/assets/rin_mascot_3d_clean.png" alt="Profile" className="w-4.5 h-4.5 object-contain" />
-                  </div>
-                </div>
                 
-                {/* Mockup Dashboard Content */}
-                <div className="p-6 text-left">
-                  <h3 className="text-[16px] font-bold text-[#17263F] mb-0.5">Welcome back, Teacher! 💛</h3>
-                  <p className="text-[11px] text-[#6B6560] mb-5 leading-none">Here's what's happening in your class today.</p>
+                {/* Right profile widgets */}
+                <div className="flex items-center gap-4">
+                  {/* Alert notification bell */}
+                  <button className="p-2.5 rounded-full border border-[#17263F]/8 hover:bg-[#FAF6F0] text-[#6E665E] relative cursor-pointer active:scale-95 transition-all">
+                    <Bell size={18} />
+                    <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#E8B07A] animate-ping" />
+                  </button>
+                  {/* User Profile Face container */}
+                  <button 
+                    onClick={() => setCurrentScreen(12)}
+                    className="w-10 h-10 rounded-full border-2 border-[#D4A373]/30 overflow-hidden bg-[#FAF6F0] flex items-center justify-center cursor-pointer active:scale-95 transition-transform"
+                  >
+                    <img src="/assets/rin_mascot_3d_clean.png" alt="Profile" className="w-8 h-8 object-contain" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Main dashboard widgets grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                
+                {/* Widget 1: Focus Score */}
+                <div className="bg-white border border-[#17263F]/6 rounded-[24px] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.05)] flex flex-col justify-between hover:translate-y-[-2px] transition-all">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[11px] font-bold text-[#8C847B] uppercase tracking-wider">Today's Focus Score</span>
+                    <Clock size={16} className="text-[#8AB6D6]" />
+                  </div>
+                  <div className="my-4">
+                    <span className="text-[44px] font-black text-[#17263F] leading-none">{focusScore}</span>
+                    <span className="text-[14px] text-[#8C847B] font-bold ml-1">/100</span>
+                  </div>
+                  <span className="text-[12px] font-bold text-[#8AB6D6]">Great focus today!</span>
+                </div>
+
+                {/* Widget 2: Study Streak */}
+                <div className="bg-white border border-[#17263F]/6 rounded-[24px] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.05)] flex flex-col justify-between hover:translate-y-[-2px] transition-all">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[11px] font-bold text-[#8C847B] uppercase tracking-wider">Study Streak</span>
+                    <Award size={16} className="text-[#D4A373]" />
+                  </div>
+                  <div className="my-4">
+                    <span className="text-[44px] font-black text-[#17263F] leading-none">{focusStreak}</span>
+                    <span className="text-[14px] text-[#8C847B] font-bold ml-1">days</span>
+                  </div>
+                  <span className="text-[12px] font-bold text-[#D4A373]">Keep it up! 🔥</span>
+                </div>
+
+                {/* Widget 3: Recommended Session */}
+                <div className="bg-white border border-[#17263F]/6 rounded-[24px] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.05)] flex flex-col justify-between hover:translate-y-[-2px] transition-all lg:col-span-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[11px] font-bold text-[#8C847B] uppercase tracking-wider">Recommended Session</span>
+                    <span className="text-[10px] font-bold text-[#D4A373] bg-[#F6F0E8] px-2.5 py-1 rounded-full uppercase tracking-wider">Mathematics</span>
+                  </div>
+                  <div className="my-3">
+                    <h3 className="text-[17px] font-bold text-[#17263F]">Math Practice</h3>
+                    <p className="text-[12px] text-[#6E665E] mt-0.5">Algebra Basics • Review Linear Equations</p>
+                  </div>
+                  <button 
+                    onClick={() => setCurrentScreen(6)}
+                    className="bg-[#17263F] hover:bg-[#253958] text-white text-xs font-bold py-3 px-6 rounded-2xl w-full transition-all active:scale-[0.98] cursor-pointer shadow-sm text-center"
+                  >
+                    Start Session
+                  </button>
+                </div>
+
+              </div>
+
+              {/* Middle Row: Mood tracker & Weekly Progress */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                {/* Mood Check-in Card */}
+                <div className="bg-white border border-[#17263F]/6 rounded-[24px] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.05)] flex flex-col justify-between">
+                  <div>
+                    <h4 className="text-[14px] font-bold text-[#17263F] mb-1">Mood Check-in</h4>
+                    <p className="text-[12px] text-[#8C847B] font-semibold">How are you feeling right now?</p>
+                  </div>
                   
-                  {/* Four Metric Grid */}
-                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
+                  {/* 5 click mood faces */}
+                  <div className="flex justify-between items-center gap-1.5 my-6">
                     {[
-                      { val: '28', label: 'Students' },
-                      { val: '18', label: 'Focused Now' },
-                      { val: '5', label: 'Needs Support' },
-                      { val: '76%', label: 'Avg. Progress' }
-                    ].map((card, i) => (
-                      <div key={i} className="bg-[#FAF6F0]/30 border border-[#17263F]/6 rounded-2xl p-4 flex flex-col justify-between">
-                        <span className="text-[9px] font-bold text-[#6B6560] tracking-wider uppercase leading-none">{card.label}</span>
-                        <span className="text-[24px] font-black text-[#17263F] mt-2.5 leading-none">{card.val}</span>
-                      </div>
+                      { mood: 'concerned', emoji: '😢' },
+                      { mood: 'concerned', emoji: '😐' },
+                      { mood: 'calm', emoji: '😊' },
+                      { mood: 'happy', emoji: '😄' },
+                      { mood: 'excited', emoji: '🥳' }
+                    ].map((face, i) => (
+                      <button
+                        key={i}
+                        onClick={() => setUserMood(face.mood as any)}
+                        className="w-11 h-11 text-2xl bg-[#FAF6F0] rounded-full border border-[#17263F]/6 hover:border-[#D4A373] hover:scale-105 active:scale-95 transition-all flex items-center justify-center cursor-pointer shadow-sm"
+                      >
+                        {face.emoji}
+                      </button>
                     ))}
                   </div>
 
-                  {/* Focus & Top Activities Side-by-Side */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    
-                    {/* Focus Overview (SVG Line Chart) */}
-                    <div className="bg-[#FAF6F0]/30 border border-[#17263F]/6 rounded-2xl p-4 flex flex-col justify-between">
-                      <span className="text-[10px] font-bold text-[#6B6560] tracking-wider uppercase mb-3 block">Focus Overview</span>
-                      <div className="w-full h-24 relative">
-                        <svg className="w-full h-full" viewBox="0 0 100 40" preserveAspectRatio="none">
-                          <defs>
-                            <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="0%" stopColor="#D4A373" stopOpacity="0.25" />
-                              <stop offset="100%" stopColor="#D4A373" stopOpacity="0" />
-                            </linearGradient>
-                          </defs>
-                          <path d="M 0,35 Q 15,25 30,15 T 60,30 T 90,10 T 100,5 L 100,40 L 0,40 Z" fill="url(#chartGrad)" />
-                          <path d="M 0,35 Q 15,25 30,15 T 60,30 T 90,10 T 100,5" fill="none" stroke="#D4A373" strokeWidth="2.2" strokeLinecap="round" />
-                        </svg>
-                      </div>
-                      <div className="flex justify-between text-[8px] text-[#A09790] font-bold mt-2 leading-none">
-                        <span>9 AM</span><span>11 AM</span><span>1 PM</span><span>3 PM</span><span>5 PM</span>
-                      </div>
-                    </div>
-
-                    {/* Top Activities (Progress Bars) */}
-                    <div className="bg-[#FAF6F0]/30 border border-[#17263F]/6 rounded-2xl p-4 text-left">
-                      <span className="text-[10px] font-bold text-[#6B6560] tracking-wider uppercase mb-3 block">Top Activities</span>
-                      <div className="space-y-3">
-                        {[
-                          { label: 'Reading', val: 85, color: '#D4A373' },
-                          { label: 'Math', val: 70, color: '#7DD3FC' },
-                          { label: 'Science', val: 62, color: '#C084FC' },
-                          { label: 'Writing', val: 45, color: '#86EFAC' }
-                        ].map((act, i) => (
-                          <div key={i} className="flex flex-col gap-1">
-                            <div className="flex justify-between text-[10px] font-bold text-[#17263F] leading-none">
-                              <span>{act.label}</span>
-                              <span style={{ color: act.color }}>{act.val}%</span>
-                            </div>
-                            <div className="h-1.5 bg-[#FAF6F0] rounded-full overflow-hidden border border-[#17263F]/4">
-                              <div className="h-full rounded-full" style={{ width: `${act.val}%`, backgroundColor: act.color }} />
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                  </div>
+                  <p className="text-[11px] font-bold text-[#8C847B] uppercase tracking-wider text-center">
+                    Active Mascot state: <span className="text-[#D4A373]">{userMood}</span>
+                  </p>
                 </div>
-              </div>
-            </motion.div>
 
-          </div>
-
-          {/* Educators Bottom CTA Banner */}
-          <motion.div 
-            variants={fadeUp(0.25)}
-            className="mt-16 bg-[#FFFDF9] border border-[#17263F]/6 rounded-[24px] p-6 lg:p-8 shadow-[0_8px_32px_rgba(22,35,58,0.01)] flex flex-col md:flex-row items-center justify-between gap-6"
-          >
-            <div className="flex items-center gap-4 text-left">
-              <div className="w-14 h-14 rounded-full overflow-hidden bg-[#FBF3E8] border border-[#D4A373]/20 flex items-center justify-center flex-shrink-0">
-                <img src="/assets/rin_mascot_3d_clean.png" alt="Rin" className="w-10 h-10 object-contain" />
-              </div>
-              <p className="text-[15px] lg:text-[16px] font-bold text-[#17263F] max-w-[540px] leading-snug">
-                "Together, we can create classrooms where every child feels seen and supported."
-              </p>
-            </div>
-            <button
-              onClick={onGetStarted}
-              className="bg-[#17263F] hover:bg-[#1E2E4A] text-white font-bold text-sm tracking-wide px-8 py-4.5 rounded-full transition-all active:scale-[0.98] shadow-md flex items-center gap-2 cursor-pointer flex-shrink-0"
-            >
-              Get Started for Free <ArrowRight size={16} />
-            </button>
-          </motion.div>
-
-        </div>
-      </Section>
-
-      {/* ════════════════════════════════════════════
-          ABOUT
-      ════════════════════════════════════════════ */}
-      <Section
-        id="about"
-        style={{ background: '#FAF6F0', padding: '120px 0', borderTop: '1px solid rgba(22,35,58,0.06)' } as React.CSSProperties}
-      >
-        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 40px' }}>
-
-          {/* About Header */}
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-12 mb-16">
-            <motion.div variants={fadeUp(0)} className="max-w-[600px] w-full text-left">
-              <span className="text-[12px] font-bold tracking-[0.2em] text-[#D4A373] uppercase block mb-3">About us</span>
-              <h2 className="text-[36px] lg:text-[48px] font-extrabold text-[#17263F] leading-tight mb-6 tracking-tight">
-                About <span className="font-handwritten text-[#D4A373] text-[36px] lg:text-[44px] block lg:inline ml-0 lg:ml-2">Rinhozo ♡</span>
-              </h2>
-              <p className="text-[16px] lg:text-[17px] text-[#6B6560] leading-[1.75] mb-4">
-                Rinhozo was created with a simple belief — every learner deserves to feel understood, supported, and empowered.
-              </p>
-              <p className="text-[16px] lg:text-[17px] text-[#6B6560] leading-[1.75]">
-                We combine AI, neuroscience, and empathy to build a learning companion that adapts to neurodiverse minds and helps them shine in their own way.
-              </p>
-            </motion.div>
-            
-            {/* Mascot on Right */}
-            <motion.div 
-              variants={fadeUp(0.12)} 
-              className="flex-1 flex justify-center lg:justify-end pr-16 relative"
-            >
-              <div className="absolute top-[20%] right-[10%] w-72 h-72 rounded-full bg-radial from-[#D4A373]/10 to-transparent blur-2xl pointer-events-none" />
-              <motion.div
-                animate={{ y: [0, -12, 0] }}
-                transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-                className="w-56 h-56 relative z-10"
-              >
-                <img 
-                  src="/assets/rin_mascot_3d_clean.png" 
-                  alt="Rin Mascot" 
-                  className="w-full h-full object-contain filter drop-shadow-[0_20px_40px_rgba(22,35,58,0.10)]"
-                />
-              </motion.div>
-            </motion.div>
-          </div>
-
-          {/* Three Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            {[
-              { num: '1000+', label: 'Happy Learners', icon: <Heart size={20} className="text-[#F87171] fill-[#F87171]/25" /> },
-              { num: '500+', label: 'Educators Trust Us', icon: <GraduationCap size={20} className="text-[#D4A373]" /> },
-              { num: '98%', label: 'Positive Feedback', icon: <Star size={20} className="text-[#D4A373] fill-[#D4A373]/25" /> }
-            ].map((stat, i) => (
-              <motion.div
-                key={i}
-                variants={fadeUp(0.2 + i * 0.08)}
-                className="bg-[#FFFDF9] border border-[#17263F]/6 rounded-[24px] p-8 shadow-[0_8px_32px_rgba(22,35,58,0.01)] flex flex-col items-center justify-center text-center transition-all hover:translate-y-[-4px] hover:shadow-[0_12px_40px_rgba(22,35,58,0.04)]"
-              >
-                <span className="text-[36px] font-black text-[#17263F] mb-2">{stat.num}</span>
-                <span className="text-[13px] font-bold text-[#6B6560] uppercase tracking-wider mb-4">{stat.label}</span>
-                <div className="w-10 h-10 rounded-full bg-[#FAF6F0] flex items-center justify-center border border-[#17263F]/4">
-                  {stat.icon}
-                </div>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Mission Card */}
-          <motion.div
-            variants={fadeUp(0.4)}
-            className="bg-[#FFFDF9] border border-[#17263F]/6 rounded-[24px] p-8 shadow-[0_8px_32px_rgba(22,35,58,0.01)] flex flex-col md:flex-row items-center justify-between gap-8 text-left transition-all hover:translate-y-[-2px] hover:shadow-[0_12px_40px_rgba(22,35,58,0.03)]"
-          >
-            <div className="flex-1">
-              <h3 className="text-[18px] font-bold text-[#17263F] mb-3 uppercase tracking-wider">Our Mission</h3>
-              <p className="text-[15px] lg:text-[16px] text-[#6B6560] leading-relaxed max-w-[620px]">
-                To create a world where every learner, regardless of their challenges, has access to personalized, empathetic, and effective learning experiences.
-              </p>
-            </div>
-            
-            {/* Plant & Stones visual element on right */}
-            <div className="w-36 h-28 relative flex items-end justify-center bg-[#FAF6F0] border border-[#17263F]/4 rounded-2xl p-4 overflow-hidden flex-shrink-0">
-              <div className="absolute inset-0 bg-radial from-[#D4A373]/8 to-transparent blur-md pointer-events-none" />
-              {/* Stylized SVG potted plant */}
-              <svg className="w-16 h-16 z-10" viewBox="0 0 64 64" fill="none">
-                <path d="M24 44L20 60H44L40 44H24Z" fill="#D4A373" opacity="0.85" />
-                <ellipse cx="32" cy="44" rx="10" ry="2" fill="#6B6560" />
-                <path d="M32 44V22" stroke="#86EFAC" strokeWidth="2.5" strokeLinecap="round" />
-                <path d="M32 32Q22 28 20 20" stroke="#86EFAC" strokeWidth="2" strokeLinecap="round" />
-                <path d="M32 26Q42 22 44 14" stroke="#86EFAC" strokeWidth="2" strokeLinecap="round" />
-                <path d="M32 22C32 22 29 14 32 8C35 14 32 22 32 22Z" fill="#86EFAC" opacity="0.9" />
-                <path d="M20 20C20 20 12 21 8 16C13 13 20 20 20 20Z" fill="#86EFAC" opacity="0.8" />
-                <path d="M44 14C44 14 52 13 56 8C52 6 44 14 44 14Z" fill="#86EFAC" opacity="0.85" />
-              </svg>
-              {/* Stones */}
-              <div className="absolute bottom-2 left-4 w-7 h-4 bg-[#6B6560]/10 rounded-full border border-[#17263F]/4" style={{ transform: 'rotate(-5deg)' }} />
-              <div className="absolute bottom-2 right-4 w-5 h-3.5 bg-[#6B6560]/15 rounded-full border border-[#17263F]/4" style={{ transform: 'rotate(10deg)' }} />
-            </div>
-          </motion.div>
-        </div>
-      </Section>
-
-      {/* ════════════════════════════════════════════
-          CONTACT
-      ════════════════════════════════════════════ */}
-      <Section
-        id="contact"
-        style={{ background: '#FFFDF9', padding: '120px 0', borderTop: '1px solid rgba(22,35,58,0.06)' } as React.CSSProperties}
-      >
-        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 40px' }}>
-          
-          {/* Header */}
-          <motion.div variants={fadeUp(0)} className="max-w-[600px] w-full text-left mb-16">
-            <span className="text-[12px] font-bold tracking-[0.2em] text-[#D4A373] uppercase block mb-3">Get in Touch</span>
-            <h2 className="text-[36px] lg:text-[48px] font-extrabold text-[#17263F] leading-tight mb-2 tracking-tight">
-              We'd love to <span className="font-handwritten text-[#D4A373] text-[36px] lg:text-[44px] block lg:inline ml-0 lg:ml-2">hear from you ♡</span>
-            </h2>
-            <p className="text-[16px] lg:text-[17px] text-[#6B6560] leading-relaxed max-w-[480px]">
-              Have questions or want to learn more? We're here to help!
-            </p>
-          </motion.div>
-
-          <div className="flex flex-col lg:flex-row gap-12 items-start relative pb-32">
-            
-            {/* Left side details */}
-            <div className="w-full lg:w-[40%] flex flex-col gap-4 text-left">
-              {[
-                { icon: <Mail size={18} className="text-[#D4A373]" />, label: 'Email', value: 'hello@rinhozo.com', desc: 'Reach out anytime' },
-                { icon: <Phone size={18} className="text-[#D4A373]" />, label: 'Phone', value: '+1 (555) 123-4567', desc: 'Mon-Fri from 9am to 6pm' },
-                { icon: <MapPin size={18} className="text-[#D4A373]" />, label: 'Address', value: '123 Learning Lane', desc: 'San Francisco, CA 94110' }
-              ].map((info, i) => (
-                <motion.div
-                  key={i}
-                  variants={fadeUp(0.1 + i * 0.08)}
-                  className="bg-[#FFFDF9] border border-[#17263F]/6 rounded-2xl p-5 flex items-start gap-4 shadow-[0_4px_20px_rgba(22,35,58,0.01)] hover:border-[#D4A373]/25 transition-all duration-200"
-                >
-                  <div className="w-10 h-10 rounded-xl bg-[#FAF6F0] flex items-center justify-center border border-[#17263F]/4 flex-shrink-0">
-                    {info.icon}
+                {/* Progress Ring Card */}
+                <div className="bg-white border border-[#17263F]/6 rounded-[24px] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.05)] flex items-center gap-6">
+                  {/* SVG progress ring */}
+                  <div className="w-24 h-24 relative flex-shrink-0 flex items-center justify-center">
+                    <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                      <path className="text-[#FAF6F0]" strokeWidth="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                      <path className="text-[#D4A373]" strokeDasharray="68, 100" strokeWidth="3" strokeLinecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                    </svg>
+                    <div className="absolute flex flex-col items-center">
+                      <span className="text-[18px] font-black text-[#17263F] leading-none">68%</span>
+                      <span className="text-[8px] font-bold text-[#8C847B] uppercase tracking-wider mt-0.5">Done</span>
+                    </div>
                   </div>
                   <div>
-                    <span className="text-[10px] font-bold text-[#6B6560] uppercase tracking-wider block mb-0.5">{info.label}</span>
-                    <span className="text-[14px] font-bold text-[#17263F] block leading-tight">{info.value}</span>
-                    <span className="text-[12px] text-[#6B6560] block mt-0.5">{info.desc}</span>
+                    <h4 className="text-[14px] font-bold text-[#17263F] mb-1">Weekly Progress</h4>
+                    <p className="text-[12px] text-[#6E665E] leading-relaxed">
+                      You are close to hitting your goal! Completed 12 out of 18 lessons this week.
+                    </p>
                   </div>
-                </motion.div>
-              ))}
+                </div>
 
-              {/* Social Icons */}
-              <motion.div variants={fadeUp(0.35)} className="flex items-center gap-3 mt-4 pl-1">
-                <span className="text-[12px] font-bold text-[#6B6560] uppercase tracking-wider mr-2">Follow Us</span>
-                {['instagram', 'twitter', 'linkedin'].map((social, i) => (
-                  <button 
-                    key={i}
-                    className="w-10 h-10 rounded-full bg-[#FFFDF9] border border-[#17263F]/6 flex items-center justify-center text-[#6B6560] hover:text-[#17263F] hover:border-[#D4A373]/30 transition-all hover:translate-y-[-2px] active:scale-95 cursor-pointer shadow-sm"
-                  >
-                    {social === 'instagram' && (
-                      <svg className="w-4 h-4 fill-none stroke-current" viewBox="0 0 24 24" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-                    )}
-                    {social === 'twitter' && (
-                      <svg className="w-4 h-4 fill-none stroke-current" viewBox="0 0 24 24" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
-                    )}
-                    {social === 'linkedin' && (
-                      <svg className="w-4 h-4 fill-none stroke-current" viewBox="0 0 24 24" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-                    )}
-                  </button>
-                ))}
-              </motion.div>
+                {/* Upcoming Goals Card */}
+                <div className="bg-white border border-[#17263F]/6 rounded-[24px] p-6 shadow-[0_8px_30px_rgba(0,0,0,0.05)] flex flex-col justify-between">
+                  <h4 className="text-[14px] font-bold text-[#17263F] mb-3">Upcoming Goals</h4>
+                  
+                  <div className="space-y-2">
+                    {[
+                      { goal: 'Complete Science Quiz', date: 'Due Tomorrow', type: 'warn' },
+                      { goal: 'Read 20 mins', date: 'Daily Goal', type: 'success' },
+                      { goal: 'Finish Art Project', date: 'Due in 2 days', type: 'info' }
+                    ].map((g, i) => (
+                      <div key={i} className="flex justify-between items-center py-1 border-b border-[#17263F]/4 last:border-0 text-left">
+                        <span className="text-[12px] font-bold text-[#17263F] truncate max-w-[140px]">{g.goal}</span>
+                        <span className="text-[9px] font-extrabold text-[#6E665E] uppercase tracking-wider">{g.date}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Mascot cheering floating area */}
+              <div className="flex justify-end pr-4">
+                <div className="flex items-center gap-4">
+                  <div className="bg-white border border-[#17263F]/6 rounded-2xl p-4 text-[12px] font-bold text-[#6E665E] max-w-[260px] shadow-sm relative">
+                    "Awesome work today, Ananya! Let's check out our Focus Mode timer or look at our Attention Insights." 💛
+                    <div className="absolute right-[-6px] top-1/2 transform -translate-y-1/2 w-3 h-3 bg-white border-r border-t border-[#17263F]/6 rotate-45" />
+                  </div>
+                  {renderMascot(160, true, true)}
+                </div>
+              </div>
             </div>
+          )}
 
-            {/* Right side form */}
-            <motion.div 
-              variants={fadeUp(0.18)}
-              className="w-full lg:w-[60%] bg-[#FFFDF9] border border-[#17263F]/6 rounded-[24px] p-6 lg:p-8 shadow-[0_8px_32px_rgba(22,35,58,0.02)] text-left relative z-10"
-            >
-              <h3 className="text-[18px] font-bold text-[#17263F] mb-6">Send us a message</h3>
-              <form onSubmit={e => e.preventDefault()} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-bold text-[#6B6560] uppercase tracking-wider pl-1">Your Name</label>
-                    <input 
-                      type="text" 
-                      placeholder="e.g. Jane Doe"
-                      className="w-full bg-[#FAF6F0]/40 border border-[#17263F]/6 rounded-2xl px-5 py-3.5 text-sm text-[#17263F] placeholder-[#A09790] focus:outline-none focus:border-[#D4A373]/50 transition-colors"
-                    />
-                  </div>
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-bold text-[#6B6560] uppercase tracking-wider pl-1">Email Address</label>
-                    <input 
-                      type="email" 
-                      placeholder="e.g. jane@example.com"
-                      className="w-full bg-[#FAF6F0]/40 border border-[#17263F]/6 rounded-2xl px-5 py-3.5 text-sm text-[#17263F] placeholder-[#A09790] focus:outline-none focus:border-[#D4A373]/50 transition-colors"
-                    />
-                  </div>
+          {/* SCREEN 6: Focus Mode */}
+          {currentScreen === 6 && (
+            <div className="max-w-[1280px] w-full mx-auto flex flex-col gap-6 text-left">
+              {/* Header */}
+              <div className="flex items-center justify-between border-b border-[#17263F]/6 pb-6">
+                <div>
+                  <h1 className="text-[28px] lg:text-[36px] font-extrabold text-[#17263F] tracking-tight">Focus Mode</h1>
+                  <p className="text-[14px] text-[#6E665E] font-semibold mt-0.5">Minimize distractions and learn comfortably.</p>
                 </div>
-                
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] font-bold text-[#6B6560] uppercase tracking-wider pl-1">Subject</label>
-                  <input 
-                    type="text" 
-                    placeholder="How can we help?"
-                    className="w-full bg-[#FAF6F0]/40 border border-[#17263F]/6 rounded-2xl px-5 py-3.5 text-sm text-[#17263F] placeholder-[#A09790] focus:outline-none focus:border-[#D4A373]/50 transition-colors"
-                  />
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] font-bold text-[#6B6560] uppercase tracking-wider pl-1">Message</label>
-                  <textarea 
-                    rows={4}
-                    placeholder="Tell us more about your needs..."
-                    className="w-full bg-[#FAF6F0]/40 border border-[#17263F]/6 rounded-2xl px-5 py-3.5 text-sm text-[#17263F] placeholder-[#A09790] focus:outline-none focus:border-[#D4A373]/50 transition-colors resize-none"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  className="bg-[#17263F] hover:bg-[#1E2E4A] text-white font-bold text-sm tracking-wide px-8 py-4 rounded-full transition-all active:scale-[0.98] shadow-md flex items-center justify-center gap-2 cursor-pointer w-full md:w-auto"
+                {/* Back button */}
+                <button 
+                  onClick={() => setCurrentScreen(5)}
+                  className="p-2.5 rounded-full border border-[#17263F]/8 hover:bg-[#FAF6F0] text-[#6E665E] cursor-pointer"
                 >
-                  Send Message <Send size={14} />
+                  <ArrowLeft size={18} />
                 </button>
-              </form>
-            </motion.div>
+              </div>
 
-            {/* Bottom Right Decoration: Mascot + stacked books labeled Curiosity, Focus, Growth */}
-            <div className="absolute right-0 bottom-0 z-20 hidden lg:flex items-end justify-end">
-              <div className="relative w-72 h-56 flex items-end justify-center select-none pointer-events-none">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                 
-                {/* Stacked books (lower right) */}
-                <motion.div
-                  className="absolute bottom-[-16px] right-24 w-48 z-10"
-                  style={{ transform: 'rotate(-4deg)' }}
-                >
-                  <img 
-                    src="/assets/stacked_books_3d_clean.png" 
-                    alt="Stacked Books" 
-                    className="w-full object-contain filter drop-shadow-[0_8px_16px_rgba(22,35,58,0.06)]"
-                  />
-                  {/* Labels on book spines */}
-                  <span className="absolute top-[28%] left-[28%] text-[8px] font-extrabold text-[#6B6560] tracking-wider uppercase opacity-85" style={{ transform: 'rotate(2deg)' }}>Curiosity</span>
-                  <span className="absolute top-[48%] left-[34%] text-[9px] font-extrabold text-[#17263F] tracking-wider uppercase opacity-85" style={{ transform: 'rotate(1deg)' }}>Focus</span>
-                  <span className="absolute top-[68%] left-[30%] text-[8px] font-extrabold text-[#6B6560] tracking-wider uppercase opacity-85" style={{ transform: 'rotate(0deg)' }}>Growth</span>
-                </motion.div>
+                {/* Left: Notebook illustration card */}
+                <div className="lg:col-span-3 flex flex-col justify-center items-center">
+                  <div className="bg-[#FFFDF9] border border-[#17263F]/6 rounded-[24px] p-6 shadow-sm relative text-center w-full max-w-[280px]">
+                    <img src="/assets/notebook_3d_clean.png" alt="Notebook" className="w-full object-contain filter drop-shadow-[0_12px_24px_rgba(0,0,0,0.06)]" />
+                    <p className="font-handwritten text-[#6E665E] text-[18px] lg:text-[22px] max-w-[180px] mx-auto mt-4 leading-snug">
+                      "Small steps every day lead to big changes." ♡
+                    </p>
+                  </div>
+                </div>
 
-                {/* Mascot Rin next to books holding coffee cup */}
-                <motion.div
-                  animate={{ y: [0, -6, 0] }}
-                  transition={{ duration: 4.8, repeat: Infinity, ease: 'easeInOut' }}
-                  className="absolute bottom-[-24px] right-[-16px] w-36 z-20"
-                >
-                  <img 
-                    src="/assets/rin_mascot_3d_clean.png" 
-                    alt="Rin Mascot" 
-                    className="w-full object-contain filter drop-shadow-[0_16px_32px_rgba(22,35,58,0.12)]"
-                  />
-                  {/* Overlay small coffee cup */}
-                  <motion.div 
-                    animate={{ rotate: [-2, 2, -2] }}
-                    transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                    className="absolute bottom-[10%] left-[-12px] w-12 z-30"
-                  >
-                    <img src="/assets/coffee_cup_3d_clean.png" alt="Cup" className="w-full object-contain" />
-                  </motion.div>
-                </motion.div>
+                {/* Center: Timer ring card */}
+                <div className="lg:col-span-6 flex flex-col items-center justify-center">
+                  <div className="relative w-72 h-72 rounded-full border border-[#17263F]/6 bg-white shadow-[0_8px_30px_rgba(0,0,0,0.05)] flex flex-col items-center justify-center select-none">
+                    
+                    {/* Breathing circle indicator wrapper */}
+                    <motion.div
+                      animate={isTimerRunning ? { 
+                        scale: [1, 1.05, 1],
+                        opacity: [0.3, 0.6, 0.3]
+                      } : {}}
+                      transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+                      className="absolute inset-2.5 rounded-full border-2 border-dashed border-[#D4A373]/30 pointer-events-none"
+                    />
+
+                    <span className="text-[10px] font-bold text-[#8C847B] uppercase tracking-wider mb-2">Focus Session</span>
+                    <span className="text-[64px] font-black text-[#17263F] leading-none tracking-tight font-mono">{formatTime(timerSeconds)}</span>
+                    <span className="text-[11px] font-bold text-[#D4A373] mt-3">Stay focused, you've got this! 💛</span>
+
+                    {/* Timer controls */}
+                    <div className="flex items-center gap-3.5 mt-6">
+                      <button
+                        onClick={() => setIsTimerRunning(!isTimerRunning)}
+                        className="w-12 h-12 rounded-full bg-[#17263F] hover:bg-[#253958] text-white flex items-center justify-center cursor-pointer shadow-md active:scale-95 transition-all"
+                      >
+                        {isTimerRunning ? <Pause size={18} /> : <Play size={18} className="ml-1" />}
+                      </button>
+                      <button
+                        onClick={() => { setIsTimerRunning(false); setTimerSeconds(1500); }}
+                        className="w-10 h-10 rounded-full border border-[#17263F]/12 hover:bg-[#FAF6F0] text-[#17263F] flex items-center justify-center cursor-pointer active:scale-95 transition-all"
+                      >
+                        <RotateCcw size={16} />
+                      </button>
+                    </div>
+                  </div>
+                  
+                  {/* Up next alert */}
+                  <span className="text-xs font-bold text-[#8C847B] uppercase tracking-wider mt-6">
+                    Up next: Short Break ({shortBreakLength} min)
+                  </span>
+                </div>
+
+                {/* Right: Current Lesson Card */}
+                <div className="lg:col-span-3 flex flex-col gap-4 text-left w-full">
+                  <div className="bg-[#FFFDF9] border border-[#17263F]/6 rounded-[24px] p-6 shadow-sm">
+                    <span className="text-[10px] font-bold text-[#8C847B] uppercase tracking-wider block mb-1">Current Lesson</span>
+                    <h3 className="text-[18px] font-extrabold text-[#17263F] leading-tight">Algebra Basics</h3>
+                    <p className="text-[12px] text-[#6E665E] mt-1.5">Solving linear equations with one variable.</p>
+                    
+                    <div className="border-t border-[#17263F]/6 pt-4 mt-4 space-y-3">
+                      <div className="flex justify-between text-[11px] font-bold text-[#17263F]">
+                        <span>Card Progress</span>
+                        <span>{timerProgress}/10</span>
+                      </div>
+                      <div className="h-2 bg-[#FAF6F0] rounded-full overflow-hidden border border-[#17263F]/4">
+                        <div className="h-full bg-[#D4A373] rounded-full" style={{ width: `${(timerProgress / 10) * 100}%` }} />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Coffee mug */}
+                  <div className="bg-[#FFFDF9] border border-[#17263F]/6 rounded-[24px] p-5 shadow-sm flex items-center gap-4">
+                    <div className="w-12 h-12 flex-shrink-0">
+                      <img src="/assets/coffee_cup_3d_clean.png" alt="Cup" className="w-full h-full object-contain" />
+                    </div>
+                    <div>
+                      <span className="text-[12px] font-bold text-[#17263F] block leading-tight">Mug Check</span>
+                      <span className="text-[11px] text-[#6E665E] block mt-0.5">Keep a warm drink nearby.</span>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Floating mascot at the bottom */}
+              <div className="flex items-center gap-4 mt-6">
+                {renderMascot(120, true, true)}
+                <div className="bg-white border border-[#17263F]/6 rounded-2xl p-4 text-[12px] font-bold text-[#6E665E] max-w-[280px] shadow-sm">
+                  "Need a break? Just pause the timer. Pomodoro helps manage study anxiety!" 💛
+                </div>
+              </div>
+
+            </div>
+          )}
+
+          {/* SCREEN 7: Attention Insights */}
+          {currentScreen === 7 && (
+            <div className="max-w-[1280px] w-full mx-auto flex flex-col gap-6 text-left">
+              {/* Header */}
+              <div className="flex items-center justify-between border-b border-[#17263F]/6 pb-6">
+                <div>
+                  <h1 className="text-[28px] lg:text-[36px] font-extrabold text-[#17263F] tracking-tight">Your Attention Insights ♡</h1>
+                  <p className="text-[14px] text-[#6E665E] font-semibold mt-0.5">Understanding your attention patterns helps you learn better.</p>
+                </div>
+                {/* Timeframe selector tabs */}
+                <div className="flex border border-[#17263F]/8 rounded-full p-1 bg-[#FFFDF9] shadow-sm">
+                  {['Week', 'Month', 'Quarter'].map(t => (
+                    <button 
+                      key={t}
+                      className={`px-4 py-1.5 rounded-full text-xs font-bold cursor-pointer ${
+                        t === 'Week' ? 'bg-[#17263F] text-white shadow-sm' : 'text-[#8C847B] hover:text-[#17263F]'
+                      }`}
+                    >
+                      {t}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Charts grid */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                {/* Focus Trend (SVG Line Chart) */}
+                <div className="lg:col-span-8 bg-white border border-[#17263F]/6 rounded-[24px] p-6 shadow-sm">
+                  <h3 className="text-[13px] font-bold text-[#8C847B] uppercase tracking-wider mb-6">Focus Trend</h3>
+                  <div className="w-full h-56 relative">
+                    <svg className="w-full h-full" viewBox="0 0 100 40" preserveAspectRatio="none">
+                      <defs>
+                        <linearGradient id="chartGradTrend" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#D4A373" stopOpacity="0.25" />
+                          <stop offset="100%" stopColor="#D4A373" stopOpacity="0" />
+                        </linearGradient>
+                      </defs>
+                      <path d="M 0,35 Q 15,22 30,12 T 60,25 T 90,8 T 100,5 L 100,40 L 0,40 Z" fill="url(#chartGradTrend)" />
+                      <path d="M 0,35 Q 15,22 30,12 T 60,25 T 90,8 T 100,5" fill="none" stroke="#D4A373" strokeWidth="2" strokeLinecap="round" />
+                    </svg>
+                  </div>
+                  <div className="flex justify-between text-[10px] text-[#A09790] font-extrabold mt-3 uppercase tracking-wider px-1">
+                    <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+                  </div>
+                </div>
+
+                {/* Peak Focus Hours (SVG Bar Chart) */}
+                <div className="lg:col-span-4 bg-white border border-[#17263F]/6 rounded-[24px] p-6 shadow-sm">
+                  <h3 className="text-[13px] font-bold text-[#8C847B] uppercase tracking-wider mb-2">Peak Focus Hours</h3>
+                  <p className="text-[11px] text-[#6E665E] font-bold mb-6">Best focus periods are between <span className="text-[#D4A373]">6 PM - 8 PM</span>.</p>
+                  
+                  <div className="w-full h-44 flex items-end justify-between gap-1.5 px-2">
+                    {[30, 45, 60, 85, 95, 75, 40].map((val, i) => (
+                      <div key={i} className="flex-1 flex flex-col items-center gap-2">
+                        <div 
+                          className="w-full rounded-t-lg bg-[#FAF6F0] hover:bg-[#D4A373] transition-colors border border-[#17263F]/4 cursor-pointer"
+                          style={{ height: `${val * 1.2}px` }}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex justify-between text-[9px] text-[#A09790] font-extrabold mt-3 uppercase tracking-wider px-1">
+                    <span>12 AM</span><span>4 AM</span><span>8 AM</span><span>12 PM</span><span>4 PM</span><span>8 PM</span><span>12 AM</span>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Bottom Row: Heatmap & Insight Cards */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                {/* Heatmap Grid */}
+                <div className="lg:col-span-7 bg-white border border-[#17263F]/6 rounded-[24px] p-6 shadow-sm">
+                  <h3 className="text-[13px] font-bold text-[#8C847B] uppercase tracking-wider mb-4">Attention Heatmap</h3>
+                  
+                  {/* Heatmap layout dots */}
+                  <div className="flex flex-col gap-2">
+                    {['Morning', 'Afternoon', 'Evening'].map((period, index) => (
+                      <div key={period} className="flex items-center justify-between text-[11px] font-bold text-[#6E665E]">
+                        <span className="w-16 text-left">{period}</span>
+                        <div className="flex-1 flex justify-around pl-4">
+                          {[1, 2, 3, 4, 5, 6, 7].map(dot => {
+                            const opacity = (index + dot) % 3 === 0 ? 'bg-[#D4A373]' : (index + dot) % 2 === 0 ? 'bg-[#FAF6F0] border border-[#17263F]/4' : 'bg-[#E8B07A]';
+                            return (
+                              <div key={dot} className={`w-3.5 h-3.5 rounded-full ${opacity}`} />
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex justify-between text-[9px] text-[#A09790] font-extrabold uppercase tracking-wider mt-4 pl-20 pr-1">
+                    <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+                  </div>
+                </div>
+
+                {/* Insights Cards List */}
+                <div className="lg:col-span-5 bg-white border border-[#17263F]/6 rounded-[24px] p-6 shadow-sm flex flex-col justify-between text-left">
+                  <h3 className="text-[13px] font-bold text-[#8C847B] uppercase tracking-wider mb-4">Insights for you</h3>
+                  
+                  <div className="space-y-3.5">
+                    {[
+                      { icon: <Clock size={16} className="text-[#8AB6D6]" />, text: 'Your focus improves with short breaks.' },
+                      { icon: <Timer size={16} className="text-[#D4A373]" />, text: 'You retain more when studying in the evening.' },
+                      { icon: <Sparkles size={16} className="text-[#A8C686]" />, text: 'Visual learning boosts your retention.' }
+                    ].map((ins, i) => (
+                      <div key={i} className="flex items-start gap-3">
+                        <div className="p-1.5 rounded-lg bg-[#FAF6F0] border border-[#17263F]/4 mt-0.5">
+                          {ins.icon}
+                        </div>
+                        <p className="text-[13px] font-bold text-[#17263F] leading-tight mt-1">{ins.text}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
 
               </div>
             </div>
+          )}
 
-          </div>
+          {/* SCREEN 8: AI Recommendations */}
+          {currentScreen === 8 && (
+            <div className="max-w-[1280px] w-full mx-auto flex flex-col gap-6 text-left">
+              {/* Header */}
+              <div className="flex items-center justify-between border-b border-[#17263F]/6 pb-6">
+                <div>
+                  <h1 className="text-[28px] lg:text-[36px] font-extrabold text-[#17263F] tracking-tight">Rin Recommends ♡</h1>
+                  <p className="text-[14px] text-[#6E665E] font-semibold mt-0.5">Personalized tips to help you learn and grow.</p>
+                </div>
+                <button 
+                  onClick={() => setCurrentScreen(5)}
+                  className="p-2.5 rounded-full border border-[#17263F]/8 hover:bg-[#FAF6F0] text-[#6E665E] cursor-pointer"
+                >
+                  <ArrowLeft size={18} />
+                </button>
+              </div>
 
-          {/* Bottom CTA Banner */}
-          <motion.div 
-            variants={fadeUp(0.45)}
-            className="mt-16 bg-[#FFFDF9] border border-[#17263F]/6 rounded-full px-8 py-4 shadow-[0_4px_20px_rgba(22,35,58,0.01)] inline-flex items-center gap-3.5 mx-auto"
-          >
-            <Sprout size={16} className="text-[#D4A373] animate-bounce" />
-            <span className="text-[13px] font-bold text-[#17263F] tracking-wide">
-              Thank you for being part of the Rinhozo journey. 💛
-            </span>
-          </motion.div>
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center my-auto">
+                
+                {/* Left mascot */}
+                <div className="lg:col-span-4 flex flex-col items-center justify-center">
+                  {renderMascot(260, true, true)}
+                </div>
 
-        </div>
-      </Section>
+                {/* Right recommendations */}
+                <div className="lg:col-span-8 space-y-4 text-left w-full">
+                  {[
+                    { label: 'Try 25-minute study sessions', desc: 'Based on your focus patterns.', btn: 'Try Now', action: () => setCurrentScreen(6) },
+                    { label: 'Add visual diagrams to your notes', desc: 'Helps you understand better.', btn: 'Explore', action: () => {} },
+                    { label: 'Schedule breaks every 20 minutes', desc: 'Short breaks improve attention.', btn: 'Set Reminder', action: () => {} },
+                    { label: 'Study Mathematics in the evening', desc: 'You focus best during this time.', btn: 'Adjust', action: () => {} }
+                  ].map((tip, i) => (
+                    <motion.div
+                      key={i}
+                      variants={fadeUp(i * 0.08)}
+                      className="bg-white border border-[#17263F]/6 rounded-2xl p-5 shadow-[0_4px_20px_rgba(0,0,0,0.01)] flex flex-col md:flex-row md:items-center justify-between gap-4 hover:border-[#D4A373]/25 transition-all duration-200"
+                    >
+                      <div>
+                        <h4 className="text-[15px] font-bold text-[#17263F] leading-tight mb-1">{tip.label}</h4>
+                        <p className="text-[12px] text-[#6E665E] leading-normal">{tip.desc}</p>
+                      </div>
+                      <button
+                        onClick={tip.action}
+                        className="bg-[#17263F] hover:bg-[#253958] text-white text-[11px] font-bold uppercase tracking-wider py-2.5 px-5 rounded-full transition-all active:scale-[0.98] cursor-pointer shadow-sm text-center flex-shrink-0"
+                      >
+                        {tip.btn}
+                      </button>
+                    </motion.div>
+                  ))}
+                  
+                  {/* Bottom tagline */}
+                  <div className="pt-4 text-center">
+                    <span className="text-[11px] font-extrabold text-[#D4A373] uppercase tracking-widest bg-[#F6F0E8]/50 px-4 py-2 rounded-full">
+                      These recommendations update as you learn! 💛
+                    </span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          )}
+
+          {/* SCREEN 9: Growth Journey */}
+          {currentScreen === 9 && (
+            <div className="max-w-[1280px] w-full mx-auto flex flex-col gap-6 text-left">
+              {/* Header */}
+              <div className="flex items-center justify-between border-b border-[#17263F]/6 pb-6">
+                <div>
+                  <h1 className="text-[28px] lg:text-[36px] font-extrabold text-[#17263F] tracking-tight">Your Growth Journey ♡</h1>
+                  <p className="text-[14px] text-[#6E665E] font-semibold mt-0.5">Celebrate small wins. You're grinding every day!</p>
+                </div>
+                <button 
+                  onClick={() => setCurrentScreen(5)}
+                  className="p-2.5 rounded-full border border-[#17263F]/8 hover:bg-[#FAF6F0] text-[#6E665E] cursor-pointer"
+                >
+                  <ArrowLeft size={18} />
+                </button>
+              </div>
+
+              {/* Journey Tree Visual Illustration */}
+              <div className="bg-white border border-[#17263F]/6 rounded-[24px] p-8 shadow-sm flex flex-col items-center justify-center min-h-[380px] relative overflow-hidden">
+                <div className="absolute inset-0 bg-radial from-[#D4A373]/5 to-transparent blur-2xl pointer-events-none" />
+                
+                {/* Milestone nodes horizontal tree stack */}
+                <div className="flex flex-col md:flex-row items-center justify-around w-full gap-8 relative z-10">
+                  {[
+                    { node: 'First Step', date: 'Completed May 1', color: '#D4A373', active: true },
+                    { node: '7-Day Streak', date: 'Completed May 7', color: '#A8C686', active: true },
+                    { node: 'Focus Master', date: 'Completed May 10', color: '#8AB6D6', active: true },
+                    { node: 'Goal Achieved', date: 'Locked', color: '#8C847B', active: false }
+                  ].map((milestone, i) => (
+                    <div key={i} className="flex flex-col items-center text-center relative group">
+                      {/* Node circle wrapper */}
+                      <div 
+                        className="w-16 h-16 rounded-full flex items-center justify-center border-2 shadow-sm transition-all duration-200"
+                        style={{ 
+                          borderColor: milestone.active ? milestone.color : '#17263F/10',
+                          backgroundColor: milestone.active ? `${milestone.color}15` : '#FAF6F0'
+                        }}
+                      >
+                        {milestone.active ? (
+                          <Star size={24} style={{ color: milestone.color, fill: `${milestone.color}40` }} className="animate-spin-slow" />
+                        ) : (
+                          <Lock size={20} className="text-[#8C847B]" />
+                        )}
+                      </div>
+                      <h4 className="text-[14px] font-bold text-[#17263F] mt-3 mb-0.5">{milestone.node}</h4>
+                      <span className="text-[10px] font-extrabold text-[#8C847B] uppercase tracking-wider">{milestone.date}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Connecting branch background details using absolute SVG lines */}
+                <svg className="absolute w-[80%] h-4 top-1/2 left-[10%] opacity-20 pointer-events-none hidden md:block" fill="none">
+                  <line x1="0%" y1="50%" x2="100%" y2="50%" stroke="#D4A373" strokeWidth="3" strokeDasharray="6 6" />
+                </svg>
+              </div>
+
+              {/* Profile stats and badges footer */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+                
+                {/* Level badge */}
+                <div className="bg-white border border-[#17263F]/6 rounded-[24px] p-6 shadow-sm flex items-center gap-6 text-left">
+                  <div className="w-16 h-16 rounded-2xl bg-[#F6F0E8] border border-[#D4A373]/20 flex items-center justify-center flex-shrink-0">
+                    <Trophy size={32} className="text-[#D4A373]" />
+                  </div>
+                  <div className="flex-1 space-y-2">
+                    <div className="flex justify-between items-end leading-none">
+                      <span className="text-xs font-black text-[#8C847B] uppercase tracking-wider">Level 4</span>
+                      <span className="text-[13px] font-black text-[#17263F]">Curious Learner</span>
+                    </div>
+                    <div className="h-2 bg-[#FAF6F0] rounded-full overflow-hidden border border-[#17263F]/4">
+                      <div className="h-full bg-[#D4A373] rounded-full" style={{ width: '45%' }} />
+                    </div>
+                    <span className="text-[10px] text-[#8C847B] font-extrabold block">450 / 1000 XP</span>
+                  </div>
+                </div>
+
+                {/* Badges count */}
+                <div className="bg-white border border-[#17263F]/6 rounded-[24px] p-6 shadow-sm flex items-center gap-6 text-left">
+                  <div className="w-16 h-16 rounded-2xl bg-[#F6F0E8] border border-[#D4A373]/20 flex items-center justify-center flex-shrink-0">
+                    <Award size={32} className="text-[#A8C686]" />
+                  </div>
+                  <div>
+                    <span className="text-xs font-black text-[#8C847B] uppercase tracking-wider block mb-1">Badges</span>
+                    <span className="text-[24px] font-black text-[#17263F] block leading-none">12 Earned</span>
+                    <span className="text-[11px] text-[#6E665E] block mt-1.5">You unlocked "Streak Master" badge yesterday!</span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          )}
+
+          {/* SCREEN 10: Educator Dashboard */}
+          {currentScreen === 10 && (
+            <div className="max-w-[1280px] w-full mx-auto flex flex-col gap-6 text-left">
+              {/* Header */}
+              <div className="flex items-center justify-between border-b border-[#17263F]/6 pb-6">
+                <div>
+                  <h1 className="text-[28px] lg:text-[36px] font-extrabold text-[#17263F] tracking-tight">Classroom Overview ♡</h1>
+                  <p className="text-[14px] text-[#6E665E] font-semibold mt-0.5">Grade 8 - Mathematics • Supporting student pathways</p>
+                </div>
+                <button 
+                  className="bg-white hover:bg-[#F6F0E8] border border-[#17263F]/12 text-[#17263F] font-bold text-xs px-6 py-3 rounded-full transition-all active:scale-[0.98] shadow-sm cursor-pointer"
+                >
+                  Export Report
+                </button>
+              </div>
+
+              {/* Stats blocks grid */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                {[
+                  { val: '28', label: 'Total Students', color: 'border-[#17263F]/6' },
+                  { val: '18', label: 'On Track', pct: '64%', color: 'border-[#A8C686]' },
+                  { val: '7', label: 'Need Support', pct: '25%', color: 'border-[#E8B07A]' },
+                  { val: '3', label: 'At Risk', pct: '11%', color: 'border-[#F87171]' }
+                ].map((card, i) => (
+                  <div key={i} className={`bg-white border rounded-2xl p-5 shadow-sm flex flex-col justify-between ${card.color}`}>
+                    <div className="flex justify-between items-start leading-none">
+                      <span className="text-[10px] font-bold text-[#8C847B] uppercase tracking-wider">{card.label}</span>
+                      {card.pct && <span className="text-[9px] font-extrabold bg-[#FAF6F0] px-2 py-0.5 rounded-full text-[#6E665E]">{card.pct}</span>}
+                    </div>
+                    <span className="text-[32px] font-black text-[#17263F] mt-3.5 leading-none">{card.val}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Main content split */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                {/* Attention Overview donut chart mockup */}
+                <div className="bg-white border border-[#17263F]/6 rounded-[24px] p-6 shadow-sm flex flex-col justify-between">
+                  <h3 className="text-[13px] font-bold text-[#8C847B] uppercase tracking-wider mb-4">Attention Overview</h3>
+                  
+                  {/* SVG Donut */}
+                  <div className="w-36 h-36 mx-auto relative flex items-center justify-center my-4">
+                    <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                      <circle cx="18" cy="18" r="15.9155" fill="none" stroke="#FAF6F0" strokeWidth="4" />
+                      <circle cx="18" cy="18" r="15.9155" fill="none" stroke="#A8C686" strokeWidth="4" strokeDasharray="64 100" />
+                      <circle cx="18" cy="18" r="15.9155" fill="none" stroke="#E8B07A" strokeWidth="4" strokeDasharray="25 100" strokeDashoffset="-64" />
+                    </svg>
+                    <div className="absolute flex flex-col items-center leading-none">
+                      <span className="text-[12px] font-extrabold text-[#8C847B] uppercase tracking-wider">Class</span>
+                      <span className="text-[20px] font-black text-[#17263F] mt-1">Focused</span>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-around text-[10px] font-bold text-[#6E665E] pt-2">
+                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#A8C686]" /> Focused 64%</span>
+                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#E8B07A]" /> Distracted 25%</span>
+                  </div>
+                </div>
+
+                {/* Classroom Insights list */}
+                <div className="bg-white border border-[#17263F]/6 rounded-[24px] p-6 shadow-sm text-left">
+                  <h3 className="text-[13px] font-bold text-[#8C847B] uppercase tracking-wider mb-4">Top Insights</h3>
+                  
+                  <div className="space-y-4">
+                    {[
+                      'Most students focus best between 6-8 PM.',
+                      'Interactive lessons improve completion rate.',
+                      'Visual content helps 70% of the class.'
+                    ].map((insight, i) => (
+                      <div key={i} className="flex items-start gap-3 text-left">
+                        <div className="w-5 h-5 rounded-full bg-[#FAF6F0] flex items-center justify-center text-[10px] font-bold text-[#D4A373] border border-[#17263F]/4 flex-shrink-0 mt-0.5">
+                          {i + 1}
+                        </div>
+                        <span className="text-[13px] font-bold text-[#17263F] leading-snug">{insight}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Students Meeting Support list */}
+                <div className="bg-white border border-[#17263F]/6 rounded-[24px] p-6 shadow-sm text-left">
+                  <h3 className="text-[13px] font-bold text-[#8C847B] uppercase tracking-wider mb-4">Students Meeting Support</h3>
+                  
+                  <div className="space-y-3">
+                    {[
+                      { name: 'Rohan S.', style: 'Needs attention support' },
+                      { name: 'Meera K.', style: 'Needs modular breaks' },
+                      { name: 'Arjun P.', style: 'Needs study structure' }
+                    ].map((student, i) => (
+                      <div key={i} className="flex items-center gap-3.5 py-1 border-b border-[#17263F]/4 last:border-0">
+                        <div className="w-9 h-9 rounded-full bg-[#FAF6F0] border border-[#17263F]/8 flex items-center justify-center flex-shrink-0">
+                          <img src="/assets/rin_mascot_3d_clean.png" alt="Student" className="w-7 h-7 object-contain" />
+                        </div>
+                        <div>
+                          <span className="text-[13px] font-bold text-[#17263F] block leading-tight">{student.name}</span>
+                          <span className="text-[11px] text-[#6E665E] block mt-0.5">{student.style}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          )}
+
+          {/* SCREEN 11: Parent Dashboard */}
+          {currentScreen === 11 && (
+            <div className="max-w-[1280px] w-full mx-auto flex flex-col gap-6 text-left">
+              {/* Header */}
+              <div className="flex items-center justify-between border-b border-[#17263F]/6 pb-6">
+                <div>
+                  <h1 className="text-[28px] lg:text-[36px] font-extrabold text-[#17263F] tracking-tight">Welcome, Mom! 🌸</h1>
+                  <p className="text-[14px] text-[#6E665E] font-semibold mt-0.5">Here's how {userName} is doing.</p>
+                </div>
+                <button 
+                  onClick={() => setCurrentScreen(5)}
+                  className="p-2.5 rounded-full border border-[#17263F]/8 hover:bg-[#FAF6F0] text-[#6E665E] cursor-pointer"
+                >
+                  <ArrowLeft size={18} />
+                </button>
+              </div>
+
+              {/* Row grid stats */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {[
+                  { num: `${focusScore}/100`, label: 'Focus Score', sub: 'Great!' },
+                  { num: '10h 35m', label: 'Study Time', sub: '+1h 20m' },
+                  { num: '12 /15', label: 'Tasks Completed', sub: 'Keep it up!' }
+                ].map((stat, i) => (
+                  <div key={i} className="bg-white border border-[#17263F]/6 rounded-[24px] p-6 shadow-sm text-left flex flex-col justify-between hover:translate-y-[-2px] transition-all">
+                    <span className="text-[10px] font-bold text-[#8C847B] uppercase tracking-wider">{stat.label}</span>
+                    <span className="text-[32px] font-black text-[#17263F] my-3 leading-none">{stat.num}</span>
+                    <span className="text-[11px] font-bold text-[#A8C686]">{stat.sub}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Visual Split */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mt-4">
+                
+                {/* Insights and suggested activities */}
+                <div className="lg:col-span-8 space-y-6 text-left">
+                  
+                  {/* Insights list */}
+                  <div className="bg-white border border-[#17263F]/6 rounded-[24px] p-6 shadow-sm">
+                    <h3 className="text-[13px] font-bold text-[#8C847B] uppercase tracking-wider mb-4">Insights</h3>
+                    <div className="space-y-3.5">
+                      {[
+                        'Ananya focuses best in the evening.',
+                        'Short breaks help her stay consistent.',
+                        'She enjoys learning Math and Art.'
+                      ].map((item, i) => (
+                        <div key={i} className="flex items-center gap-3">
+                          <div className="w-2 h-2 rounded-full bg-[#D4A373]" />
+                          <span className="text-[13px] font-bold text-[#17263F]">{item}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Suggested Activities */}
+                  <div className="bg-white border border-[#17263F]/6 rounded-[24px] p-6 shadow-sm">
+                    <h3 className="text-[13px] font-bold text-[#8C847B] uppercase tracking-wider mb-4">Suggested Activities</h3>
+                    <div className="space-y-4">
+                      {[
+                        { title: 'Mindful Breathing (3 min)', desc: 'Improves focus' },
+                        { title: 'Visual Note-making', desc: 'Enhances understanding' },
+                        { title: 'Short quizzes', desc: 'Boosts retention' }
+                      ].map((act, i) => (
+                        <div key={i} className="flex justify-between items-center py-0.5 border-b border-[#17263F]/4 last:border-0">
+                          <div>
+                            <span className="text-[13px] font-bold text-[#17263F] block leading-tight">{act.title}</span>
+                            <span className="text-[11px] text-[#6E665E] block mt-0.5">{act.desc}</span>
+                          </div>
+                          <button className="bg-[#FAF6F0] border border-[#17263F]/8 text-[#17263F] hover:bg-[#F6F0E8] text-[10px] font-bold uppercase tracking-wider py-1.5 px-4.5 rounded-full cursor-pointer transition-colors">
+                            Assign
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* Right side mascot visual decoration */}
+                <div className="lg:col-span-4 flex flex-col items-center justify-center">
+                  {renderMascot(260, true, true)}
+                </div>
+
+              </div>
+            </div>
+          )}
+
+          {/* SCREEN 12: Profile & Settings */}
+          {currentScreen === 12 && (
+            <div className="max-w-[1280px] w-full mx-auto flex flex-col gap-6 text-left">
+              {/* Header */}
+              <div className="flex items-center justify-between border-b border-[#17263F]/6 pb-6">
+                <div>
+                  <h1 className="text-[28px] lg:text-[36px] font-extrabold text-[#17263F] tracking-tight">Profile & Settings</h1>
+                  <p className="text-[14px] text-[#6E665E] font-semibold mt-0.5">Customize preferences, toggles, and study variables.</p>
+                </div>
+                <button 
+                  onClick={() => setCurrentScreen(5)}
+                  className="p-2.5 rounded-full border border-[#17263F]/8 hover:bg-[#FAF6F0] text-[#6E665E] cursor-pointer"
+                >
+                  <ArrowLeft size={18} />
+                </button>
+              </div>
+
+              {/* Main settings options panels */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                {/* Left profile form card */}
+                <div className="lg:col-span-4 bg-white border border-[#17263F]/6 rounded-[24px] p-6 shadow-sm text-center">
+                  <div className="mb-6 flex flex-col items-center">
+                    {/* Cute 3D profile avatar mockup (Mascot with book) */}
+                    <div className="w-24 h-24 rounded-full border-2 border-[#D4A373]/30 overflow-hidden bg-[#FAF6F0] flex items-center justify-center p-2 mb-3 relative">
+                      <img src="/assets/rin_mascot_3d_clean.png" alt="Profile avatar" className="w-full h-full object-contain" />
+                    </div>
+                    <button className="text-[11px] font-extrabold text-[#D4A373] uppercase tracking-wider hover:underline cursor-pointer">
+                      Change Photo
+                    </button>
+                  </div>
+
+                  <div className="space-y-4 text-left">
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[10px] font-bold text-[#8C847B] uppercase tracking-wider pl-0.5">Name</label>
+                      <input 
+                        type="text" 
+                        value={userName}
+                        onChange={(e) => setUserName(e.target.value)}
+                        className="w-full bg-[#FAF6F0] border border-[#17263F]/6 rounded-2xl px-4 py-3 text-xs font-bold text-[#17263F]"
+                      />
+                    </div>
+                    
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[10px] font-bold text-[#8C847B] uppercase tracking-wider pl-0.5">Age</label>
+                      <input 
+                        type="text" 
+                        value={userAge}
+                        onChange={(e) => setUserAge(e.target.value)}
+                        className="w-full bg-[#FAF6F0] border border-[#17263F]/6 rounded-2xl px-4 py-3 text-xs font-bold text-[#17263F]"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[10px] font-bold text-[#8C847B] uppercase tracking-wider pl-0.5">Grade</label>
+                      <input 
+                        type="text" 
+                        value={userGrade}
+                        onChange={(e) => setUserGrade(e.target.value)}
+                        className="w-full bg-[#FAF6F0] border border-[#17263F]/6 rounded-2xl px-4 py-3 text-xs font-bold text-[#17263F]"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[10px] font-bold text-[#8C847B] uppercase tracking-wider pl-0.5">Bio</label>
+                      <textarea 
+                        rows={2}
+                        value="I love art, science and learning new things!"
+                        readOnly
+                        className="w-full bg-[#FAF6F0] border border-[#17263F]/6 rounded-2xl px-4 py-3 text-xs font-bold text-[#17263F] resize-none"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right settings parameters cards (Grid of accessibility, notifications, and study) */}
+                <div className="lg:col-span-8 space-y-6 text-left w-full">
+                  
+                  {/* Row 1: Accessibility & Notifications side-by-side */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    {/* Accessibility switches */}
+                    <div className="bg-white border border-[#17263F]/6 rounded-[24px] p-6 shadow-sm space-y-4">
+                      <h3 className="text-[13px] font-bold text-[#8C847B] uppercase tracking-wider mb-2">Accessibility ♡</h3>
+                      
+                      {/* Distractions toggle */}
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <span className="text-[12px] font-bold text-[#17263F] block leading-tight">Reduce distractions</span>
+                          <span className="text-[10px] text-[#8C847B] block mt-0.5">Minimize visual clutter</span>
+                        </div>
+                        <button 
+                          onClick={() => setReduceDistractions(!reduceDistractions)}
+                          className={`w-11 h-6 rounded-full p-0.5 transition-colors cursor-pointer relative flex items-center ${
+                            reduceDistractions ? 'bg-[#A8C686]' : 'bg-[#17263F]/10'
+                          }`}
+                        >
+                          <div className={`w-5 h-5 rounded-full bg-white shadow-sm transition-transform ${
+                            reduceDistractions ? 'translate-x-5' : 'translate-x-0'
+                          }`} />
+                        </button>
+                      </div>
+
+                      {/* Soft Colors toggle */}
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <span className="text-[12px] font-bold text-[#17263F] block leading-tight">Soft colors</span>
+                          <span className="text-[10px] text-[#8C847B] block mt-0.5">Sway interface colors</span>
+                        </div>
+                        <button 
+                          onClick={() => setSoftColors(!softColors)}
+                          className={`w-11 h-6 rounded-full p-0.5 transition-colors cursor-pointer relative flex items-center ${
+                            softColors ? 'bg-[#A8C686]' : 'bg-[#17263F]/10'
+                          }`}
+                        >
+                          <div className={`w-5 h-5 rounded-full bg-white shadow-sm transition-transform ${
+                            softColors ? 'translate-x-5' : 'translate-x-0'
+                          }`} />
+                        </button>
+                      </div>
+
+                      {/* Dyslexia-friendly font toggle */}
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <span className="text-[12px] font-bold text-[#17263F] block leading-tight">Dyslexia-friendly font</span>
+                          <span className="text-[10px] text-[#8C847B] block mt-0.5">Improves readability</span>
+                        </div>
+                        <button 
+                          onClick={() => setDyslexiaFont(!dyslexiaFont)}
+                          className={`w-11 h-6 rounded-full p-0.5 transition-colors cursor-pointer relative flex items-center ${
+                            dyslexiaFont ? 'bg-[#A8C686]' : 'bg-[#17263F]/10'
+                          }`}
+                        >
+                          <div className={`w-5 h-5 rounded-full bg-white shadow-sm transition-transform ${
+                            dyslexiaFont ? 'translate-x-5' : 'translate-x-0'
+                          }`} />
+                        </button>
+                      </div>
+
+                      {/* High Contrast toggle */}
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <span className="text-[12px] font-bold text-[#17263F] block leading-tight">High contrast</span>
+                          <span className="text-[10px] text-[#8C847B] block mt-0.5">Increase outline weights</span>
+                        </div>
+                        <button 
+                          onClick={() => setHighContrast(!highContrast)}
+                          className={`w-11 h-6 rounded-full p-0.5 transition-colors cursor-pointer relative flex items-center ${
+                            highContrast ? 'bg-[#A8C686]' : 'bg-[#17263F]/10'
+                          }`}
+                        >
+                          <div className={`w-5 h-5 rounded-full bg-white shadow-sm transition-transform ${
+                            highContrast ? 'translate-x-5' : 'translate-x-0'
+                          }`} />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Notifications toggles */}
+                    <div className="bg-white border border-[#17263F]/6 rounded-[24px] p-6 shadow-sm space-y-4">
+                      <h3 className="text-[13px] font-bold text-[#8C847B] uppercase tracking-wider mb-2">Notifications ♡</h3>
+                      
+                      {/* Study reminders */}
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <span className="text-[12px] font-bold text-[#17263F] block leading-tight">Study reminders</span>
+                          <span className="text-[10px] text-[#8C847B] block mt-0.5">Daily study alerts</span>
+                        </div>
+                        <button 
+                          onClick={() => setNotifStudy(!notifStudy)}
+                          className={`w-11 h-6 rounded-full p-0.5 transition-colors cursor-pointer relative flex items-center ${
+                            notifStudy ? 'bg-[#A8C686]' : 'bg-[#17263F]/10'
+                          }`}
+                        >
+                          <div className={`w-5 h-5 rounded-full bg-white shadow-sm transition-transform ${
+                            notifStudy ? 'translate-x-5' : 'translate-x-0'
+                          }`} />
+                        </button>
+                      </div>
+
+                      {/* Break reminders */}
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <span className="text-[12px] font-bold text-[#17263F] block leading-tight">Break reminders</span>
+                          <span className="text-[10px] text-[#8C847B] block mt-0.5">Remind me to take breaks</span>
+                        </div>
+                        <button 
+                          onClick={() => setNotifBreak(!notifBreak)}
+                          className={`w-11 h-6 rounded-full p-0.5 transition-colors cursor-pointer relative flex items-center ${
+                            notifBreak ? 'bg-[#A8C686]' : 'bg-[#17263F]/10'
+                          }`}
+                        >
+                          <div className={`w-5 h-5 rounded-full bg-white shadow-sm transition-transform ${
+                            notifBreak ? 'translate-x-5' : 'translate-x-0'
+                          }`} />
+                        </button>
+                      </div>
+
+                      {/* Goal updates */}
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <span className="text-[12px] font-bold text-[#17263F] block leading-tight">Goal updates</span>
+                          <span className="text-[10px] text-[#8C847B] block mt-0.5">Notify about progress</span>
+                        </div>
+                        <button 
+                          onClick={() => setNotifGoal(!notifGoal)}
+                          className={`w-11 h-6 rounded-full p-0.5 transition-colors cursor-pointer relative flex items-center ${
+                            notifGoal ? 'bg-[#A8C686]' : 'bg-[#17263F]/10'
+                          }`}
+                        >
+                          <div className={`w-5 h-5 rounded-full bg-white shadow-sm transition-transform ${
+                            notifGoal ? 'translate-x-5' : 'translate-x-0'
+                          }`} />
+                        </button>
+                      </div>
+
+                      {/* Motivational messages */}
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <span className="text-[12px] font-bold text-[#17263F] block leading-tight">Motivational messages</span>
+                          <span className="text-[10px] text-[#8C847B] block mt-0.5">Encouragement from Rin</span>
+                        </div>
+                        <button 
+                          onClick={() => setNotifMascot(!notifMascot)}
+                          className={`w-11 h-6 rounded-full p-0.5 transition-colors cursor-pointer relative flex items-center ${
+                            notifMascot ? 'bg-[#A8C686]' : 'bg-[#17263F]/10'
+                          }`}
+                        >
+                          <div className={`w-5 h-5 rounded-full bg-white shadow-sm transition-transform ${
+                            notifMascot ? 'translate-x-5' : 'translate-x-0'
+                          }`} />
+                        </button>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  {/* Row 2: Study Parameters */}
+                  <div className="bg-white border border-[#17263F]/6 rounded-[24px] p-6 shadow-sm text-left">
+                    <h3 className="text-[13px] font-bold text-[#8C847B] uppercase tracking-wider mb-4">Study Settings ♡</h3>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* Session duration */}
+                      <div className="flex justify-between items-center py-2 border-b border-[#17263F]/4">
+                        <span className="text-[12px] font-bold text-[#17263F]">Default session time</span>
+                        <select 
+                          value={sessionLength}
+                          onChange={(e) => { setSessionLength(Number(e.target.value)); setTimerSeconds(Number(e.target.value) * 60); }}
+                          className="bg-[#FAF6F0] border border-[#17263F]/6 rounded-xl px-3 py-1.5 text-xs font-bold text-[#17263F]"
+                        >
+                          <option value="15">15 minutes</option>
+                          <option value="25">25 minutes</option>
+                          <option value="45">45 minutes</option>
+                        </select>
+                      </div>
+
+                      {/* Short break duration */}
+                      <div className="flex justify-between items-center py-2 border-b border-[#17263F]/4">
+                        <span className="text-[12px] font-bold text-[#17263F]">Short break duration</span>
+                        <select 
+                          value={shortBreakLength}
+                          onChange={(e) => setShortBreakLength(Number(e.target.value))}
+                          className="bg-[#FAF6F0] border border-[#17263F]/6 rounded-xl px-3 py-1.5 text-xs font-bold text-[#17263F]"
+                        >
+                          <option value="3">3 minutes</option>
+                          <option value="5">5 minutes</option>
+                          <option value="10">10 minutes</option>
+                        </select>
+                      </div>
+
+                      {/* Long break duration */}
+                      <div className="flex justify-between items-center py-2 border-b border-[#17263F]/4">
+                        <span className="text-[12px] font-bold text-[#17263F]">Long break duration</span>
+                        <select 
+                          value={longBreakLength}
+                          onChange={(e) => setLongBreakLength(Number(e.target.value))}
+                          className="bg-[#FAF6F0] border border-[#17263F]/6 rounded-xl px-3 py-1.5 text-xs font-bold text-[#17263F]"
+                        >
+                          <option value="15">15 minutes</option>
+                          <option value="20">20 minutes</option>
+                          <option value="30">30 minutes</option>
+                        </select>
+                      </div>
+
+                      {/* Background music */}
+                      <div className="flex justify-between items-center py-2 border-b border-[#17263F]/4">
+                        <span className="text-[12px] font-bold text-[#17263F]">Background music</span>
+                        <select 
+                          value={bgMusic}
+                          onChange={(e) => setBgMusic(e.target.value)}
+                          className="bg-[#FAF6F0] border border-[#17263F]/6 rounded-xl px-3 py-1.5 text-xs font-bold text-[#17263F]"
+                        >
+                          <option value="Lo-Fi beats">Lo-Fi beats</option>
+                          <option value="Ocean waves">Ocean waves</option>
+                          <option value="Binaural tones">Binaural tones</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+
+              {/* Footer decoration */}
+              <div className="flex justify-end mt-4">
+                <div className="flex items-center gap-4">
+                  <div className="bg-white border border-[#17263F]/6 rounded-2xl p-4 text-[12px] font-bold text-[#6E665E] max-w-[240px] shadow-sm">
+                    "Settings are updated instantly! Your dyslexia font is active." 💛
+                  </div>
+                  {renderMascot(120, true, true)}
+                </div>
+              </div>
+            </div>
+          )}
+
+        </main>
+      </div>
 
       {/* ════════════════════════════════════════════
-          FOOTER
+          FLOATING INTERACTIVE PROTOTYPE JUMP PANEL
+          (ENABLING IMMEDIATE INSPECTION OF ALL 12 MOCKUPS)
       ════════════════════════════════════════════ */}
-      <footer style={{ background: '#17263F', padding: '48px 0' }}>
-        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 40px', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 24, flexWrap: 'wrap' }} className="justify-between">
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <img src="/assets/rin_mascot_3d_clean.png" alt="Rin Logo" style={{ width: 32, height: 32, objectFit: 'contain', transform: 'rotate(-8deg)', opacity: 0.9 }} />
-            <span style={{ fontSize: 16, fontWeight: 800, letterSpacing: '0.04em', color: 'rgba(255,255,255,0.85)', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>RINHOZO</span>
-          </div>
-          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.32)', margin: 0 }}>
-            © {new Date().getFullYear()} Rinhozo. Made with care for every student.
-          </p>
-          <div style={{ display: 'flex', gap: 24 }}>
-            {['Privacy', 'Terms', 'Contact'].map(label => (
-              <button key={label} onClick={() => goto(label.toLowerCase() === 'contact' ? 'contact' : 'home')} style={{ fontSize: 13, color: 'rgba(255,255,255,0.35)', background: 'none', border: 'none', cursor: 'pointer', transition: 'color 0.2s', fontFamily: 'inherit' }}
-                onMouseEnter={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.7)'; }}
-                onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.35)'; }}
+      <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-[#17263F]/90 backdrop-blur-md border border-white/10 rounded-full px-6 py-3 shadow-2xl flex items-center gap-2 z-[9999] select-none text-white max-w-[90vw] overflow-x-auto no-scrollbar">
+        <span className="text-[10px] font-bold text-[#E8B07A] uppercase tracking-widest shrink-0 mr-2 flex items-center gap-1.5">
+          <Sparkles size={12} className="animate-spin-slow" />
+          Figma Shot Jump
+        </span>
+        <div className="flex gap-1">
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(num => {
+            const isActive = currentScreen === num;
+            return (
+              <button
+                key={num}
+                onClick={() => { setCurrentScreen(num); setIsMobileNavOpen(false); }}
+                className={`w-8 h-8 rounded-full text-xs font-black transition-all shrink-0 cursor-pointer ${
+                  isActive 
+                    ? 'bg-[#D4A373] text-[#17263F] font-black' 
+                    : 'text-white/60 hover:text-white hover:bg-white/10'
+                }`}
               >
-                {label}
+                {num}
               </button>
-            ))}
-          </div>
+            );
+          })}
         </div>
-      </footer>
+      </div>
 
-      {/* ── Rin chat bubble ── */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.85, y: 10 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ delay: 1.5, duration: 0.4 }}
-        onClick={onGetStarted}
-        style={{
-          position: 'fixed', bottom: 28, right: 28, zIndex: 50,
-          background: '#FFFDF9', borderRadius: '20px 20px 6px 20px',
-          padding: '14px 18px', maxWidth: 220,
-          boxShadow: '0 8px 32px rgba(22,35,58,0.12)',
-          border: '1px solid rgba(22,35,58,0.06)',
-          display: 'flex', alignItems: 'flex-start', gap: 12,
-          cursor: 'pointer', transition: 'all 0.22s ease',
-        }}
-        whileHover={{ y: -3, boxShadow: '0 14px 40px rgba(22,35,58,0.16)' }}
-      >
-        <div style={{ width: 32, height: 32, borderRadius: '50%', overflow: 'hidden', background: '#FBF3E8', border: '1.5px solid #F0D4A8', flexShrink: 0 }}>
-          <img src="/assets/rin_mascot_3d_clean.png" alt="Rin" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-        </div>
-        <div style={{ minWidth: 0 }}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: '#17263F', marginBottom: 3 }}>Hi! I'm Rinhozo 👋</div>
-          <p style={{ fontSize: 11.5, color: '#6B6560', lineHeight: 1.55, margin: 0 }}>
-            I'm here to guide, encourage, and learn with you — every step of the way.
-          </p>
-          <span style={{ fontSize: 11, color: '#D4A373', display: 'block', textAlign: 'right', marginTop: 4 }}>♡</span>
-        </div>
-      </motion.div>
     </div>
   );
 };
