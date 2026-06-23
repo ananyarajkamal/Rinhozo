@@ -248,141 +248,158 @@ export const LandingPage: React.FC<LandingPageProps> = ({ strings: _strings, onG
           
           {/* SCREEN 1: Welcome to Rin */}
           {currentScreen === 1 && (
-            <div className="max-w-[900px] mx-auto w-full px-4 py-8 flex flex-col justify-center items-center min-h-[90vh]">
-              {/* Outer Card Wrapper */}
-              <div className="relative w-full bg-gradient-to-b from-[#FFFDF9] via-[#FAF6F0] to-[#EFEBE4] border border-[#17263F]/8 rounded-[32px] px-6 py-12 md:p-16 flex flex-col items-center justify-between shadow-[0_16px_40px_rgba(22,36,63,0.05)] overflow-hidden min-h-[640px]">
-                
-                {/* 1. Welcome to Rin Badge */}
-                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white border border-[#17263F]/6 rounded-full px-6 py-2 shadow-[0_4px_12px_rgba(22,36,63,0.03)] text-xs md:text-sm font-extrabold text-[#17263F] z-30 select-none whitespace-nowrap">
-                  1. Welcome to Rin
+            <div className="max-w-[1280px] mx-auto w-full flex flex-col justify-between min-h-[90vh] px-4">
+              {/* Premium Navigation Header */}
+              <header className="flex items-center justify-between py-6 mb-12 select-none">
+                <div className="flex items-center gap-3">
+                  <img src="/assets/rin_mascot_3d_clean.png" alt="Rin" className="w-10 h-10 object-contain transform rotate-[-8deg]" />
+                  <span className="text-[15px] font-black tracking-[0.25em] text-[#17263F]">RINHOZO</span>
                 </div>
-
-                {/* Top-left Brand Logo */}
-                <div className="absolute top-6 left-8 flex items-center gap-2 select-none z-20">
-                  <img src="/assets/rin_mascot_3d_clean.png" alt="Rin mascot" className="w-6 h-6 object-contain transform rotate-[-8deg]" />
-                  <span className="text-[11px] font-black tracking-[0.2em] text-[#17263F]">RINHOZO</span>
-                </div>
-
-                {/* Ambient props in card background (desktop only for clean spacing) */}
-                {/* Left Side: Leafy Plant Pot */}
-                <div className="hidden md:flex absolute left-[6%] bottom-[8%] z-10 flex-col items-center pointer-events-none select-none">
-                  {/* Leaves */}
-                  <div className="flex gap-1.5 mb-[-4px] relative z-10">
-                    <div className="w-4 h-9 bg-[#A8C686] rounded-full rotate-[-25deg] origin-bottom-right shadow-[0_2px_4px_rgba(0,0,0,0.05)]" />
-                    <div className="w-5 h-11 bg-[#96B873] rounded-full shadow-[0_2px_4px_rgba(0,0,0,0.05)]" />
-                    <div className="w-4 h-9 bg-[#A8C686] rounded-full rotate-[25deg] origin-bottom-left shadow-[0_2px_4px_rgba(0,0,0,0.05)]" />
-                  </div>
-                  {/* Pot */}
-                  <div className="w-16 h-14 bg-[#E5D5C5] border border-[#17263F]/8 rounded-b-2xl rounded-t-sm shadow-[0_4px_10px_rgba(0,0,0,0.05)]" />
-                </div>
-
-                {/* Right Side: Plant in background */}
-                <div className="hidden md:block absolute right-[6%] top-[8%] z-10 opacity-60 pointer-events-none select-none">
-                  <div className="flex gap-1 mb-[-4px] relative z-10">
-                    <div className="w-3 h-7 bg-[#A8C686] rounded-full rotate-[-20deg] origin-bottom-right" />
-                    <div className="w-4 h-8 bg-[#96B873] rounded-full" />
-                    <div className="w-3 h-7 bg-[#A8C686] rounded-full rotate-[20deg] origin-bottom-left" />
-                  </div>
-                  <div className="w-12 h-10 bg-[#E5D5C5]/85 border border-[#17263F]/6 rounded-b-xl rounded-t-sm shadow-sm" />
-                </div>
-
-                {/* Right Side: Stacked books (Curiosity, Focus, Growth) */}
-                <div className="hidden md:block absolute right-[5%] bottom-[16%] w-[160px] z-10 rotate-[-2deg] filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.05)] pointer-events-none select-none">
-                  <img src="/assets/stacked_books_3d_clean.png" alt="Stacked Books" className="w-full object-contain" />
-                  <div className="absolute inset-0 flex flex-col items-center justify-center text-[8px] font-black text-[#17263F]/75 tracking-wider gap-3.5 select-none">
-                    <span className="uppercase mt-[8px]">Curiosity</span>
-                    <span className="uppercase ml-2">Focus</span>
-                    <span className="uppercase mr-1 mb-1">Growth</span>
-                  </div>
-                </div>
-
-                {/* Right Side: Coffee cup */}
-                <div className="hidden md:block absolute bottom-[3%] right-[11%] w-[96px] z-20 rotate-[6deg] filter drop-shadow-[0_6px_12px_rgba(0,0,0,0.04)] pointer-events-none select-none">
-                  <img src="/assets/coffee_cup_3d_clean.png" alt="Coffee Cup" className="w-full object-contain" />
-                </div>
-
-                {/* Center Mascot & Floating Cards Section */}
-                <div className="relative w-full max-w-[480px] h-[280px] flex items-center justify-center mt-6 z-20">
-                  {/* Floating particles background glow */}
-                  <div className="absolute w-[280px] h-[280px] rounded-full bg-radial from-[#D4A373]/12 via-[#D4A373]/3 to-transparent blur-2xl pointer-events-none" />
-                  
-                  {/* Mascot */}
-                  <div className="absolute z-20">
-                    {renderMascot(260, true, false)}
-                  </div>
-
-                  {/* Floating cards with icons */}
-                  {/* 1. Lightbulb (Top-Left) */}
-                  <motion.div
-                    animate={{ y: [0, -6, 0] }}
-                    transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                    className="absolute left-[12%] top-[15%] z-30 bg-[#FFFDF9] border border-[#17263F]/6 rounded-2xl p-3 shadow-[0_8px_20px_rgba(0,0,0,0.04)] flex items-center justify-center hover:scale-105 transition-all select-none"
-                  >
-                    <Lightbulb size={24} className="text-[#D4A373]" />
-                  </motion.div>
-
-                  {/* 2. Book (Bottom-Left) */}
-                  <motion.div
-                    animate={{ y: [0, 6, 0] }}
-                    transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
-                    className="absolute left-[6%] bottom-[18%] z-30 bg-[#FFFDF9] border border-[#17263F]/6 rounded-2xl p-3 shadow-[0_8px_20px_rgba(0,0,0,0.04)] flex items-center justify-center hover:scale-105 transition-all select-none"
-                  >
-                    <BookOpen size={24} className="text-[#D4A373]" />
-                  </motion.div>
-
-                  {/* 3. Puzzle Piece (Top-Right) */}
-                  <motion.div
-                    animate={{ y: [0, -7, 0] }}
-                    transition={{ duration: 4.2, repeat: Infinity, ease: 'easeInOut', delay: 0.2 }}
-                    className="absolute right-[12%] top-[12%] z-30 bg-[#FFFDF9] border border-[#17263F]/6 rounded-2xl p-3 shadow-[0_8px_20px_rgba(0,0,0,0.04)] flex items-center justify-center hover:scale-105 transition-all rotate-[6deg] select-none"
-                  >
-                    <Compass size={24} className="text-[#8AB6D6]" />
-                  </motion.div>
-
-                  {/* 4. Growth/Bar Chart (Bottom-Right) */}
-                  <motion.div
-                    animate={{ y: [0, 7, 0] }}
-                    transition={{ duration: 4.8, repeat: Infinity, ease: 'easeInOut', delay: 0.7 }}
-                    className="absolute right-[6%] bottom-[22%] z-30 bg-[#FFFDF9] border border-[#17263F]/6 rounded-2xl p-3 shadow-[0_8px_20px_rgba(0,0,0,0.04)] flex items-center justify-center hover:scale-105 transition-all rotate-[-6deg] select-none"
-                  >
-                    <BarChart3 size={24} className="text-[#8AB6D6]" />
-                  </motion.div>
-                </div>
-
-                {/* Welcome Title and Subtitle */}
-                <div className="text-center mt-6 z-20">
-                  <h1 className="text-[32px] md:text-[38px] font-black text-[#17263F] leading-tight tracking-tight mb-2.5 flex items-center justify-center gap-2">
-                    Welcome to Rinhozo
-                    <span className="text-[#D4A373] text-[26px] font-normal leading-none inline-block transform translate-y-[2px]">♡</span>
-                  </h1>
-                  <p className="text-[14px] md:text-[15px] text-[#6E665E] font-medium max-w-[420px] mx-auto mb-8 leading-relaxed">
-                    Let's create a learning experience<br />that understands you.
-                  </p>
-                </div>
-
-                {/* Primary Actions Group */}
-                <div className="w-full max-w-[340px] flex flex-col gap-3.5 z-20">
-                  <button
-                    onClick={() => setCurrentScreen(14)}
-                    className="w-full bg-[#17263F] hover:bg-[#253958] text-white font-bold text-[15px] py-4.5 rounded-[18px] transition-all active:scale-[0.98] shadow-sm cursor-pointer flex items-center justify-center gap-2"
-                  >
-                    Start Journey <ArrowRight size={16} />
-                  </button>
-
-                  <button
+                <div className="flex items-center gap-4">
+                  <button 
                     onClick={() => setCurrentScreen(13)}
-                    className="w-full bg-[#FFFDF9] hover:bg-[#FAF6F0] border border-[#17263F]/8 text-[#17263F] font-bold text-[15px] py-4.5 rounded-[18px] transition-all active:scale-[0.98] cursor-pointer shadow-sm"
+                    className="text-[#17263F] hover:text-[#D4A373] font-bold text-sm transition-colors cursor-pointer"
                   >
-                    I already have an account
+                    Sign In
+                  </button>
+                  <button 
+                    onClick={() => setCurrentScreen(14)}
+                    className="bg-[#17263F] hover:bg-[#253958] text-white font-bold text-sm px-6 py-3.5 rounded-full transition-all active:scale-[0.98] shadow-sm cursor-pointer"
+                  >
+                    Get Started →
                   </button>
                 </div>
+              </header>
 
-                {/* Cozy Bottom Footnote */}
-                <p className="text-[11px] text-[#8C847B] font-bold mt-8 z-20 select-none tracking-wide text-center">
-                  Rinhozo is here to support you every step of the way.
-                </p>
+              {/* Hero content */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center my-auto w-full">
+                {/* Left Column: Title & Intro */}
+                <motion.div 
+                  initial="hidden" animate="visible" variants={fadeUp(0)}
+                  className="lg:col-span-6 text-left flex flex-col justify-center"
+                >
+                  <span className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-[#17263F]/6 rounded-full px-4.5 py-2 text-xs font-bold text-[#D4A373] tracking-wide mb-8 shadow-sm self-start select-none">
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#D4A373] animate-pulse" />
+                    AI-powered learning companion
+                  </span>
+                  <h1 className="text-[56px] lg:text-[76px] font-black text-[#17263F] leading-[0.95] tracking-[-0.04em] mb-6">
+                    Welcome to<br />Rinhozo <span className="font-normal text-[#D4A373] text-[48px] inline-block ml-1">♡</span>
+                  </h1>
+                  <p className="text-[18px] md:text-[20px] text-[#6E665E] leading-relaxed max-w-[480px] mb-10 font-medium">
+                    Let's create a learning experience that understands you. Personalized study, focus, and growth.
+                  </p>
+                  
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+                    <button
+                      onClick={() => setCurrentScreen(14)}
+                      className="bg-[#17263F] hover:bg-[#253958] text-white font-bold text-[16px] px-8 py-4.5 rounded-[18px] shadow-[0_8px_20px_rgba(23,38,63,0.15)] transition-all active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2"
+                    >
+                      Start Journey <ArrowRight size={18} />
+                    </button>
+                    <button
+                      onClick={() => setCurrentScreen(13)}
+                      className="bg-white hover:bg-[#F6F0E8] border border-[#17263F]/12 text-[#17263F] font-bold text-[16px] px-8 py-4.5 rounded-[18px] shadow-sm transition-all active:scale-[0.98] cursor-pointer text-center"
+                    >
+                      I already have an account
+                    </button>
+                  </div>
 
+                  <div className="mt-6 pl-1">
+                    <button
+                      onClick={() => { setIsGuest(true); setIsLoggedIn(false); setUserName('Learner'); setCurrentScreen(5); }}
+                      className="text-[#8C847B] hover:text-[#17263F] font-bold text-[14px] transition-colors cursor-pointer underline underline-offset-4 decoration-[#D4A373]/40"
+                    >
+                      Continue as Guest →
+                    </button>
+                  </div>
+                </motion.div>
+
+                {/* Right Column: 3D Mascot & Workspace composition */}
+                <motion.div 
+                  initial="hidden" animate="visible" variants={fadeUp(0.12)}
+                  className="lg:col-span-6 flex items-center justify-center relative min-h-[480px] w-full"
+                >
+                  {/* Subtle background glow */}
+                  <div className="absolute w-[400px] h-[400px] rounded-full bg-radial from-[#D4A373]/12 to-transparent blur-3xl pointer-events-none" />
+
+                  {/* Clean desktop scene container */}
+                  <div className="relative w-full max-w-[500px] h-[420px] flex items-center justify-center">
+                    
+                    {/* Minimalist plant pot on the left */}
+                    <div className="absolute left-[4%] bottom-[12%] z-10 flex flex-col items-center">
+                      <div className="w-14 h-14 bg-white border border-[#17263F]/6 rounded-2xl flex items-center justify-center shadow-[0_8px_20px_rgba(0,0,0,0.03)] hover:scale-105 transition-transform duration-300">
+                        <span className="text-2xl select-none">🪴</span>
+                      </div>
+                    </div>
+
+                    {/* Stacked books (Curiosity, Focus, Growth) */}
+                    <div className="absolute right-[4%] bottom-[12%] w-[160px] z-10 rotate-[-2deg] filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.06)] select-none">
+                      <img src="/assets/stacked_books_3d_clean.png" alt="Stacked Books" className="w-full object-contain" />
+                      <div className="absolute inset-0 flex flex-col items-center justify-center text-[8px] font-black text-[#17263F]/70 tracking-wider gap-3.5 select-none">
+                        <span className="uppercase mt-[8px]">Curiosity</span>
+                        <span className="uppercase ml-2">Focus</span>
+                        <span className="uppercase mr-1 mb-1">Growth</span>
+                      </div>
+                    </div>
+
+                    {/* Coffee cup */}
+                    <div className="absolute bottom-[6%] right-[32%] w-[90px] z-20 rotate-[6deg] filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.05)] select-none">
+                      <img src="/assets/coffee_cup_3d_clean.png" alt="Coffee Cup" className="w-full object-contain" />
+                    </div>
+
+                    {/* Floating mascot in the center */}
+                    <div className="absolute top-[8%] z-30">
+                      {renderMascot(280, true, false)}
+                    </div>
+
+                    {/* Glassmorphic floating learning cards */}
+                    {/* 1. Lightbulb (Top-Left) */}
+                    <motion.div
+                      animate={{ y: [0, -6, 0] }}
+                      transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+                      className="absolute left-[12%] top-[15%] z-40 bg-white/80 backdrop-blur-md border border-[#17263F]/8 rounded-2xl p-3 shadow-[0_8px_24px_rgba(22,36,63,0.05)] flex items-center justify-center hover:scale-105 transition-all select-none"
+                    >
+                      <Lightbulb size={24} className="text-[#D4A373]" />
+                    </motion.div>
+
+                    {/* 2. Book (Bottom-Left) */}
+                    <motion.div
+                      animate={{ y: [0, 6, 0] }}
+                      transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+                      className="absolute left-[6%] bottom-[28%] z-40 bg-white/80 backdrop-blur-md border border-[#17263F]/8 rounded-2xl p-3 shadow-[0_8px_24px_rgba(22,36,63,0.05)] flex items-center justify-center hover:scale-105 transition-all select-none"
+                    >
+                      <BookOpen size={24} className="text-[#D4A373]" />
+                    </motion.div>
+
+                    {/* 3. Puzzle Piece (Top-Right) */}
+                    <motion.div
+                      animate={{ y: [0, -7, 0] }}
+                      transition={{ duration: 4.2, repeat: Infinity, ease: 'easeInOut', delay: 0.2 }}
+                      className="absolute right-[12%] top-[12%] z-40 bg-white/80 backdrop-blur-md border border-[#17263F]/8 rounded-2xl p-3 shadow-[0_8px_24px_rgba(22,36,63,0.05)] flex items-center justify-center hover:scale-105 transition-all rotate-[6deg] select-none"
+                    >
+                      <Compass size={24} className="text-[#8AB6D6]" />
+                    </motion.div>
+
+                    {/* 4. Growth Chart (Bottom-Right) */}
+                    <motion.div
+                      animate={{ y: [0, 7, 0] }}
+                      transition={{ duration: 4.8, repeat: Infinity, ease: 'easeInOut', delay: 0.7 }}
+                      className="absolute right-[6%] bottom-[32%] z-40 bg-white/80 backdrop-blur-md border border-[#17263F]/8 rounded-2xl p-3 shadow-[0_8px_24px_rgba(22,36,63,0.05)] flex items-center justify-center hover:scale-105 transition-all rotate-[-6deg] select-none"
+                    >
+                      <BarChart3 size={24} className="text-[#8AB6D6]" />
+                    </motion.div>
+
+                  </div>
+                </motion.div>
               </div>
+
+              {/* Cozy clean footer */}
+              <footer className="text-center py-6 border-t border-[#17263F]/6 mt-16 flex items-center justify-center gap-2 select-none">
+                <img src="/assets/rin_mascot_3d_clean.png" alt="Rin logo" className="w-5.5 h-5.5 object-contain" />
+                <p className="text-[13px] font-bold text-[#8C847B]">
+                  Rinhozo is here to support you every step of the way. ♡
+                </p>
+              </footer>
             </div>
           )}
 
