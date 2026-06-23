@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Noto+Sans+Tamil:wght@400;500;600;700&family=Dancing+Script:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Noto+Sans+Tamil:wght@400;500;600;700&family=Dancing+Script:wght@700&display=swap');
 @import "tailwindcss";
 
 :root {
@@ -52,6 +52,7 @@
   --color-rin-tentacle: var(--rin-tentacle);
 
   --font-sans: 'Inter', 'Noto Sans Devanagari', 'Noto Sans Tamil', system-ui, sans-serif;
+  --font-display: 'Outfit', 'Inter', system-ui, sans-serif;
   --font-handwritten: 'Dancing Script', cursive;
 }
 
@@ -74,6 +75,16 @@ html, body {
   line-height: 1.6;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typography utilities */
+.font-handwritten {
+  font-family: var(--font-handwritten);
+}
+
+.font-display {
+  font-family: var(--font-display);
 }
 
 /* Hide default scrollbars for swipe interfaces but allow scrolling */

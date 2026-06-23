@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  ArrowRight, 
-  Play, 
-  Lightbulb, 
-  BookOpen, 
-  BarChart3, 
+import {
+  ArrowRight,
+  Play,
+  Lightbulb,
+  BookOpen,
+  BarChart3,
   Puzzle,
   Menu,
   X,
   Globe,
   WifiOff,
-  Sparkles
+  Sparkles,
+  ChevronRight
 } from 'lucide-react';
 import type { UIStrings } from '../locales/strings';
 
@@ -24,77 +25,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({ strings, onGetStarted 
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeTab, setActiveTab] = useState('home');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
-  // Handle scroll trigger for navigation background
   useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 50) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
-    };
+    const handleScroll = () => setIsScrolled(window.scrollY > 40);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    const { clientX, clientY } = e;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = ((clientX - rect.left) / rect.width) - 0.5;
-    const y = ((clientY - rect.top) / rect.height) - 0.5;
-    setMousePos({ x, y });
-  };
-
-  const handleMouseLeave = () => {
-    setMousePos({ x: 0, y: 0 });
-  };
-
-  // 3D Perspective Tilt Values
-  const tiltRin = {
-    transform: `rotateY(${mousePos.x * 15}deg) rotateX(${-mousePos.y * 15}deg) translateZ(30px)`,
-    transition: 'transform 0.15s ease-out'
-  };
-
-  const tiltBadge = (factor: number) => ({
-    transform: `rotateY(${mousePos.x * 25 * factor}deg) rotateX(${-mousePos.y * 25 * factor}deg) translateZ(60px)`,
-    transition: 'transform 0.15s ease-out'
-  });
-
-  // Animation delay profiles
-  const animHeading = {
-    hidden: { opacity: 0, y: 24 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay: 0.1, ease: 'easeOut' as const } }
-  };
-
-  const animSubheading = {
-    hidden: { opacity: 0, y: 24 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay: 0.2, ease: 'easeOut' as const } }
-  };
-
-  const animButtons = {
-    hidden: { opacity: 0, y: 24 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay: 0.3, ease: 'easeOut' as const } }
-  };
-
-  const animJellyfish = {
-    hidden: { opacity: 0, y: 32 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8, delay: 0.4, ease: 'easeOut' as const } }
-  };
-
-  const animPills = {
-    hidden: { opacity: 0, y: 24 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay: 0.5, ease: 'easeOut' as const } }
-  };
-
   const handleNavClick = (id: string) => {
     setActiveTab(id);
     setIsMobileMenuOpen(false);
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   const navLinks = [
@@ -102,53 +43,104 @@ export const LandingPage: React.FC<LandingPageProps> = ({ strings, onGetStarted 
     { label: 'Features', id: 'features' },
     { label: 'How it works', id: 'how' },
     { label: 'For Educators', id: 'educators' },
-    { label: 'About', id: 'about' }
+    { label: 'About', id: 'about' },
   ];
 
+  const features = [
+    {
+      icon: <Globe size={22} />,
+      color: '#D4A574',
+      bg: '#FFF8F0',
+      title: 'Hinglish-First & Localized',
+      desc: 'Conceptual translation that matches how we naturally speak at home — supporting Hinglish, English, Hindi, and Tamil.',
+    },
+    {
+      icon: <Puzzle size={22} />,
+      color: '#7DD3FC',
+      bg: '#F0F9FF',
+      title: 'Tactile Card Swiping',
+      desc: 'Swipe-to-learn cards designed to reduce cognitive load and help neurodivergent learners focus on one concept at a time.',
+    },
+    {
+      icon: <Sparkles size={22} />,
+      color: '#D4A574',
+      bg: '#FFF8F0',
+      title: 'Adaptive Learning',
+      desc: 'Choose visual models, story analogies, or audio-guided reading. Rinhozo adapts dynamically to your style.',
+    },
+    {
+      icon: <WifiOff size={22} />,
+      color: '#86EFAC',
+      bg: '#F0FDF4',
+      title: 'Offline-First Design',
+      desc: 'Full offline capability. Progress is stored locally and syncs seamlessly whenever you are back online.',
+    },
+  ];
+
+  const steps = [
+    {
+      num: '01',
+      color: '#D4A574',
+      title: 'Choose Your Style',
+      desc: 'Pick your preferred learning language — Hinglish, Hindi, Tamil, or English — and your content presentation style.',
+    },
+    {
+      num: '02',
+      color: '#7DD3FC',
+      title: 'Swipe Through Lessons',
+      desc: 'Review byte-sized visual cards at your own pace. Solve check-in quizzes as you swipe through each concept.',
+    },
+    {
+      num: '03',
+      color: '#86EFAC',
+      title: 'Conquer Boss Battles',
+      desc: 'Test your knowledge in boss challenges to evolve your jellyfish guide Rin and unlock new study rooms.',
+    },
+  ];
+
+  /* ─── fade-up variant ─── */
+  const fadeUp = (delay = 0) => ({
+    hidden: { opacity: 0, y: 28 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.55, delay, ease: 'easeOut' as const } },
+  });
+
   return (
-    <div 
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      className="min-h-screen bg-[#FAF6F0] text-[#1E293B] flex flex-col relative font-sans overflow-x-hidden select-none"
-    >
+    <div className="min-h-screen bg-[#FAF6F0] text-[#1E293B] flex flex-col font-sans overflow-x-hidden">
       <span className="sr-only">{strings.landingTitle} {strings.landingSubtitle}</span>
 
-      {/* SECTION 1: NAVIGATION BAR */}
-      <header 
-        className={`fixed top-0 left-0 right-0 z-50 h-20 transition-all duration-300 ${
-          isScrolled 
-            ? 'bg-[#FAF6F0] shadow-[0_4px_24px_rgba(30,41,59,0.08)] border-b border-[#FAF6F0]' 
+      {/* ══════════════════════════════════════
+          NAVBAR
+      ══════════════════════════════════════ */}
+      <header
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          isScrolled
+            ? 'bg-[#FAF6F0]/95 backdrop-blur-md shadow-[0_1px_0_0_rgba(30,41,59,0.08)]'
             : 'bg-transparent'
         }`}
       >
-        <div className="max-w-[1280px] mx-auto px-6 md:px-12 h-full flex items-center justify-between">
-          {/* Logo */}
-          <div className="flex items-center gap-2">
-            <svg 
-              className="w-6 h-6 text-[#D4A574] fill-none stroke-current" 
-              viewBox="0 0 24 24" 
-              strokeWidth="2" 
-              strokeLinecap="round" 
-              strokeLinejoin="round"
-            >
-              <path d="M12 2a7 7 0 0 0-7 7v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9a7 7 0 0 0-7-7z" />
-              <path d="M9 14v3" />
-              <path d="M12 14v4" />
-              <path d="M15 14v3" />
-            </svg>
-            <span className="text-[14px] font-semibold tracking-[0.2em] text-[#1E293B]">RINHOZO</span>
-          </div>
+        <div className="max-w-7xl mx-auto px-6 lg:px-10 h-[68px] flex items-center justify-between">
 
-          {/* Center Links (Desktop only) */}
-          <nav className="hidden md:flex items-center gap-8">
+          {/* Logo */}
+          <button onClick={() => handleNavClick('home')} className="flex items-center gap-2.5 cursor-pointer group">
+            <div className="w-8 h-8 rounded-xl bg-[#1E293B] flex items-center justify-center flex-shrink-0">
+              <svg className="w-4 h-4 text-[#D4A574] fill-none stroke-current" viewBox="0 0 24 24" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 2a7 7 0 0 0-7 7v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9a7 7 0 0 0-7-7z" />
+                <path d="M9 14v3" /><path d="M12 14v4" /><path d="M15 14v3" />
+              </svg>
+            </div>
+            <span className="text-[15px] font-bold tracking-[0.18em] text-[#1E293B]">RINHOZO</span>
+          </button>
+
+          {/* Desktop nav */}
+          <nav className="hidden md:flex items-center gap-1">
             {navLinks.map((link) => (
               <button
                 key={link.id}
                 onClick={() => handleNavClick(link.id)}
-                className={`text-[14px] font-medium transition-all duration-200 cursor-pointer ${
+                className={`px-4 py-2 rounded-full text-[14px] font-medium transition-all duration-200 cursor-pointer ${
                   activeTab === link.id
-                    ? 'bg-[#F5E6D3] text-[#1E293B] px-4 py-2 rounded-full font-semibold'
-                    : 'text-[#1E293B] hover:bg-[#F5E6D3] hover:text-[#1E293B] px-4 py-2 rounded-full'
+                    ? 'bg-[#1E293B] text-white'
+                    : 'text-[#78716C] hover:text-[#1E293B] hover:bg-[#1E293B]/6'
                 }`}
               >
                 {link.label}
@@ -156,537 +148,508 @@ export const LandingPage: React.FC<LandingPageProps> = ({ strings, onGetStarted 
             ))}
           </nav>
 
-          {/* Right CTA Button & Mobile Toggle */}
-          <div className="flex items-center gap-4">
-            <button 
+          {/* CTA + Hamburger */}
+          <div className="flex items-center gap-3">
+            <button
               onClick={onGetStarted}
-              className="flex items-center gap-1.5 bg-[#1E293B] hover:bg-[#0F172A] text-white px-6 py-3 rounded-full text-[14px] font-medium shadow-md hover:shadow-lg transition-all group cursor-pointer"
+              className="hidden md:flex items-center gap-1.5 bg-[#1E293B] hover:bg-[#0F172A] text-white px-5 py-2.5 rounded-full text-[14px] font-semibold transition-all duration-200 cursor-pointer group"
             >
               Get Started
-              <motion.span 
-                className="inline-block"
-                variants={{
-                  hover: { x: 4 }
-                }}
-                whileHover="hover"
-                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-              >
-                →
-              </motion.span>
+              <ArrowRight size={15} className="transform group-hover:translate-x-0.5 transition-transform" />
             </button>
-
-            {/* Hamburger Button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2 text-[#1E293B] hover:bg-[#F5E6D3] rounded-full transition-all cursor-pointer"
+              className="md:hidden w-9 h-9 rounded-full flex items-center justify-center text-[#1E293B] hover:bg-[#1E293B]/8 transition-all cursor-pointer"
               aria-label="Toggle menu"
             >
-              {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+              {isMobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
             </button>
           </div>
         </div>
       </header>
 
-      {/* Mobile Drawer Overlay */}
+      {/* Mobile drawer */}
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <motion.div 
-            initial={{ opacity: 0, y: -20 }}
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="fixed inset-0 top-20 bg-[#FAF6F0] z-40 flex flex-col p-6 gap-6 md:hidden border-t border-[#E7E5E4]"
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-x-0 top-[68px] z-40 bg-[#FAF6F0]/98 backdrop-blur-md border-b border-[#E7E5E4] px-6 py-5 md:hidden"
           >
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-1 mb-5">
               {navLinks.map((link) => (
                 <button
                   key={link.id}
                   onClick={() => handleNavClick(link.id)}
-                  className={`text-left text-lg font-medium py-3 border-b border-[#E7E5E4]/50 cursor-pointer ${
-                    activeTab === link.id ? 'text-[#D4A574]' : 'text-[#1E293B]'
+                  className={`text-left text-[15px] font-medium py-2.5 px-3 rounded-xl cursor-pointer transition-all ${
+                    activeTab === link.id ? 'bg-[#F5E6D3] text-[#1E293B]' : 'text-[#78716C]'
                   }`}
                 >
                   {link.label}
                 </button>
               ))}
             </div>
+            <button
+              onClick={onGetStarted}
+              className="w-full bg-[#1E293B] text-white py-3 rounded-full text-[15px] font-semibold cursor-pointer"
+            >
+              Get Started
+            </button>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* SECTION 2: HERO SECTION */}
-      <main id="home" className="flex-1 w-full flex flex-col lg:flex-row items-center justify-between z-10 gap-12 relative min-h-[calc(100vh-80px)] px-6 md:px-12 pt-[120px] pb-16 bg-[url('/assets/cozy_desk_bg.png')] bg-cover bg-center bg-no-repeat">
-        
-        {/* LEFT ZONE (55% width) */}
-        <motion.div 
-          initial="hidden"
-          animate="visible"
-          className="w-full lg:w-[55%] flex flex-col justify-center text-left gap-6 z-10 lg:pl-16"
-        >
-          {/* Hero Heading */}
-          <motion.div variants={animHeading} className="flex flex-col">
-            <h1 className="text-[36px] md:text-[40px] lg:text-[48px] font-bold text-[#1E293B] leading-[1.2] tracking-tight">
-              Learning
-            </h1>
-            <h1 className="text-[36px] md:text-[40px] lg:text-[48px] font-bold text-[#1E293B] leading-[1.2] tracking-tight">
-              that listens
-            </h1>
-            <div className="flex items-center pl-8 pt-1.5 md:pt-2">
-              <span className="font-handwritten text-[#D4A574] text-[36px] md:text-[40px] lg:text-[48px] leading-[1.2] inline-flex items-center gap-2">
-                to you
-                <svg className="w-6 h-6 text-[#D4A574] fill-none stroke-current animate-pulse" viewBox="0 0 24 24" strokeWidth="2.5">
-                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                </svg>
+      {/* ══════════════════════════════════════
+          HERO
+      ══════════════════════════════════════ */}
+      <section
+        id="home"
+        className="w-full min-h-screen flex items-center pt-[68px] bg-[#FAF6F0] relative overflow-hidden"
+      >
+        {/* subtle decorative blob */}
+        <div className="absolute top-[-120px] right-[-80px] w-[520px] h-[520px] bg-[#F5E6D3] rounded-full blur-[100px] opacity-60 pointer-events-none" />
+        <div className="absolute bottom-[-60px] left-[-60px] w-[320px] h-[320px] bg-[#E0F2FE] rounded-full blur-[80px] opacity-40 pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-6 lg:px-10 w-full py-20 lg:py-0 lg:min-h-[calc(100vh-68px)] flex flex-col lg:flex-row items-center justify-between gap-16">
+
+          {/* LEFT: Text content */}
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            className="flex flex-col gap-7 w-full lg:w-[52%] text-left"
+          >
+            {/* Badge */}
+            <motion.div variants={fadeUp(0.05)}>
+              <span className="inline-flex items-center gap-2 bg-[#F5E6D3] text-[#D4A574] text-[12px] font-bold tracking-[0.15em] uppercase px-4 py-2 rounded-full border border-[#D4A574]/20">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#D4A574] animate-pulse" />
+                AI-Powered Learning Companion
               </span>
-            </div>
-          </motion.div>
-
-          {/* Subheading */}
-          <motion.p 
-            variants={animSubheading} 
-            className="text-[#78716C] text-[18px] max-w-[480px] leading-[1.6]"
-          >
-            Rinhozo is a companion that understands your pace, supports your journey, and <span className="font-semibold text-[#1E293B]">grows</span> alongside you.
-          </motion.p>
-
-          {/* CTA Buttons */}
-          <motion.div variants={animButtons} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-            <button 
-              onClick={onGetStarted}
-              className="flex items-center justify-center gap-2 bg-[#1E293B] hover:bg-[#0F172A] text-white px-8 py-4 rounded-full text-[16px] font-medium shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all group cursor-pointer"
-            >
-              Start Your Journey
-              <ArrowRight size={18} className="transform group-hover:translate-x-1 transition-transform duration-200" />
-            </button>
-            
-            <button 
-              onClick={onGetStarted}
-              className="flex items-center justify-center gap-3 bg-transparent hover:bg-[#F5E6D3] text-[#1E293B] border border-[#E7E5E4] px-8 py-4 rounded-full text-[16px] font-medium shadow-sm transition-all cursor-pointer"
-            >
-              <span className="w-6 h-6 rounded-full border border-[#1E293B]/20 flex items-center justify-center text-[#1E293B] bg-white">
-                <Play size={10} fill="currentColor" className="ml-0.5" />
-              </span>
-              See How It Works
-            </button>
-          </motion.div>
-
-          {/* Feature Pills Container Banner */}
-          <motion.div 
-            variants={animPills}
-            className="bg-white border border-[#E7E5E4]/80 rounded-[24px] p-6 shadow-[0_8px_32px_rgba(30,41,59,0.06)] flex flex-col sm:flex-row justify-between items-center gap-8 w-full max-w-[500px]"
-          >
-            {/* Pill 1 */}
-            <div className="flex flex-col items-center gap-2 text-center flex-1">
-              <div className="text-[#7DD3FC]">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 10c2.5-1.5 5.5-1.5 8 0s5.5 1.5 8 0M3 15c2.5-1.5 5.5-1.5 8 0s5.5 1.5 8 0" />
-                </svg>
-              </div>
-              <span className="text-[13px] font-medium text-[#1E293B] leading-tight">Learn at your pace</span>
-            </div>
-            
-            {/* Divider */}
-            <div className="hidden sm:block w-[1px] h-10 bg-[#E7E5E4]"></div>
-
-            {/* Pill 2 */}
-            <div className="flex flex-col items-center gap-2 text-center flex-1">
-              <div className="text-[#D4A574]">
-                <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="M12 2a7 7 0 0 0-7 7v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9a7 7 0 0 0-7-7z" />
-                  <path d="M9 14v3" />
-                  <path d="M12 14v4" />
-                  <path d="M15 14v3" />
-                </svg>
-              </div>
-              <span className="text-[13px] font-medium text-[#1E293B] leading-tight">Supported by Rin</span>
-            </div>
-
-            {/* Divider */}
-            <div className="hidden sm:block w-[1px] h-10 bg-[#E7E5E4]"></div>
-
-            {/* Pill 3 */}
-            <div className="flex flex-col items-center gap-2 text-center flex-1">
-              <div className="text-[#86EFAC]">
-                <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="M12 19V5M12 9a4 4 0 0 0-4-4M12 13a4 4 0 0 1 4-4" />
-                </svg>
-              </div>
-              <span className="text-[13px] font-medium text-[#1E293B] leading-tight">Small steps, big growth</span>
-            </div>
-          </motion.div>
-        </motion.div>
-
-        {/* RIGHT ZONE (45% width on desktop) */}
-        <motion.div 
-          initial="hidden"
-          animate="visible"
-          variants={animJellyfish}
-          className="w-full lg:w-[45%] flex flex-col items-center justify-center z-10 relative lg:min-h-[500px]"
-        >
-          {/* Centered Glowing Mascot Jellyfish Container */}
-          <div 
-            style={tiltRin}
-            className="relative w-[300px] h-[300px] md:w-[350px] md:h-[350px] lg:w-[400px] lg:h-[400px] flex items-center justify-center perspective-3d"
-          >
-            {/* Constellation link lines overlay */}
-            <svg className="absolute inset-0 w-full h-full pointer-events-none z-0" viewBox="0 0 400 400">
-              <path d="M 70 50 Q 135 125 200 200" fill="none" stroke="#FDE68A" strokeWidth="2.5" strokeDasharray="4 4" />
-              <path d="M 330 55 Q 265 125 200 200" fill="none" stroke="#FDE68A" strokeWidth="2.5" strokeDasharray="4 4" />
-              <path d="M 30 200 Q 115 200 200 200" fill="none" stroke="#FDE68A" strokeWidth="2.5" strokeDasharray="4 4" />
-              <path d="M 370 210 Q 285 205 200 200" fill="none" stroke="#FDE68A" strokeWidth="2.5" strokeDasharray="4 4" />
-            </svg>
-
-            {/* Glowing Jellyfish */}
-            <div className="relative w-full h-full flex items-center justify-center animate-float">
-              {/* Pulsing Aura */}
-              <motion.div 
-                animate={{
-                  opacity: [0.35, 0.65, 0.35],
-                  scale: [0.95, 1.05, 0.95]
-                }}
-                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                className="absolute inset-0 bg-[#FDE68A] rounded-full blur-3xl opacity-40 w-[80%] h-[80%] mx-auto my-auto shadow-[0_0_60px_rgba(253,230,138,0.4)]"
-              />
-
-              {/* 3D Mascot Image */}
-              <img 
-                src="/assets/rin_mascot_3d_clean.png" 
-                alt="Glowing Rin Mascot" 
-                className="w-[90%] h-[90%] object-contain select-none filter drop-shadow([0_12px_24px_rgba(30,41,59,0.08)]) z-10"
-              />
-            </div>
-
-            {/* Floating Shortcut Icons */}
-            {/* Icon 1: Lightbulb (Top-Left) */}
-            <motion.div 
-              style={tiltBadge(1.1)}
-              animate={{
-                y: [0, -6, 0],
-                rotate: [0, 4, 0]
-              }}
-              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute top-[10px] left-[30px] bg-white border border-[#E7E5E4] rounded-2xl p-2.5 shadow-[0_8px_24px_rgba(30,41,59,0.06)] hover:scale-110 transition-transform duration-200 cursor-pointer z-20"
-              title="Lightbulb"
-            >
-              <Lightbulb size={20} className="text-[#D4A574]" fill="currentColor" fillOpacity={0.1} />
             </motion.div>
 
-            {/* Icon 2: Chart (Top-Right) */}
-            <motion.div 
-              style={tiltBadge(1.2)}
-              animate={{
-                y: [0, -8, 0],
-                rotate: [0, -4, 0]
-              }}
-              transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute top-[15px] right-[40px] bg-white border border-[#E7E5E4] rounded-2xl p-2.5 shadow-[0_8px_24px_rgba(30,41,59,0.06)] hover:scale-110 transition-transform duration-200 cursor-pointer z-20"
-              title="Analytics"
-            >
-              <BarChart3 size={20} className="text-[#7DD3FC]" />
+            {/* Heading */}
+            <motion.div variants={fadeUp(0.12)} className="flex flex-col gap-1">
+              <h1 className="text-[44px] md:text-[54px] lg:text-[60px] font-bold text-[#1E293B] leading-[1.1] tracking-[-0.02em]">
+                Learning that
+              </h1>
+              <h1 className="text-[44px] md:text-[54px] lg:text-[60px] font-bold text-[#1E293B] leading-[1.1] tracking-[-0.02em]">
+                listens{' '}
+                <span className="font-handwritten text-[#D4A574] tracking-normal">to you</span>
+                <span className="inline-block ml-2 text-[#D4A574]">
+                  <svg className="inline w-8 h-8 md:w-10 md:h-10 fill-current" viewBox="0 0 24 24">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                  </svg>
+                </span>
+              </h1>
             </motion.div>
 
-            {/* Icon 3: Book (Mid-Left) */}
-            <motion.div 
-              style={tiltBadge(0.9)}
-              animate={{
-                y: [0, -5, 0],
-                rotate: [0, 3, 0]
-              }}
+            {/* Subtext */}
+            <motion.p
+              variants={fadeUp(0.2)}
+              className="text-[17px] text-[#78716C] leading-[1.7] max-w-[480px]"
+            >
+              Rinhozo is a companion that understands your pace, supports your journey, and{' '}
+              <span className="text-[#1E293B] font-semibold">grows alongside you</span> — in the language you think in.
+            </motion.p>
+
+            {/* CTA Buttons */}
+            <motion.div variants={fadeUp(0.28)} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+              <button
+                onClick={onGetStarted}
+                className="flex items-center justify-center gap-2 bg-[#1E293B] hover:bg-[#0F172A] text-white px-7 py-3.5 rounded-full text-[15px] font-semibold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 group cursor-pointer"
+              >
+                Start Your Journey
+                <ArrowRight size={16} className="transform group-hover:translate-x-0.5 transition-transform" />
+              </button>
+              <button
+                onClick={onGetStarted}
+                className="flex items-center justify-center gap-2.5 bg-white hover:bg-[#F5E6D3] text-[#1E293B] border border-[#E7E5E4] px-7 py-3.5 rounded-full text-[15px] font-semibold transition-all duration-200 cursor-pointer"
+              >
+                <span className="w-6 h-6 rounded-full bg-[#F5E6D3] flex items-center justify-center flex-shrink-0">
+                  <Play size={9} fill="currentColor" className="ml-0.5 text-[#D4A574]" />
+                </span>
+                See How It Works
+              </button>
+            </motion.div>
+
+            {/* Social proof strip */}
+            <motion.div variants={fadeUp(0.36)} className="flex items-center gap-5 pt-2">
+              <div className="flex -space-x-2.5">
+                {['#FDE68A', '#FCA5A5', '#86EFAC', '#7DD3FC'].map((c, i) => (
+                  <div key={i} className="w-8 h-8 rounded-full border-2 border-white flex-shrink-0" style={{ backgroundColor: c }} />
+                ))}
+              </div>
+              <div>
+                <div className="text-[13px] font-semibold text-[#1E293B]">Trusted by 500+ students</div>
+                <div className="text-[12px] text-[#78716C]">across schools & homes</div>
+              </div>
+              <div className="h-7 w-[1px] bg-[#E7E5E4]" />
+              <div className="text-[#D4A574] text-[13px] font-semibold">★★★★★</div>
+            </motion.div>
+          </motion.div>
+
+          {/* RIGHT: Jellyfish mascot */}
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={fadeUp(0.2)}
+            className="w-full lg:w-[44%] flex items-center justify-center relative"
+          >
+            {/* Mascot glow backdrop */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="w-[340px] h-[340px] rounded-full bg-[#FDE68A]/25 blur-[60px]" />
+            </div>
+
+            {/* Floating icon badges */}
+            <motion.div
+              animate={{ y: [0, -8, 0] }}
               transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute top-[180px] left-[-10px] bg-white border border-[#E7E5E4] rounded-2xl p-2.5 shadow-[0_8px_24px_rgba(30,41,59,0.06)] hover:scale-110 transition-transform duration-200 cursor-pointer z-20"
-              title="Lessons"
+              className="absolute top-4 left-4 lg:top-8 lg:left-0 bg-white border border-[#E7E5E4] rounded-2xl px-3 py-2.5 shadow-md flex items-center gap-2.5 z-20"
             >
-              <BookOpen size={20} className="text-[#D4A574]" />
+              <div className="w-8 h-8 rounded-xl bg-[#FFF8F0] flex items-center justify-center text-[#D4A574]">
+                <Lightbulb size={16} fill="currentColor" fillOpacity={0.2} />
+              </div>
+              <div>
+                <div className="text-[11px] font-bold text-[#1E293B]">Adaptive AI</div>
+                <div className="text-[10px] text-[#78716C]">learns your pace</div>
+              </div>
             </motion.div>
 
-            {/* Icon 4: Puzzle (Mid-Right) */}
-            <motion.div 
-              style={tiltBadge(1.05)}
-              animate={{
-                y: [0, -7, 0],
-                rotate: [0, -3, 0]
-              }}
-              transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute top-[190px] right-[-10px] bg-white border border-[#E7E5E4] rounded-2xl p-2.5 shadow-[0_8px_24px_rgba(30,41,59,0.06)] hover:scale-110 transition-transform duration-200 cursor-pointer z-20"
-              title="Mini games"
+            <motion.div
+              animate={{ y: [0, -6, 0] }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+              className="absolute top-4 right-4 lg:top-12 lg:right-0 bg-white border border-[#E7E5E4] rounded-2xl px-3 py-2.5 shadow-md flex items-center gap-2.5 z-20"
             >
-              <Puzzle size={20} className="text-[#78716C]" />
+              <div className="w-8 h-8 rounded-xl bg-[#F0F9FF] flex items-center justify-center text-[#7DD3FC]">
+                <BarChart3 size={16} />
+              </div>
+              <div>
+                <div className="text-[11px] font-bold text-[#1E293B]">Progress</div>
+                <div className="text-[10px] text-[#78716C]">12 day streak 🔥</div>
+              </div>
             </motion.div>
-          </div>
 
-          {/* Stack of 3 Books (Curiosity, Focus, Growth) */}
-          <div className="hidden lg:block absolute bottom-12 right-28 w-[140px] z-0 select-none">
-            <img 
-              src="/assets/stacked_books_3d_clean.png" 
-              alt="Books stack" 
-              className="w-full h-auto object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.06)]"
-            />
-          </div>
-        </motion.div>
-
-        {/* SECTION 4: NOTEBOOK ELEMENT (Centering bridge) */}
-        <div className="hidden lg:block absolute bottom-4 left-[50%] -translate-x-1/2 w-[340px] h-[160px] transform rotate-1 hover:rotate-0 transition-transform duration-300 z-20">
-          {/* Notebook 3D Background */}
-          <img 
-            src="/assets/notebook_3d_clean.png" 
-            alt="Notebook background" 
-            className="w-full h-full object-contain pointer-events-none drop-shadow-[0_8px_16px_rgba(0,0,0,0.06)]"
-          />
-          
-          {/* Left page text */}
-          <div className="absolute left-[30px] top-[24px] w-[120px] text-left text-[13px] font-handwritten text-[#D4A574] leading-relaxed rotate-2 select-none">
-            <p className="border-b border-[#e5dec9]/40 pb-0.5">You're doing</p>
-            <p className="border-b border-[#e5dec9]/40 pb-0.5">better than</p>
-            <p>you think.</p>
-          </div>
-
-          {/* Right page text */}
-          <div className="absolute left-[170px] top-[24px] w-[120px] text-left text-[13px] font-handwritten text-[#D4A574] leading-relaxed rotate-2 select-none">
-            <p className="border-b border-[#e5dec9]/40 pb-0.5">Keep going.</p>
-            <p>♡</p>
-          </div>
-        </div>
-
-        {/* Scattered smooth pebbles */}
-        <div className="hidden lg:block absolute bottom-6 left-32 flex gap-4 select-none">
-          <div className="w-5 h-3 bg-white/70 rounded-full shadow-sm rotate-12"></div>
-          <div className="w-6 h-3.5 bg-white/80 rounded-full shadow-sm -rotate-6"></div>
-        </div>
-        <div className="hidden lg:block absolute bottom-4 left-[38%] w-5 h-3 bg-white/70 rounded-full shadow-sm rotate-45 select-none"></div>
-        <div className="hidden lg:block absolute bottom-8 right-16 w-5 h-3 bg-white/60 rounded-full shadow-sm -rotate-12 select-none"></div>
-
-      </main>
-
-      {/* SECTION: FEATURES */}
-      <section id="features" className="w-full bg-white py-16 md:py-24 px-6 md:px-12 z-20 border-t border-[#E7E5E4]/50 relative">
-        <div className="max-w-[1200px] mx-auto text-center">
-          <span className="text-[12px] font-bold text-[#D4A574] tracking-[0.2em] uppercase block mb-3">Core Features</span>
-          <h2 className="text-[32px] md:text-[36px] font-bold text-[#1E293B] leading-tight mb-4 tracking-tight">Designed for Multilingual & Diverse Minds</h2>
-          <p className="text-[#78716C] text-[16px] max-w-[600px] mx-auto mb-16 leading-relaxed">
-            Rinhozo makes learning feel natural, engaging, and stress-free. Every gesture is designed with care to keep your mind focused.
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {/* Feature 1 */}
-            <div className="bg-[#FAF6F0] p-8 rounded-[24px] border border-[#E7E5E4]/40 hover:translate-y-[-6px] transition-all duration-300 text-left clay-card">
-              <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-[#D4A574] mb-6 shadow-sm">
-                <Globe size={24} />
+            <motion.div
+              animate={{ y: [0, -7, 0] }}
+              transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+              className="absolute bottom-4 left-4 lg:bottom-8 lg:left-2 bg-white border border-[#E7E5E4] rounded-2xl px-3 py-2.5 shadow-md flex items-center gap-2.5 z-20"
+            >
+              <div className="w-8 h-8 rounded-xl bg-[#F0FDF4] flex items-center justify-center text-[#86EFAC]">
+                <BookOpen size={16} />
               </div>
-              <h3 className="text-[18px] font-semibold text-[#1E293B] mb-3">Hinglish-First & Localized</h3>
-              <p className="text-[#78716c] text-[14px] leading-relaxed">
-                Conceptual translation that matches how we naturally speak at home. Supporting Hinglish, English, Hindi, and Tamil.
-              </p>
-            </div>
-
-            {/* Feature 2 */}
-            <div className="bg-[#FAF6F0] p-8 rounded-[24px] border border-[#E7E5E4]/40 hover:translate-y-[-6px] transition-all duration-300 text-left clay-card">
-              <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-[#7DD3FC] mb-6 shadow-sm">
-                <Puzzle size={24} />
+              <div>
+                <div className="text-[11px] font-bold text-[#1E293B]">3 languages</div>
+                <div className="text-[10px] text-[#78716C]">Hindi · Eng · Tamil</div>
               </div>
-              <h3 className="text-[18px] font-semibold text-[#1E293B] mb-3">Tactile Card Swiping</h3>
-              <p className="text-[#78716c] text-[14px] leading-relaxed">
-                Swipe-to-learn cards designed to reduce cognitive load and help neurodivergent learners focus on one concept at a time.
-              </p>
-            </div>
+            </motion.div>
 
-            {/* Feature 3 */}
-            <div className="bg-[#FAF6F0] p-8 rounded-[24px] border border-[#E7E5E4]/40 hover:translate-y-[-6px] transition-all duration-300 text-left clay-card">
-              <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-[#D4A574] mb-6 shadow-sm">
-                <Sparkles size={24} />
-              </div>
-              <h3 className="text-[18px] font-semibold text-[#1E293B] mb-3">Adaptive Learning</h3>
-              <p className="text-[#78716c] text-[14px] leading-relaxed">
-                Choose visual models, direct concept cards, stories, or audio-guided reading. Rinhozo adapts dynamically.
-              </p>
+            {/* Main mascot image */}
+            <div className="relative w-[280px] h-[280px] md:w-[340px] md:h-[340px] lg:w-[380px] lg:h-[380px] flex items-center justify-center animate-float">
+              <motion.div
+                animate={{ opacity: [0.4, 0.7, 0.4], scale: [0.95, 1.05, 0.95] }}
+                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+                className="absolute inset-0 rounded-full bg-[#FDE68A]/30 blur-2xl"
+              />
+              <img
+                src="/assets/rin_mascot_3d_clean.png"
+                alt="Rin — Rinhozo's jellyfish mascot"
+                className="w-full h-full object-contain select-none relative z-10 drop-shadow-2xl"
+              />
             </div>
-
-            {/* Feature 4 */}
-            <div className="bg-[#FAF6F0] p-8 rounded-[24px] border border-[#E7E5E4]/40 hover:translate-y-[-6px] transition-all duration-300 text-left clay-card">
-              <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-[#86EFAC] mb-6 shadow-sm">
-                <WifiOff size={24} />
-              </div>
-              <h3 className="text-[18px] font-semibold text-[#1E293B] mb-3">Offline-First Design</h3>
-              <p className="text-[#78716c] text-[14px] leading-relaxed">
-                Full offline capability. Learning progress is stored in IndexedDB and syncs seamlessly when back online.
-              </p>
-            </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* SECTION: HOW IT WORKS */}
-      <section id="how" className="w-full bg-[#FAF6F0] py-16 md:py-24 px-6 md:px-12 z-20 border-t border-[#E7E5E4]/50 relative">
-        <div className="max-w-[1200px] mx-auto text-center">
-          <span className="text-[12px] font-bold text-[#D4A574] tracking-[0.2em] uppercase block mb-3">Roadmap</span>
-          <h2 className="text-[32px] md:text-[36px] font-bold text-[#1E293B] leading-tight mb-4 tracking-tight">Your Path to Mastery in 3 Simple Steps</h2>
-          <p className="text-[#78716C] text-[16px] max-w-[600px] mx-auto mb-16 leading-relaxed">
-            Rinhozo guides you seamlessly through lessons, adapting to your style as you progress.
-          </p>
+      {/* ══════════════════════════════════════
+          FEATURES
+      ══════════════════════════════════════ */}
+      <section id="features" className="w-full bg-white py-24 md:py-32 border-t border-[#F0EBE3]">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10">
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 relative">
-            {/* Step 1 */}
-            <div className="flex flex-col items-center">
-              <div className="w-16 h-16 rounded-full bg-white border-2 border-[#D4A574] flex items-center justify-center text-[20px] font-bold text-[#D4A574] mb-6 shadow-md">
-                1
-              </div>
-              <h3 className="text-[20px] font-semibold text-[#1E293B] mb-3">Choose Your Style</h3>
-              <p className="text-[#78716c] text-[14px] max-w-[280px] leading-relaxed">
-                Pick your preferred learning language (Hinglish/Hindi/Tamil/English) and customized content presentation style.
-              </p>
-            </div>
-
-            {/* Step 2 */}
-            <div className="flex flex-col items-center">
-              <div className="w-16 h-16 rounded-full bg-white border-2 border-[#7DD3FC] flex items-center justify-center text-[20px] font-bold text-[#7DD3FC] mb-6 shadow-md">
-                2
-              </div>
-              <h3 className="text-[20px] font-semibold text-[#1E293B] mb-3">Swipe Through Lessons</h3>
-              <p className="text-[#78716c] text-[14px] max-w-[280px] leading-relaxed">
-                Review byte-sized visual/story conceptual cards at your own pace. Solve check-in quizzes as you swipe.
-              </p>
-            </div>
-
-            {/* Step 3 */}
-            <div className="flex flex-col items-center">
-              <div className="w-16 h-16 rounded-full bg-white border-2 border-[#86EFAC] flex items-center justify-center text-[20px] font-bold text-[#86EFAC] mb-6 shadow-md">
-                3
-              </div>
-              <h3 className="text-[20px] font-semibold text-[#1E293B] mb-3">Conquer Boss Battles</h3>
-              <p className="text-[#78716c] text-[14px] max-w-[280px] leading-relaxed">
-                Test your conceptual knowledge in boss challenges to evolve your jellyfish guide (Rin) and unlock new study rooms.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* SECTION: FOR EDUCATORS */}
-      <section id="educators" className="w-full bg-white py-16 md:py-24 px-6 md:px-12 z-20 border-t border-[#E7E5E4]/50 relative">
-        <div className="max-w-[1200px] mx-auto flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-16">
-          <div className="w-full lg:w-[50%] text-left">
-            <span className="text-[12px] font-bold text-[#D4A574] tracking-[0.2em] uppercase block mb-3">For Classrooms</span>
-            <h2 className="text-[32px] md:text-[36px] font-bold text-[#1E293B] leading-tight mb-6 tracking-tight">Empower Every Student, Bridging Learning Gaps</h2>
-            <p className="text-[#78716C] text-[16px] mb-8 leading-relaxed">
-              Educators can monitor student learning progress offline, deploy customizable curriculum modules, and address neurodiverse needs with Rinhozo's built-in multi-modal adapters.
+          {/* Section header */}
+          <div className="max-w-2xl mb-16">
+            <span className="inline-block text-[12px] font-bold text-[#D4A574] tracking-[0.2em] uppercase mb-4">
+              Core Features
+            </span>
+            <h2 className="text-[34px] md:text-[42px] font-bold text-[#1E293B] leading-[1.15] tracking-tight mb-4">
+              Designed for multilingual<br />& diverse minds
+            </h2>
+            <p className="text-[16px] text-[#78716C] leading-[1.7]">
+              Rinhozo makes learning feel natural, engaging, and stress-free. Every gesture is designed with care to keep your mind focused and motivated.
             </p>
-            
-            <div className="space-y-4 mb-8">
-              <div className="flex items-center gap-3">
-                <span className="w-5 h-5 rounded-full bg-[#86EFAC]/20 flex items-center justify-center text-[#86EFAC]">✓</span>
-                <span className="text-[15px] font-semibold text-[#1E293B]">Individual student progress analytics</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <span className="w-5 h-5 rounded-full bg-[#86EFAC]/20 flex items-center justify-center text-[#86EFAC]">✓</span>
-                <span className="text-[15px] font-semibold text-[#1E293B]">Neurodivergent-friendly accessibility guidelines</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <span className="w-5 h-5 rounded-full bg-[#86EFAC]/20 flex items-center justify-center text-[#86EFAC]">✓</span>
-                <span className="text-[15px] font-semibold text-[#1E293B]">Full offline classroom compatibility</span>
-              </div>
-            </div>
-
-            <button 
-              onClick={onGetStarted}
-              className="flex items-center gap-1.5 bg-[#1E293B] hover:bg-[#0F172A] text-white px-8 py-4 rounded-full text-[15px] font-medium shadow-md transition-all group cursor-pointer"
-            >
-              Learn More for Schools
-              <ArrowRight size={18} />
-            </button>
           </div>
 
-          <div className="w-full lg:w-[45%] flex justify-center">
-            <div className="bg-[#FAF6F0] p-6 rounded-[28px] border border-[#E7E5E4]/50 shadow-[0_8px_32px_rgba(30,41,59,0.04)] w-full max-w-[440px] text-left clay-card">
-              <span className="text-[10px] font-bold text-[#78716C] uppercase tracking-widest block mb-4">Classroom Dashboard</span>
-              <div className="bg-white rounded-2xl p-4 border border-[#E7E5E4]/30 shadow-sm mb-4">
-                <span className="text-[12px] font-bold text-[#1E293B] block">Average Class Streak</span>
-                <span className="text-[28px] font-bold text-[#D4A574]">14 Days 🔥</span>
+          {/* Feature grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {features.map((f, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-40px' }}
+                transition={{ duration: 0.5, delay: i * 0.08 }}
+                className="group bg-[#FAFAF9] hover:bg-white border border-[#F0EBE3] hover:border-[#E7E5E4] hover:shadow-[0_8px_30px_rgba(30,41,59,0.07)] rounded-[20px] p-7 transition-all duration-300 cursor-default"
+              >
+                <div
+                  className="w-11 h-11 rounded-2xl flex items-center justify-center mb-5 flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
+                  style={{ backgroundColor: f.bg, color: f.color }}
+                >
+                  {f.icon}
+                </div>
+                <h3 className="text-[16px] font-bold text-[#1E293B] mb-2.5 leading-snug">{f.title}</h3>
+                <p className="text-[14px] text-[#78716C] leading-[1.65]">{f.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════
+          HOW IT WORKS
+      ══════════════════════════════════════ */}
+      <section id="how" className="w-full bg-[#FAF6F0] py-24 md:py-32 border-t border-[#F0EBE3]">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10">
+
+          {/* Section header */}
+          <div className="text-center max-w-2xl mx-auto mb-20">
+            <span className="inline-block text-[12px] font-bold text-[#D4A574] tracking-[0.2em] uppercase mb-4">
+              Roadmap
+            </span>
+            <h2 className="text-[34px] md:text-[42px] font-bold text-[#1E293B] leading-[1.15] tracking-tight mb-4">
+              Your path to mastery<br />in 3 simple steps
+            </h2>
+            <p className="text-[16px] text-[#78716C] leading-[1.7]">
+              Rinhozo guides you seamlessly through lessons, adapting to your style as you progress.
+            </p>
+          </div>
+
+          {/* Steps */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 relative">
+            {/* Connector lines on desktop */}
+            <div className="hidden lg:block absolute top-[52px] left-[33.33%] right-[33.33%] h-[1px] bg-gradient-to-r from-[#D4A574]/30 via-[#7DD3FC]/40 to-[#86EFAC]/30 z-0" />
+
+            {steps.map((s, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-40px' }}
+                transition={{ duration: 0.5, delay: i * 0.12 }}
+                className="relative z-10 bg-white border border-[#F0EBE3] rounded-[20px] p-8 hover:shadow-[0_8px_30px_rgba(30,41,59,0.06)] transition-all duration-300"
+              >
+                <div
+                  className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 text-[18px] font-black border-2"
+                  style={{ borderColor: s.color, color: s.color, backgroundColor: `${s.color}12` }}
+                >
+                  {s.num}
+                </div>
+                <h3 className="text-[18px] font-bold text-[#1E293B] mb-3">{s.title}</h3>
+                <p className="text-[14px] text-[#78716C] leading-[1.65]">{s.desc}</p>
+                <div className="mt-5 flex items-center gap-1.5 text-[13px] font-semibold" style={{ color: s.color }}>
+                  Learn more <ChevronRight size={14} />
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════
+          FOR EDUCATORS
+      ══════════════════════════════════════ */}
+      <section id="educators" className="w-full bg-white py-24 md:py-32 border-t border-[#F0EBE3]">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10">
+          <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-20">
+
+            {/* Left text */}
+            <motion.div
+              initial={{ opacity: 0, x: -24 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.55 }}
+              className="w-full lg:w-[50%]"
+            >
+              <span className="inline-block text-[12px] font-bold text-[#D4A574] tracking-[0.2em] uppercase mb-5">
+                For Classrooms
+              </span>
+              <h2 className="text-[34px] md:text-[40px] font-bold text-[#1E293B] leading-[1.15] tracking-tight mb-5">
+                Empower every student.<br />Bridge every gap.
+              </h2>
+              <p className="text-[16px] text-[#78716C] leading-[1.75] mb-8">
+                Educators can monitor student learning progress offline, deploy customizable curriculum modules, and address neurodiverse needs with Rinhozo's built-in multi-modal adapters.
+              </p>
+
+              <div className="flex flex-col gap-4 mb-10">
+                {[
+                  'Individual student progress analytics',
+                  'Neurodivergent-friendly accessibility guidelines',
+                  'Full offline classroom compatibility',
+                ].map((item, i) => (
+                  <div key={i} className="flex items-start gap-3">
+                    <div className="w-5 h-5 rounded-full bg-[#86EFAC]/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <svg className="w-3 h-3 text-[#4ADE80]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <span className="text-[15px] text-[#1E293B] font-medium">{item}</span>
+                  </div>
+                ))}
               </div>
 
-              <div className="bg-white rounded-2xl p-4 border border-[#E7E5E4]/30 shadow-sm">
-                <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider block mb-3">Student Style Distribution</span>
-                <div className="space-y-3">
-                  <div>
-                    <div className="flex justify-between text-xs font-bold text-[#1E293B] mb-1">
-                      <span>Story Analogies</span>
-                      <span>55%</span>
-                    </div>
-                    <div className="w-full h-2 bg-[#FAF6F0] rounded-full overflow-hidden">
-                      <div className="h-full bg-[#D4A574]" style={{ width: '55%' }}></div>
-                    </div>
-                  </div>
-                  <div>
-                    <div className="flex justify-between text-xs font-bold text-[#1E293B] mb-1">
-                      <span>Visual Models</span>
-                      <span>30%</span>
-                    </div>
-                    <div className="w-full h-2 bg-[#FAF6F0] rounded-full overflow-hidden">
-                      <div className="h-full bg-[#7DD3FC]" style={{ width: '30%' }}></div>
-                    </div>
+              <button
+                onClick={onGetStarted}
+                className="flex items-center gap-2 bg-[#1E293B] hover:bg-[#0F172A] text-white px-7 py-3.5 rounded-full text-[15px] font-semibold shadow-md hover:-translate-y-0.5 transition-all duration-200 group cursor-pointer"
+              >
+                Learn More for Schools
+                <ArrowRight size={15} className="group-hover:translate-x-0.5 transition-transform" />
+              </button>
+            </motion.div>
+
+            {/* Right dashboard card */}
+            <motion.div
+              initial={{ opacity: 0, x: 24 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.55 }}
+              className="w-full lg:w-[46%]"
+            >
+              <div className="bg-[#FAF6F0] border border-[#F0EBE3] rounded-[24px] p-6 shadow-[0_8px_40px_rgba(30,41,59,0.05)]">
+                <div className="flex items-center justify-between mb-5">
+                  <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-widest">Classroom Dashboard</span>
+                  <span className="text-[11px] font-medium text-[#D4A574] bg-[#F5E6D3] px-2.5 py-1 rounded-full">Live</span>
+                </div>
+
+                {/* Streak stat */}
+                <div className="bg-white rounded-2xl p-5 border border-[#F0EBE3] mb-4">
+                  <div className="text-[12px] font-semibold text-[#78716C] mb-1">Average Class Streak</div>
+                  <div className="text-[32px] font-black text-[#D4A574] leading-none">14 Days 🔥</div>
+                </div>
+
+                {/* Style distribution */}
+                <div className="bg-white rounded-2xl p-5 border border-[#F0EBE3]">
+                  <div className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider mb-4">Student Style Distribution</div>
+                  <div className="flex flex-col gap-3.5">
+                    {[
+                      { label: 'Story Analogies', pct: 55, color: '#D4A574' },
+                      { label: 'Visual Models', pct: 30, color: '#7DD3FC' },
+                      { label: 'Direct Concept Cards', pct: 15, color: '#86EFAC' },
+                    ].map((bar, i) => (
+                      <div key={i}>
+                        <div className="flex justify-between text-[13px] font-semibold text-[#1E293B] mb-1.5">
+                          <span>{bar.label}</span>
+                          <span style={{ color: bar.color }}>{bar.pct}%</span>
+                        </div>
+                        <div className="w-full h-2 bg-[#F0EBE3] rounded-full overflow-hidden">
+                          <motion.div
+                            initial={{ width: 0 }}
+                            whileInView={{ width: `${bar.pct}%` }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.8, delay: i * 0.15, ease: 'easeOut' }}
+                            className="h-full rounded-full"
+                            style={{ backgroundColor: bar.color }}
+                          />
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* SECTION: ABOUT */}
-      <section id="about" className="w-full bg-[#FAF6F0] py-16 md:py-24 px-6 md:px-12 z-20 border-t border-[#E7E5E4]/50 relative">
-        <div className="max-w-[800px] mx-auto text-center">
-          <span className="text-[12px] font-bold text-[#D4A574] tracking-[0.2em] uppercase block mb-3">About Us</span>
-          <h2 className="text-[32px] md:text-[36px] font-bold text-[#1E293B] leading-tight mb-6 tracking-tight">Our Mission: Education Belongs to Everyone</h2>
-          <p className="text-[#78716C] text-[16px] mb-8 leading-relaxed max-w-[640px] mx-auto">
-            Rinhozo was born from a simple belief: learning should adapt to the student, not the other way around. By combining language personalization, cognitive scaffolding, and friendly visual support, we help students conquer study barriers one concept at a time.
-          </p>
-
-          <div className="relative inline-block bg-white p-6 rounded-2xl border border-[#E7E5E4]/30 shadow-sm max-w-[320px] mb-12 rotate-[-1deg] hover:rotate-0 transition-transform duration-300">
-            <span className="font-handwritten text-[#D4A574] text-[24px]">
-              Education belongs to everyone. ♡
+      {/* ══════════════════════════════════════
+          ABOUT
+      ══════════════════════════════════════ */}
+      <section id="about" className="w-full bg-[#FAF6F0] py-24 md:py-32 border-t border-[#F0EBE3]">
+        <div className="max-w-4xl mx-auto px-6 lg:px-10 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.55 }}
+          >
+            <span className="inline-block text-[12px] font-bold text-[#D4A574] tracking-[0.2em] uppercase mb-5">
+              About Us
             </span>
-          </div>
+            <h2 className="text-[34px] md:text-[44px] font-bold text-[#1E293B] leading-[1.15] tracking-tight mb-6">
+              Education belongs<br />to everyone
+            </h2>
+            <p className="text-[17px] text-[#78716C] leading-[1.8] max-w-[640px] mx-auto mb-12">
+              Rinhozo was born from a simple belief: learning should adapt to the student, not the other way around. By combining language personalization, cognitive scaffolding, and friendly visual support, we help students conquer study barriers one concept at a time.
+            </p>
 
-          <div>
-            <button 
-              onClick={onGetStarted}
-              className="bg-[#1E293B] hover:bg-[#0F172A] text-white px-8 py-4 rounded-full text-[15px] font-semibold shadow-md transition-all cursor-pointer"
-            >
-              Join Rinhozo Today
-            </button>
-          </div>
+            {/* Handwritten note card */}
+            <div className="relative inline-block mb-14">
+              <div className="bg-white border border-[#F0EBE3] shadow-md rounded-2xl px-8 py-6 rotate-[-1.5deg] hover:rotate-0 transition-transform duration-300">
+                <span className="font-handwritten text-[#D4A574] text-[26px] leading-relaxed">
+                  "Education belongs to everyone." ♡
+                </span>
+              </div>
+            </div>
+
+            <div>
+              <button
+                onClick={onGetStarted}
+                className="inline-flex items-center gap-2 bg-[#1E293B] hover:bg-[#0F172A] text-white px-9 py-4 rounded-full text-[16px] font-semibold shadow-md hover:-translate-y-0.5 transition-all duration-200 group cursor-pointer"
+              >
+                Join Rinhozo Today
+                <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
+              </button>
+            </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* SECTION 3: RIN CHAT BUBBLE */}
-      <div className="fixed z-40 bg-white rounded-[24px] rounded-br-[4px] p-5 shadow-[0_8px_32px_rgba(30,41,59,0.12)] border border-[#E7E5E4]/60 flex items-start gap-3.5 hover:scale-105 transition-transform duration-300 cursor-pointer bottom-6 left-1/2 -translate-x-1/2 w-[90vw] max-w-[280px] md:left-auto md:right-8 md:bottom-8 md:translate-x-0 md:w-auto">
-        {/* Tiny avatar */}
-        <div className="w-8 h-8 rounded-full bg-[#FDE68A]/30 flex items-center justify-center flex-shrink-0 border border-white/50 overflow-hidden">
-          <img src="/assets/rin_mascot_3d_clean.png" alt="Mini Rin" className="w-6 h-6 object-contain" />
-        </div>
-        
-        {/* Text and waving hand custom SVG */}
-        <div className="flex flex-col text-left">
-          <span className="text-[14px] font-semibold text-[#1E293B] flex items-center gap-1">
-            Hi! I'm Rinhozo
-            <svg 
-              className="w-4 h-4 text-[#D4A574] animate-[wave_1.5s_infinite] origin-[70%_70%] inline-block" 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              stroke="currentColor" 
-              strokeWidth="2"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19 14c1.49-1.46 3-3.21 3-5.5A2.5 2.5 0 0019.5 6a2.5 2.5 0 00-2 1 2.5 2.5 0 00-4.5 1.5V11m-3-1V7.5a2.5 2.5 0 00-5 0V11m3-4V5a2.5 2.5 0 00-5 0v11a6 6 0 006 6h2a6 6 0 006-6v-2" />
-            </svg>
-          </span>
-          <p className="text-[13px] font-normal text-[#78716C] leading-[1.5] mt-1">
-            I'm here to guide, encourage, and learn with you — every step of the way.
+      {/* ══════════════════════════════════════
+          FOOTER
+      ══════════════════════════════════════ */}
+      <footer className="w-full bg-[#1E293B] py-10">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-lg bg-[#D4A574]/20 flex items-center justify-center">
+              <svg className="w-3.5 h-3.5 text-[#D4A574] fill-none stroke-current" viewBox="0 0 24 24" strokeWidth="2.2">
+                <path d="M12 2a7 7 0 0 0-7 7v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9a7 7 0 0 0-7-7z" />
+                <path d="M9 14v3" /><path d="M12 14v4" /><path d="M15 14v3" />
+              </svg>
+            </div>
+            <span className="text-[13px] font-bold tracking-[0.18em] text-white/80">RINHOZO</span>
+          </div>
+          <p className="text-[13px] text-white/40 font-medium">
+            © {new Date().getFullYear()} Rinhozo. Made with care for every student.
           </p>
-          <span className="text-[10px] text-[#D4A574] self-end mt-1.5">♡</span>
+          <div className="flex items-center gap-5 text-[13px] text-white/40 font-medium">
+            <button onClick={onGetStarted} className="hover:text-white/70 transition-colors cursor-pointer">Privacy</button>
+            <button onClick={onGetStarted} className="hover:text-white/70 transition-colors cursor-pointer">Terms</button>
+            <button onClick={onGetStarted} className="hover:text-white/70 transition-colors cursor-pointer">Contact</button>
+          </div>
         </div>
-      </div>
-
-      {/* FOOTER */}
-      <footer className="w-full bg-[#f5e6d3]/20 border-t border-[#E7E5E4]/50 py-6 text-center text-xs font-semibold text-[#78716c] tracking-wider uppercase z-20">
-        © {new Date().getFullYear()} Rinhozo. Made with care for every student.
       </footer>
+
+      {/* ── Rin floating chat bubble ── */}
+      <div className="fixed z-40 bottom-6 right-6 md:bottom-8 md:right-8">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8, y: 10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ delay: 1.2, duration: 0.4, ease: 'easeOut' }}
+          className="bg-white rounded-2xl rounded-br-md p-4 shadow-[0_8px_32px_rgba(30,41,59,0.14)] border border-[#F0EBE3] flex items-start gap-3 hover:shadow-[0_12px_40px_rgba(30,41,59,0.16)] hover:-translate-y-0.5 transition-all duration-300 cursor-pointer max-w-[240px]"
+        >
+          <div className="w-8 h-8 rounded-full bg-[#FDE68A]/30 border border-[#FDE68A]/40 flex items-center justify-center flex-shrink-0 overflow-hidden">
+            <img src="/assets/rin_mascot_3d_clean.png" alt="Mini Rin" className="w-6 h-6 object-contain" />
+          </div>
+          <div>
+            <div className="text-[13px] font-bold text-[#1E293B] flex items-center gap-1 mb-0.5">
+              Hi, I'm Rin!
+              <svg className="w-3.5 h-3.5 text-[#D4A574]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 14c1.49-1.46 3-3.21 3-5.5A2.5 2.5 0 0019.5 6a2.5 2.5 0 00-2 1 2.5 2.5 0 00-4.5 1.5V11m-3-1V7.5a2.5 2.5 0 00-5 0V11m3-4V5a2.5 2.5 0 00-5 0v11a6 6 0 006 6h2a6 6 0 006-6v-2" />
+              </svg>
+            </div>
+            <p className="text-[12px] text-[#78716C] leading-[1.5]">Here to guide you — every step of the way ♡</p>
+          </div>
+        </motion.div>
+      </div>
     </div>
   );
 };
