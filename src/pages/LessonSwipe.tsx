@@ -189,7 +189,7 @@ export const LessonSwipe: React.FC<LessonSwipeProps> = ({
     <div className="min-h-screen bg-[#faf6f0] text-[#1e293b] flex flex-col items-center p-4 md:p-6 overflow-hidden relative">
       
       {/* HEADER BAR */}
-      <div className="w-full max-w-lg flex items-center justify-between mb-4 z-20">
+      <div className="w-full max-w-lg flex items-center justify-between mb-4 z-20 flex-shrink-0">
         <button 
           onClick={onBackToMap}
           className="p-2.5 rounded-full hover:bg-[#f0ebe3] text-[#78716c] hover:text-[#1e293b] transition-all cursor-pointer"
@@ -250,7 +250,7 @@ export const LessonSwipe: React.FC<LessonSwipeProps> = ({
         <div className="flex-1 w-full max-w-md flex flex-col justify-between items-center z-10 py-2">
           
           {/* Top Progress bar and Rin floating */}
-          <div className="w-full flex items-center justify-between mb-4 px-2">
+          <div className="w-full flex items-center justify-between mb-4 px-2 flex-shrink-0">
             <div className="flex-1 mr-4">
               <div className="flex justify-between text-[11px] font-bold text-[#78716c] mb-1.5">
                 <span>{topicData.name}</span>
@@ -270,7 +270,7 @@ export const LessonSwipe: React.FC<LessonSwipeProps> = ({
           </div>
 
           {/* SWIPE CARD DECK */}
-          <div className="relative w-full h-[420px] max-w-sm my-4">
+          <div className="relative w-full h-[60vh] min-h-[300px] max-h-[440px] max-w-sm my-2 flex-shrink-0">
             {cards.slice(cardIndex, cardIndex + 2).reverse().map((card, i, arr) => {
               const isActive = i === arr.length - 1;
               return (
@@ -282,7 +282,7 @@ export const LessonSwipe: React.FC<LessonSwipeProps> = ({
                   className={isActive ? '' : 'transform scale-95 translate-y-4 opacity-40 pointer-events-none'}
                 >
                   {/* Inside Card Layout */}
-                  <div className="flex-1 flex flex-col justify-between text-left h-full">
+                  <div className="flex-1 flex flex-col justify-between text-left">
                     {/* Header: Title and TTS button */}
                     <div className="flex items-start justify-between">
                       <span className="text-[10px] font-bold text-[#d4a574] uppercase tracking-widest leading-none bg-[#f5e6d3]/40 px-2.5 py-1.5 rounded-full">
@@ -298,15 +298,15 @@ export const LessonSwipe: React.FC<LessonSwipeProps> = ({
                     </div>
 
                     {/* Body contents */}
-                    <div className="flex-1 flex flex-col justify-center my-4 overflow-y-auto no-scrollbar">
-                      <h3 className="text-xl font-bold text-[#1e293b] mb-3 leading-snug">{card.title}</h3>
-                      <p className="text-[14px] font-semibold text-[#78716c] leading-relaxed whitespace-pre-line">
+                    <div className="flex-1 flex flex-col justify-center my-2 overflow-y-auto no-scrollbar pr-1">
+                      <h3 className="text-lg sm:text-xl font-bold text-[#1e293b] mb-1.5 sm:mb-3 leading-snug">{card.title}</h3>
+                      <p className="text-xs sm:text-[14px] font-semibold text-[#78716c] leading-relaxed whitespace-pre-line">
                         {card.body}
                       </p>
 
                       {/* Render math or icon element */}
                       {card.mediaType === 'math' && card.mediaVal && (
-                        <div className="mt-4 bg-[#faf6f0] border border-[#e5dec9]/50 rounded-2xl p-3.5 text-center font-mono font-bold text-[#1e293b] text-base select-all">
+                        <div className="mt-2 bg-[#faf6f0] border border-[#e5dec9]/50 rounded-xl p-2.5 text-center font-mono font-bold text-[#1e293b] text-sm sm:text-base select-all">
                           {card.mediaVal}
                         </div>
                       )}
@@ -330,7 +330,7 @@ export const LessonSwipe: React.FC<LessonSwipeProps> = ({
 
                       {/* Quiz Options */}
                       {card.type === 'quiz' && card.options && (
-                        <div className="space-y-2 mt-4">
+                        <div className="space-y-1.5 mt-2">
                           {card.options.map((option: string, idx: number) => {
                             const isSelected = selectedOption === idx;
                             let style = 'border-[#e5dec9] hover:bg-[#faf6f0]';
@@ -351,7 +351,7 @@ export const LessonSwipe: React.FC<LessonSwipeProps> = ({
                                 key={idx}
                                 onClick={() => handleOptionClick(idx)}
                                 disabled={isAnswered}
-                                className={`w-full text-left p-3 border-2 rounded-xl text-xs font-bold transition-all flex items-center justify-between cursor-pointer ${style}`}
+                                className={`w-full text-left p-2.5 border-2 rounded-xl text-[11px] sm:text-xs font-bold transition-all flex items-center justify-between cursor-pointer ${style}`}
                               >
                                 <span>{option}</span>
                                 {isAnswered && idx === card.answerIdx && <Check size={14} />}
@@ -368,7 +368,7 @@ export const LessonSwipe: React.FC<LessonSwipeProps> = ({
                       <button
                         onClick={handleCheckAnswer}
                         disabled={selectedOption === null}
-                        className={`w-full py-3 rounded-xl text-sm font-bold shadow-sm transition-all cursor-pointer ${
+                        className={`w-full py-2.5 mt-2 rounded-xl text-xs sm:text-sm font-bold shadow-sm transition-all cursor-pointer ${
                           selectedOption !== null 
                             ? 'bg-[#1e293b] hover:bg-[#0f172a] text-white' 
                             : 'bg-[#f0ebe3] text-[#78716c] opacity-50 cursor-not-allowed'
@@ -396,7 +396,7 @@ export const LessonSwipe: React.FC<LessonSwipeProps> = ({
           </div>
 
           {/* Swipe tutorial reminder overlay when inactive */}
-          <div className="text-[10px] font-bold text-[#78716c] opacity-40 uppercase tracking-widest text-center mt-3">
+          <div className="text-[10px] font-bold text-[#78716c] opacity-40 uppercase tracking-widest text-center mt-2 flex-shrink-0">
             Swipe Right to complete card!
           </div>
 
