@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ArrowRight, Play, Lightbulb, BookOpen, BarChart3, Puzzle } from 'lucide-react';
+import React from 'react';
+import { ArrowRight, Play } from 'lucide-react';
 import type { UIStrings } from '../locales/strings';
 
 interface LandingPageProps {
@@ -8,50 +8,26 @@ interface LandingPageProps {
 }
 
 export const LandingPage: React.FC<LandingPageProps> = ({ strings, onGetStarted }) => {
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    const { clientX, clientY } = e;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = ((clientX - rect.left) / rect.width) - 0.5;
-    const y = ((clientY - rect.top) / rect.height) - 0.5;
-    setMousePos({ x, y });
-  };
-
-  const handleMouseLeave = () => {
-    setMousePos({ x: 0, y: 0 });
-  };
-
-  // 3D rotation styles based on mouse position
-  const tiltRin = {
-    transform: `rotateY(${mousePos.x * 24}deg) rotateX(${-mousePos.y * 24}deg) translateZ(40px)`,
-    transition: 'transform 0.15s ease-out'
-  };
-
-  const tiltBadgeFar = (offsetMultiplier: number) => ({
-    transform: `rotateY(${mousePos.x * 35 * offsetMultiplier}deg) rotateX(${-mousePos.y * 35 * offsetMultiplier}deg) translateZ(80px)`,
-    transition: 'transform 0.15s ease-out'
-  });
-
-  const tiltTableProps = {
-    transform: `rotateY(${mousePos.x * 12}deg) rotateX(${-mousePos.y * 12}deg) translateZ(15px)`,
-    transition: 'transform 0.2s ease-out'
-  };
-
   return (
     <div 
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      className="min-h-screen text-[#1e293b] flex flex-col relative font-sans select-none overflow-x-hidden"
+      className="min-h-screen w-screen relative select-none overflow-x-hidden flex flex-col justify-between"
       style={{
-        backgroundImage: "linear-gradient(rgba(250, 246, 240, 0.15), rgba(250, 246, 240, 0.15)), url('/assets/cozy_desk_bg.png')",
+        backgroundImage: "url('/assets/hero_page.jpg')",
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        backgroundAttachment: 'fixed'
       }}
     >
+      {/* SEAMLESS GRADIENT OVERLAY TO MASK BACKGROUND TEXT */}
+      <div 
+        className="absolute inset-y-0 left-0 w-full lg:w-[50%] z-0 pointer-events-none"
+        style={{
+          background: 'linear-gradient(to right, #ebdcc3 0%, #ebdcc3 60%, #ebd9c0 80%, rgba(235, 216, 190, 0) 100%)',
+          mixBlendMode: 'normal'
+        }}
+      />
+
       {/* HEADER NAVBAR */}
-      <header className="w-full max-w-7xl mx-auto px-8 py-5 flex items-center justify-between z-20">
+      <header className="w-full max-w-7xl mx-auto px-8 py-5 flex items-center justify-between z-20 relative">
         {/* Logo */}
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 overflow-hidden rounded-full bg-[#fde68a]/20 border border-white/50 flex items-center justify-center">
@@ -60,7 +36,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ strings, onGetStarted 
           <span className="text-xl font-bold tracking-widest text-[#1e293b]">RINHOZO</span>
         </div>
 
-        {/* Floating Menu Pills (Claymorphic) */}
+        {/* Floating Menu Pills */}
         <nav className="hidden md:flex items-center bg-white/95 border border-[#e5dec9] rounded-full p-1.5 shadow-[0_8px_24px_rgba(30,41,59,0.06)] gap-2">
           <a href="#home" className="px-5 py-2 text-xs font-bold rounded-full bg-[#faf6f0] shadow-sm text-[#1e293b] border border-[#e5dec9] transition-all">
             Home
@@ -90,7 +66,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ strings, onGetStarted 
       </header>
 
       {/* HERO SECTION */}
-      <main className="flex-1 w-full max-w-7xl mx-auto px-8 py-6 md:py-12 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center z-10">
+      <main className="flex-1 w-full max-w-7xl mx-auto px-8 py-6 md:py-12 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center z-10 relative">
         
         {/* HERO LEFT COLUMN */}
         <div className="lg:col-span-5 flex flex-col justify-center text-left">
@@ -180,116 +156,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({ strings, onGetStarted 
 
         </div>
 
-        {/* HERO RIGHT COLUMN (Perspective 3D scene) */}
-        <div className="lg:col-span-7 relative flex flex-col items-center justify-center min-h-[480px] lg:min-h-[580px] perspective-3d">
-          
-          {/* FLOATING SCENE CONTAINER */}
-          <div 
-            style={tiltRin}
-            className="relative w-full max-w-[500px] h-[340px] flex items-center justify-center z-10"
-          >
-            
-            {/* MAIN GLOWING RIN AVATAR (3D PNG) */}
-            <div className="animate-float">
-              <img 
-                src="/assets/rin_mascot_3d.png" 
-                alt="3D Rin Mascot" 
-                className="w-[280px] h-[280px] object-contain transition-transform"
-                style={{
-                  filter: 'drop-shadow(0 0 30px rgba(212, 165, 116, 0.55))'
-                }}
-              />
-            </div>
-
-            {/* FLOATING CLAYMORPHIC BADGES */}
-            {/* Idea lightbulb */}
-            <div 
-              style={tiltBadgeFar(1.15)}
-              className="absolute top-4 left-14 bg-white border border-[#e5dec9] rounded-2xl p-2.5 shadow-[0_8px_24px_rgba(30,41,59,0.08)] clay-card animate-float [animation-delay:1.5s]"
-            >
-              <Lightbulb size={18} className="text-[#d4a574]" fill="currentColor" fillOpacity={0.1} />
-            </div>
-
-            {/* Open Book */}
-            <div 
-              style={tiltBadgeFar(0.95)}
-              className="absolute bottom-20 left-4 bg-white border border-[#e5dec9] rounded-2xl p-2.5 shadow-[0_8px_24px_rgba(30,41,59,0.08)] clay-card animate-float [animation-delay:0.5s]"
-            >
-              <BookOpen size={18} className="text-[#d4a574]" />
-            </div>
-
-            {/* Chart */}
-            <div 
-              style={tiltBadgeFar(1.2)}
-              className="absolute top-6 right-14 bg-white border border-[#e5dec9] rounded-2xl p-2.5 shadow-[0_8px_24px_rgba(30,41,59,0.08)] clay-card animate-float [animation-delay:2.2s]"
-            >
-              <BarChart3 size={18} className="text-[#7dd3fc]" />
-            </div>
-
-            {/* Puzzle Piece */}
-            <div 
-              style={tiltBadgeFar(1.05)}
-              className="absolute bottom-22 right-4 bg-white border border-[#e5dec9] rounded-2xl p-2.5 shadow-[0_8px_24px_rgba(30,41,59,0.08)] clay-card animate-float [animation-delay:1.1s]"
-            >
-              <Puzzle size={18} className="text-[#78716c]" />
-            </div>
-          </div>
-
-          {/* TABLE TOP INTERACTIVE PROPS */}
-          <div 
-            style={tiltTableProps}
-            className="w-full mt-2 pt-6 flex justify-between items-end relative min-h-[140px] z-10 px-4"
-          >
-            {/* 3D Stacked books */}
-            <div className="w-[25%] flex flex-col items-center">
-              <img 
-                src="/assets/stacked_books_3d.png" 
-                alt="Stacked books Growth Focus Curiosity" 
-                className="w-[130px] h-auto object-contain"
-              />
-            </div>
-
-            {/* 3D Folded Notebook and Pen */}
-            <div className="w-[42%] flex flex-col items-center">
-              <img 
-                src="/assets/notebook_3d.png" 
-                alt="Lined notebook and pencil" 
-                className="w-[200px] h-auto object-contain"
-              />
-            </div>
-
-            {/* Coffee Cup and Saucer */}
-            <div className="w-[20%] flex flex-col items-center">
-              <img 
-                src="/assets/coffee_cup_3d.png" 
-                alt="Coffee cup and saucer" 
-                className="w-[90px] h-auto object-contain"
-              />
-            </div>
-          </div>
-
-          {/* FLOATING RIN BUBBLE */}
-          <div className="absolute bottom-[-24px] right-4 bg-white border border-[#e5dec9] rounded-2xl p-4 shadow-[0_8px_24px_rgba(30,41,59,0.08)] flex items-start gap-3 max-w-[320px] text-left transform hover:scale-[1.02] transition-transform duration-300 clay-card z-20">
-            <div className="w-8 h-8 rounded-full bg-[#fde68a]/30 flex items-center justify-center flex-shrink-0 animate-glow-gold border border-white/50 overflow-hidden">
-              <img src="/assets/rin_mascot_3d.png" alt="Mini Rin" className="w-6 h-6 object-contain" />
-            </div>
-            
-            <div className="flex flex-col">
-              <span className="text-xs font-bold text-[#1e293b] flex items-center gap-1">
-                Hi! I am Rinhozo.
-              </span>
-              <p className="text-[11px] font-semibold text-[#78716c] leading-relaxed mt-1">
-                I am here to guide, encourage, and learn with you: every step of the way.
-              </p>
-            </div>
-          </div>
-
-        </div>
+        {/* HERO RIGHT COLUMN (Empty container letting the exact background image graphics show through) */}
+        <div className="lg:col-span-7 h-full pointer-events-none" />
 
       </main>
 
       {/* FOOTER */}
-      <footer className="w-full bg-[#f5e6d3]/30 border-t border-[#e5dec9]/40 py-6 mt-12 text-center text-xs font-bold text-[#78716c] tracking-wider uppercase z-20">
+      <footer className="w-full bg-[#f5e6d3]/30 border-t border-[#e5dec9]/40 py-6 text-center text-xs font-bold text-[#78716c] tracking-wider uppercase z-20 relative">
         © {new Date().getFullYear()} Rinhozo. Made with care for every student.
       </footer>
     </div>
