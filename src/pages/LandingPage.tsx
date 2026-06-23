@@ -144,11 +144,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ strings, onGetStarted 
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 40px', height: 72, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 24 }}>
 
           {/* Logo */}
-          <button onClick={() => goto('home')} style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', background: 'none', border: 'none', padding: 0 }}>
-            <div style={{ width: 36, height: 36, borderRadius: '50%', overflow: 'hidden', background: '#FBF3E8', border: '1.5px solid #F0D4A8', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <img src="/assets/rin_mascot_3d_clean.png" alt="Rin" style={{ width: 28, height: 28, objectFit: 'contain' }} />
-            </div>
-            <span style={{ fontSize: 15, fontWeight: 800, letterSpacing: '0.14em', color: '#16233A' }}>RINHOZO</span>
+          <button onClick={() => goto('home')} style={{ display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer', background: 'none', border: 'none', padding: 0 }}>
+            <img src="/assets/rin_mascot_3d_clean.png" alt="Rin Logo" style={{ width: 38, height: 38, objectFit: 'contain', transform: 'rotate(-8deg)', filter: 'drop-shadow(0 4px 8px rgba(22,35,58,0.06))' }} />
+            <span style={{ fontSize: 18, fontWeight: 800, letterSpacing: '0.04em', color: '#17263F', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>RINHOZO</span>
           </button>
 
           {/* Desktop nav */}
@@ -1037,11 +1035,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ strings, onGetStarted 
       ════════════════════════════════════════════ */}
       <footer style={{ background: '#17263F', padding: '48px 0' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 40px', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 24, flexWrap: 'wrap' }} className="justify-between">
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div style={{ width: 32, height: 32, borderRadius: '50%', overflow: 'hidden', background: 'rgba(212,165,116,0.15)', border: '1px solid rgba(212,165,116,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <img src="/assets/rin_mascot_3d_clean.png" alt="Rin" style={{ width: 24, height: 24, objectFit: 'contain' }} />
-            </div>
-            <span style={{ fontSize: 13, fontWeight: 800, letterSpacing: '0.16em', color: 'rgba(255,255,255,0.7)' }}>RINHOZO</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <img src="/assets/rin_mascot_3d_clean.png" alt="Rin Logo" style={{ width: 32, height: 32, objectFit: 'contain', transform: 'rotate(-8deg)', opacity: 0.9 }} />
+            <span style={{ fontSize: 16, fontWeight: 800, letterSpacing: '0.04em', color: 'rgba(255,255,255,0.85)', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>RINHOZO</span>
           </div>
           <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.32)', margin: 0 }}>
             © {new Date().getFullYear()} Rinhozo. Made with care for every student.
