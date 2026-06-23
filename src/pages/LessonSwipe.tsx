@@ -204,7 +204,7 @@ export const LessonSwipe: React.FC<LessonSwipeProps> = ({
               </div>
               <div>
                 <span className="font-bold text-[#1e293b] text-sm block">Algebra Reef Completed!</span>
-                <span className="text-xs text-[#78716c] font-semibold">Unlocked: Equations Island 🏝️</span>
+                <span className="text-xs text-[#78716c] font-semibold">Unlocked: Equations Island</span>
               </div>
             </div>
           </div>

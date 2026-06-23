@@ -11,7 +11,7 @@ export const LanguageSelect: React.FC<LanguageSelectProps> = ({ onSelectLanguage
     { 
       code: 'hinglish', 
       label: 'Hinglish', 
-      subLabel: '"Recursion मतलब ek dream ke andar dream"',
+      subLabel: '"Recursion matlab ek dream ke andar dream"',
       style: 'border-[#d4a574] hover:bg-[#f5e6d3]/40'
     },
     { 
@@ -50,7 +50,7 @@ export const LanguageSelect: React.FC<LanguageSelectProps> = ({ onSelectLanguage
           <RinAvatar mood="happy" size={140} glowIntensity={0.6} interactive={true} />
           <div className="mt-3 bg-[#f5e6d3]/60 px-4 py-2 rounded-2xl inline-block max-w-[280px]">
             <p className="text-xs font-bold text-[#78716c] leading-snug">
-              "Apni favorite language select karo aur Rin ke saath seekhna shuru karo! 💛"
+              "Apni favorite language select karo aur Rin ke saath seekhna shuru karo."
             </p>
           </div>
         </div>

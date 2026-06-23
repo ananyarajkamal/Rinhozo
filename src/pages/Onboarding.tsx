@@ -57,7 +57,6 @@ export const Onboarding: React.FC<OnboardingProps> = ({ strings, onCompleteOnboa
   const handleTutorialSwipeLeft = () => {
     setRinMood('concerned');
     setTimeout(() => {
-      // Swipe left on tutorial also advances, just reacts differently
       setStep(2);
       setRinMood('happy');
     }, 600);
@@ -79,14 +78,14 @@ export const Onboarding: React.FC<OnboardingProps> = ({ strings, onCompleteOnboa
           {step === 1 && (
             <div className="mt-3 bg-[#f5e6d3]/60 px-4 py-2 rounded-2xl inline-block max-w-[280px] text-center shadow-sm">
               <p className="text-xs font-bold text-[#78716c] leading-snug">
-                "Swipe right to say 'got it!', or left to get another explanation!"
+                "Swipe right to say got it, or left to get another explanation."
               </p>
             </div>
           )}
           {step === 2 && (
             <div className="mt-3 bg-[#f5e6d3]/60 px-4 py-2 rounded-2xl inline-block max-w-[280px] text-center shadow-sm">
               <p className="text-xs font-bold text-[#78716c] leading-snug">
-                "Rin is customizing your cards. App kis tarah seekhna chahte ho? 💛"
+                "Rin is customizing your cards. Aap kis tarah seekhna chahte ho."
               </p>
             </div>
           )}
@@ -105,15 +104,15 @@ export const Onboarding: React.FC<OnboardingProps> = ({ strings, onCompleteOnboa
                   <Sparkles size={24} />
                 </div>
                 <div className="flex-1 flex flex-col justify-center my-6">
-                  <h3 className="text-xl font-bold text-[#1e293b] mb-2">Practice Swiping!</h3>
+                  <h3 className="text-xl font-bold text-[#1e293b] mb-2">Practice Swiping</h3>
                   <p className="text-sm font-semibold text-[#78716c] px-4 leading-relaxed">
-                    Swipe this card <span className="text-[#86efac] font-bold">Right 👉</span> to say "I got it!".
+                    Swipe this card Right to say I got it.
                     <br />
-                    Swipe <span className="text-[#d4a574] font-bold">Left 👈</span> to see it explained differently.
+                    Swipe Left to see it explained differently.
                   </p>
                 </div>
                 <div className="w-full bg-[#faf6f0] border border-[#e5dec9] rounded-2xl p-3 text-xs font-bold text-[#78716c]">
-                  Drag me left or right to test!
+                  Drag me left or right to test.
                 </div>
               </div>
             </SwipeCard>

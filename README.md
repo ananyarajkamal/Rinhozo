@@ -1,73 +1,61 @@
-# React + TypeScript + Vite
+# Rinhozo
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Rinhozo is a gamified, multilingual learning companion designed to make education accessible to every student, regardless of language, neurodiversity, or device constraints, through bite-sized, swipeable micro-lessons.
 
-Currently, two official plugins are available:
+## Core Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Hinglish-First Design**: Custom conceptual translation designed for students who naturally mix Hindi and English in their everyday conversations.
+- **Multilingual Selection**: Support for Hinglish, English, Hindi, and Tamil interface and lesson content.
+- **Adaptive Learning Styles**: Visual layouts, direct concept definitions, story-based analogies, and audio reading adapt dynamically to user preferences.
+- **Physical Gesture Mechanics**: Tactile card-swipe interfaces built with Framer Motion, enabling single-concept focus for neurodivergent learners.
+- **Offline-First Resilience**: Full offline capability. Caches assets using a Progressive Web App service worker and persists student data inside local IndexedDB.
+- **Interactive Companion**: Features Rin, an animated jellyfish companion that responds emotionally to correct quiz responses or learning struggle points.
 
-## React Compiler
+## Technology Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Framework**: React 19, Vite, TypeScript
+- **Styling**: Tailwind CSS v4
+- **Animations**: Framer Motion
+- **Database Layer**: Local IndexedDB wrapper with Firebase Client SDK integration capability
+- **PWA Service Worker**: vite-plugin-pwa
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Follow these steps to run the application locally:
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Prerequisites
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+Ensure you have Node.js and npm installed on your machine:
+- Node.js (v24 or higher recommended)
+- npm (v11 or higher recommended)
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/ananyarajkamal/Rinhozo.git
+   cd Rinhozo
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+### Running Locally
+
+To start the development server with Hot Module Replacement:
+```bash
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+The application will run locally at http://localhost:5173.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Production Build
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+To compile the TypeScript project and generate the production bundle with PWA service workers:
+```bash
+npm run build
 ```
+
+This will check types and produce build files inside the `dist` directory.

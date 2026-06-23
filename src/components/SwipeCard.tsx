@@ -83,13 +83,13 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
         style={{ opacity: rightIndicatorOpacity }}
         className="absolute top-4 right-4 bg-success/15 border border-success/35 text-success font-semibold px-3 py-1.5 rounded-full text-xs tracking-wider uppercase pointer-events-none"
       >
-        Got it! 👍
+        Got it
       </motion.div>
       <motion.div 
         style={{ opacity: leftIndicatorOpacity }}
         className="absolute top-4 left-4 bg-secondary/15 border border-secondary/35 text-secondary font-semibold px-3 py-1.5 rounded-full text-xs tracking-wider uppercase pointer-events-none"
       >
-        Explain Differently 🔄
+        Explain Differently
       </motion.div>
 
       {/* Card Content Wrapper */}
@@ -99,8 +99,8 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
 
       {/* Swipe hints visual aid */}
       <div className="flex justify-between items-center text-text-muted/40 text-[10px] uppercase tracking-widest mt-4 font-semibold select-none border-t border-bg-elevated/50 pt-3">
-        <span>← Swipe Left to Adapt</span>
-        <span>Swipe Right to Next →</span>
+        <span>Swipe Left to Adapt</span>
+        <span>Swipe Right to Next</span>
       </div>
     </motion.div>
   );

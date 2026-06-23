@@ -63,10 +63,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({ strings, onGetStarted 
             <br />
             <span className="font-handwritten text-[#d4a574] text-5xl md:text-6xl lg:text-[72px] font-bold inline-block mt-2 relative">
               to you
-              {/* Cursive heart next to "to you" */}
-              <svg className="absolute -right-14 bottom-2 w-10 h-10 fill-none stroke-[#d4a574] stroke-2" viewBox="0 0 24 24">
-                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-              </svg>
             </span>
           </h1>
 
@@ -206,10 +202,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({ strings, onGetStarted 
               {/* Blue lined notebook simulation */}
               <div className="absolute left-4 top-0 bottom-0 w-px bg-red-200"></div>
               <div className="space-y-3 font-handwritten text-[#d4a574] text-lg pl-6">
-                <p className="border-b border-[#e5dec9]/40 leading-none pb-1">You're doing</p>
+                <p className="border-b border-[#e5dec9]/40 leading-none pb-1">You are doing</p>
                 <p className="border-b border-[#e5dec9]/40 leading-none pb-1">better than</p>
                 <p className="border-b border-[#e5dec9]/40 leading-none pb-1">you think.</p>
-                <p className="leading-none flex items-center gap-1">Keep going. 💛</p>
+                <p className="leading-none flex items-center gap-1">Keep going.</p>
               </div>
               {/* Gold Pen */}
               <div className="absolute right-6 bottom-4 w-28 h-2 bg-yellow-600/70 border border-yellow-700/30 rounded-full transform -rotate-[22deg] origin-bottom-right shadow-sm">
@@ -221,10 +217,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({ strings, onGetStarted 
             <div className="flex flex-col items-center mr-0 sm:mr-4">
               {/* Cup */}
               <div className="relative w-16 h-12 bg-[#f5e6d3] border border-[#e5dec9] rounded-b-2xl shadow-sm flex items-center justify-center">
-                {/* Heart outline inside/on cup */}
-                <svg className="w-4 h-4 fill-none stroke-[#d4a574] stroke-2 opacity-50" viewBox="0 0 24 24">
-                  <path d="M12 21l-1-1C5 14 2 11 2 7c0-3 2-5 5-5 2 0 4 1 5 3 1-2 3-3 5-3 3 0 5 2 5 5 0 4-3 7-9 13l-1 1z" />
-                </svg>
                 {/* Handle */}
                 <div className="absolute -right-3 top-3 w-4 h-6 border-2 border-[#e5dec9] border-l-0 rounded-r-full"></div>
               </div>
@@ -244,17 +236,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({ strings, onGetStarted 
             {/* Speech copy */}
             <div className="flex flex-col">
               <span className="text-xs font-bold text-[#1e293b] flex items-center gap-1">
-                Hi! I'm Rinhozo <span className="animate-bounce">👋</span>
+                Hi, I am Rinhozo.
               </span>
               <p className="text-[11px] font-semibold text-[#78716c] leading-relaxed mt-1">
-                I'm here to guide, encourage, and learn with you — every step of the way.
+                I am here to guide, encourage, and learn with you, every step of the way.
               </p>
-            </div>
-            {/* Mini heart decoration in the corner */}
-            <div className="absolute bottom-2 right-2.5 text-[#d4a574] opacity-40">
-              <svg className="w-3 h-3 fill-currentColor" viewBox="0 0 24 24">
-                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-              </svg>
             </div>
           </div>
 
@@ -264,7 +250,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ strings, onGetStarted 
 
       {/* FOOTER */}
       <footer className="w-full bg-[#f5e6d3]/30 border-t border-[#e5dec9]/40 py-6 mt-12 text-center text-xs font-bold text-[#78716c] tracking-wider uppercase">
-        © {new Date().getFullYear()} Rinhozo. Made with 💛 for every student.
+        © {new Date().getFullYear()} Rinhozo. Made with care for every student.
       </footer>
     </div>
   );
