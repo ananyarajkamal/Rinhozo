@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
   ArrowRight, ArrowLeft, Play, Pause, Volume2, Clock,
-  Sparkles, BookOpen, Sprout, Star, Bell,
+  Sparkles, BookOpen, Sprout, Star, Bell, Mail,
   RotateCcw, Lock,
   FileText, Award, LayoutDashboard, Timer,
   BarChart3, Lightbulb, Users, HeartHandshake, Settings,
@@ -30,12 +30,21 @@ export const LandingPage: React.FC<LandingPageProps> = ({ strings: _strings, onG
   const [, setIsMobileNavOpen] = useState(false);
 
   /* SHARED DATA STATES (BINDING PROTOTYPE DYNAMICS) */
-  const [userName, setUserName] = useState('Ananya');
-  const [userAge, setUserAge] = useState('13');
-  const [userGrade, setUserGrade] = useState('8th Grade');
-  const [learningGoal, setLearningGoal] = useState('Improve focus and grades');
-  const [favoriteSubjects, setFavoriteSubjects] = useState<string[]>(['Mathematics', 'Science', 'Art']);
+  const [userName, setUserName] = useState('');
+  const [userAge, setUserAge] = useState('');
+  const [userGrade, setUserGrade] = useState('');
+  const [learningGoal, setLearningGoal] = useState('');
+  const [favoriteSubjects, setFavoriteSubjects] = useState<string[]>([]);
   const [preferredStudyTime, setPreferredStudyTime] = useState('Evening (6 PM - 9 PM)');
+
+  /* AUTH STATE */
+  const [isGuest, setIsGuest] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
+  const [signupName, setSignupName] = useState('');
+  const [signupEmail, setSignupEmail] = useState('');
+  const [signupPassword, setSignupPassword] = useState('');
 
   /* ASSESSMENT STATE */
   const [assessmentVal, setAssessmentVal] = useState<number>(3); // 1 to 5 (Never, Rarely, Sometimes, Often, Always)
@@ -232,7 +241,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ strings: _strings, onG
       <div className="flex-1 flex min-h-screen">
         
         {/* Render sidebar for dashboard screens (5 to 12) */}
-        {currentScreen >= 5 && renderSidebar()}
+        {currentScreen >= 5 && currentScreen <= 12 && renderSidebar()}
 
         {/* Main Content Area */}
         <main className="flex-1 flex flex-col overflow-y-auto px-6 py-8 lg:p-12">
@@ -246,12 +255,20 @@ export const LandingPage: React.FC<LandingPageProps> = ({ strings: _strings, onG
                   <img src="/assets/rin_mascot_3d_clean.png" alt="Rin" className="w-9 h-9 object-contain transform rotate-[-8deg]" />
                   <span className="text-16 font-extrabold tracking-[0.18em] text-[#17263F]">RINHOZO</span>
                 </div>
-                <button 
-                  onClick={() => setCurrentScreen(2)}
-                  className="bg-[#17263F] hover:bg-[#253958] text-white font-bold text-sm px-6 py-3 rounded-full transition-all active:scale-[0.98] shadow-sm cursor-pointer"
-                >
-                  Get Started →
-                </button>
+                <div className="flex items-center gap-3">
+                  <button 
+                    onClick={() => setCurrentScreen(13)}
+                    className="text-[#17263F] hover:text-[#D4A373] font-bold text-sm transition-colors cursor-pointer"
+                  >
+                    Sign In
+                  </button>
+                  <button 
+                    onClick={() => setCurrentScreen(14)}
+                    className="bg-[#17263F] hover:bg-[#253958] text-white font-bold text-sm px-6 py-3 rounded-full transition-all active:scale-[0.98] shadow-sm cursor-pointer"
+                  >
+                    Get Started →
+                  </button>
+                </div>
               </header>
 
               {/* Hero content */}
@@ -271,18 +288,24 @@ export const LandingPage: React.FC<LandingPageProps> = ({ strings: _strings, onG
                     Let's create a learning experience that understands you. Personalized study, focus, and progress.
                   </p>
                   
-                  <div className="flex flex-wrap gap-4">
+                  <div className="flex flex-wrap items-center gap-4">
                     <button
-                      onClick={() => setCurrentScreen(2)}
+                      onClick={() => setCurrentScreen(14)}
                       className="bg-[#17263F] hover:bg-[#253958] text-white font-bold text-[16px] px-8 py-4.5 rounded-[18px] shadow-[0_4px_15px_rgba(212,163,115,0.15)] transition-all active:scale-[0.98] cursor-pointer flex items-center gap-2"
                     >
-                      Start Journey <ArrowRight size={18} />
+                      Get Started <ArrowRight size={18} />
                     </button>
                     <button
-                      onClick={() => setCurrentScreen(5)}
+                      onClick={() => setCurrentScreen(13)}
                       className="bg-white hover:bg-[#F6F0E8] border border-[#17263F]/12 text-[#17263F] font-bold text-[16px] px-8 py-4.5 rounded-[18px] transition-all active:scale-[0.98] cursor-pointer"
                     >
                       Sign In
+                    </button>
+                    <button
+                      onClick={() => { setIsGuest(true); setIsLoggedIn(false); setUserName('Learner'); setCurrentScreen(5); }}
+                      className="text-[#6E665E] hover:text-[#17263F] font-bold text-[15px] px-4 py-3 transition-colors cursor-pointer underline underline-offset-4 decoration-[#D4A373]/40"
+                    >
+                      Continue as Guest
                     </button>
                   </div>
                 </motion.div>
@@ -481,7 +504,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ strings: _strings, onG
                 <div className="lg:col-span-3 flex flex-col justify-center items-center">
                   {renderMascot(220, true, true)}
                   <div className="bg-[#FFFDF9] border border-[#17263F]/6 rounded-2xl px-5 py-3 mt-4 text-[12px] font-bold text-[#6E665E] leading-snug max-w-[200px] text-center shadow-sm">
-                    "Hi Ananya! Let's fill out your profile details so we can get started." 💛
+                    "Hi {userName || 'there'}! Let's fill out your profile details so we can get started." 💛
                   </div>
                 </div>
               </div>
@@ -730,9 +753,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({ strings: _strings, onG
               <div className="flex items-center justify-between border-b border-[#17263F]/6 pb-6">
                 <div>
                   <h1 className="text-[28px] lg:text-[36px] font-extrabold text-[#17263F] tracking-tight">
-                    Good Evening, {userName}! 🌸
+                    Good Evening, {userName || 'Learner'}! 🌸
                   </h1>
                   <p className="text-[14px] text-[#6E665E] font-semibold mt-0.5">
+                    {isGuest && <span className="inline-flex items-center bg-[#F6F0E8] text-[#D4A373] text-[11px] font-bold px-3 py-1 rounded-full mr-2 uppercase tracking-wider">Guest Mode</span>}
+                    {isLoggedIn && <span className="inline-flex items-center bg-[#E8F5E9] text-[#4CAF50] text-[11px] font-bold px-3 py-1 rounded-full mr-2 uppercase tracking-wider">✓ Signed In</span>}
                     Rin says: "You're doing better than you think." 💛
                   </p>
                 </div>
@@ -882,7 +907,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ strings: _strings, onG
               <div className="flex justify-end pr-4">
                 <div className="flex items-center gap-4">
                   <div className="bg-white border border-[#17263F]/6 rounded-2xl p-4 text-[12px] font-bold text-[#6E665E] max-w-[260px] shadow-sm relative">
-                    "Awesome work today, Ananya! Let's check out our Focus Mode timer or look at our Attention Insights." 💛
+                    "Awesome work today, {userName || 'friend'}! Let's check out our Focus Mode timer or look at our Attention Insights." 💛
                     <div className="absolute right-[-6px] top-1/2 transform -translate-y-1/2 w-3 h-3 bg-white border-r border-t border-[#17263F]/6 rotate-45" />
                   </div>
                   {renderMascot(160, true, true)}
@@ -1394,7 +1419,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ strings: _strings, onG
               <div className="flex items-center justify-between border-b border-[#17263F]/6 pb-6">
                 <div>
                   <h1 className="text-[28px] lg:text-[36px] font-extrabold text-[#17263F] tracking-tight">Welcome, Mom! 🌸</h1>
-                  <p className="text-[14px] text-[#6E665E] font-semibold mt-0.5">Here's how {userName} is doing.</p>
+                  <p className="text-[14px] text-[#6E665E] font-semibold mt-0.5">Here's how {userName || 'your child'} is doing.</p>
                 </div>
                 <button 
                   onClick={() => setCurrentScreen(5)}
@@ -1430,9 +1455,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ strings: _strings, onG
                     <h3 className="text-[13px] font-bold text-[#8C847B] uppercase tracking-wider mb-4">Insights</h3>
                     <div className="space-y-3.5">
                       {[
-                        'Ananya focuses best in the evening.',
-                        'Short breaks help her stay consistent.',
-                        'She enjoys learning Math and Art.'
+                        `${userName || 'Your child'} focuses best in the evening.`,
+                        'Short breaks help maintain consistency.',
+                        `${userName ? userName + ' enjoys' : 'They enjoy'} learning Math and Art.`
                       ].map((item, i) => (
                         <div key={i} className="flex items-center gap-3">
                           <div className="w-2 h-2 rounded-full bg-[#D4A373]" />
@@ -1788,6 +1813,102 @@ export const LandingPage: React.FC<LandingPageProps> = ({ strings: _strings, onG
                   {renderMascot(120, true, true)}
                 </div>
               </div>
+            </div>
+          )}
+
+          {/* SCREEN 13: Sign In */}
+          {currentScreen === 13 && (
+            <div className="max-w-[1280px] mx-auto w-full flex flex-col justify-center items-center min-h-[80vh]">
+              <div className="w-full max-w-[440px] mb-8">
+                <button onClick={() => setCurrentScreen(1)} className="flex items-center gap-2 text-sm font-bold text-[#8C847B] hover:text-[#17263F] transition-colors cursor-pointer">
+                  <ArrowLeft size={16} /> Back to home
+                </button>
+              </div>
+              <motion.div initial="hidden" animate="visible" variants={fadeUp(0)} className="w-full max-w-[440px] bg-[#FFFDF9] border border-[#17263F]/6 rounded-[24px] p-8 shadow-[0_8px_30px_rgba(0,0,0,0.05)] text-center">
+                <div className="flex justify-center mb-6">{renderMascot(120, true, false)}</div>
+                <h2 className="text-[28px] font-extrabold text-[#17263F] tracking-tight mb-1">
+                  Welcome back <span className="font-handwritten text-[#D4A373] text-[24px]">♡</span>
+                </h2>
+                <p className="text-[14px] text-[#6E665E] font-medium mb-8">Sign in to continue your learning journey.</p>
+                <div className="space-y-4 text-left">
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[11px] font-bold text-[#8C847B] uppercase tracking-wider pl-1">Email</label>
+                    <div className="relative">
+                      <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8C847B]" />
+                      <input type="email" value={loginEmail} onChange={(e) => setLoginEmail(e.target.value)} placeholder="you@example.com" className="w-full bg-[#FAF6F0] border border-[#17263F]/8 rounded-[18px] pl-11 pr-5 py-3.5 text-sm text-[#17263F] focus:outline-none focus:border-[#D4A373]/50 transition-colors" />
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[11px] font-bold text-[#8C847B] uppercase tracking-wider pl-1">Password</label>
+                    <div className="relative">
+                      <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8C847B]" />
+                      <input type="password" value={loginPassword} onChange={(e) => setLoginPassword(e.target.value)} placeholder="Enter your password" className="w-full bg-[#FAF6F0] border border-[#17263F]/8 rounded-[18px] pl-11 pr-5 py-3.5 text-sm text-[#17263F] focus:outline-none focus:border-[#D4A373]/50 transition-colors" />
+                    </div>
+                  </div>
+                </div>
+                <button onClick={() => { setIsLoggedIn(true); setIsGuest(false); setUserName(loginEmail.split('@')[0] || 'User'); setCurrentScreen(5); }} className="w-full bg-[#17263F] hover:bg-[#253958] text-white font-bold text-[15px] py-4 rounded-[18px] shadow-[0_4px_15px_rgba(212,163,115,0.15)] transition-all active:scale-[0.98] cursor-pointer mt-6 flex items-center justify-center gap-2">
+                  Sign In <ArrowRight size={16} />
+                </button>
+                <div className="mt-6 space-y-3">
+                  <p className="text-[13px] text-[#6E665E] font-medium">
+                    Don't have an account?{' '}
+                    <button onClick={() => setCurrentScreen(14)} className="text-[#D4A373] font-bold hover:underline cursor-pointer">Sign up</button>
+                  </p>
+                  <button onClick={() => { setIsGuest(true); setIsLoggedIn(false); setUserName('Learner'); setCurrentScreen(5); }} className="text-[12px] text-[#8C847B] font-bold hover:text-[#17263F] cursor-pointer transition-colors">
+                    Continue as Guest →
+                  </button>
+                </div>
+              </motion.div>
+            </div>
+          )}
+
+          {/* SCREEN 14: Sign Up */}
+          {currentScreen === 14 && (
+            <div className="max-w-[1280px] mx-auto w-full flex flex-col justify-center items-center min-h-[80vh]">
+              <div className="w-full max-w-[440px] mb-8">
+                <button onClick={() => setCurrentScreen(1)} className="flex items-center gap-2 text-sm font-bold text-[#8C847B] hover:text-[#17263F] transition-colors cursor-pointer">
+                  <ArrowLeft size={16} /> Back to home
+                </button>
+              </div>
+              <motion.div initial="hidden" animate="visible" variants={fadeUp(0)} className="w-full max-w-[440px] bg-[#FFFDF9] border border-[#17263F]/6 rounded-[24px] p-8 shadow-[0_8px_30px_rgba(0,0,0,0.05)] text-center">
+                <div className="flex justify-center mb-6">{renderMascot(120, true, false)}</div>
+                <h2 className="text-[28px] font-extrabold text-[#17263F] tracking-tight mb-1">
+                  Create your account <span className="font-handwritten text-[#D4A373] text-[24px]">✦</span>
+                </h2>
+                <p className="text-[14px] text-[#6E665E] font-medium mb-8">Start your personalized learning journey.</p>
+                <div className="space-y-4 text-left">
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[11px] font-bold text-[#8C847B] uppercase tracking-wider pl-1">Full Name</label>
+                    <input type="text" value={signupName} onChange={(e) => setSignupName(e.target.value)} placeholder="What should we call you?" className="w-full bg-[#FAF6F0] border border-[#17263F]/8 rounded-[18px] px-5 py-3.5 text-sm text-[#17263F] focus:outline-none focus:border-[#D4A373]/50 transition-colors" />
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[11px] font-bold text-[#8C847B] uppercase tracking-wider pl-1">Email</label>
+                    <div className="relative">
+                      <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8C847B]" />
+                      <input type="email" value={signupEmail} onChange={(e) => setSignupEmail(e.target.value)} placeholder="you@example.com" className="w-full bg-[#FAF6F0] border border-[#17263F]/8 rounded-[18px] pl-11 pr-5 py-3.5 text-sm text-[#17263F] focus:outline-none focus:border-[#D4A373]/50 transition-colors" />
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[11px] font-bold text-[#8C847B] uppercase tracking-wider pl-1">Password</label>
+                    <div className="relative">
+                      <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8C847B]" />
+                      <input type="password" value={signupPassword} onChange={(e) => setSignupPassword(e.target.value)} placeholder="Create a password" className="w-full bg-[#FAF6F0] border border-[#17263F]/8 rounded-[18px] pl-11 pr-5 py-3.5 text-sm text-[#17263F] focus:outline-none focus:border-[#D4A373]/50 transition-colors" />
+                    </div>
+                  </div>
+                </div>
+                <button onClick={() => { setIsLoggedIn(true); setIsGuest(false); setUserName(signupName || 'Learner'); setCurrentScreen(2); }} className="w-full bg-[#17263F] hover:bg-[#253958] text-white font-bold text-[15px] py-4 rounded-[18px] shadow-[0_4px_15px_rgba(212,163,115,0.15)] transition-all active:scale-[0.98] cursor-pointer mt-6 flex items-center justify-center gap-2">
+                  Create Account <ArrowRight size={16} />
+                </button>
+                <div className="mt-6 space-y-3">
+                  <p className="text-[13px] text-[#6E665E] font-medium">
+                    Already have an account?{' '}
+                    <button onClick={() => setCurrentScreen(13)} className="text-[#D4A373] font-bold hover:underline cursor-pointer">Sign in</button>
+                  </p>
+                  <button onClick={() => { setIsGuest(true); setIsLoggedIn(false); setUserName('Learner'); setCurrentScreen(5); }} className="text-[12px] text-[#8C847B] font-bold hover:text-[#17263F] cursor-pointer transition-colors">
+                    Continue as Guest →
+                  </button>
+                </div>
+              </motion.div>
             </div>
           )}
 
